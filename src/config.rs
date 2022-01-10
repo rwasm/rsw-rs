@@ -26,15 +26,10 @@ pub(crate) struct RswConfig {
   pub crates: Vec<Option<CrateConfig>>,
 }
 
-#[allow(dead_code)]
-pub(crate) fn rsw_config(rsw_file: &str) -> RswConfig {
-  toml::from_str(rsw_file).unwrap()
-}
-
 pub(crate) fn rsw_toml_parse() -> Result<RswConfig> {
   let rsw_file = env::current_dir().unwrap().join("rsw.toml");
   let rsw_content = fs::read_to_string(rsw_file).unwrap();
-  let rsw_parse = rsw_config(&rsw_content);
+  let rsw_parse = toml::from_str(&rsw_content).unwrap();
 
   Ok(rsw_parse)
 }
