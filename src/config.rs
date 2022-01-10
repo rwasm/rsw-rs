@@ -6,7 +6,7 @@ use toml;
 
 #[allow(dead_code)]
 #[derive(Debug, Deserialize)]
-struct CreateConfig {
+struct CrateConfig {
     name: Option<String>,
     out_dir: Option<String>,
     target: Option<String>,
@@ -22,7 +22,7 @@ pub(crate) struct RswConfig {
     // npm | pnpm
     cli: Option<String>,
     // rust crates
-    crates: Vec<Option<CreateConfig>>,
+    crates: Vec<Option<CrateConfig>>,
 }
 
 #[allow(dead_code)]
