@@ -1,8 +1,12 @@
-use std::include_str;
 mod config;
 
 fn main() {
-    let rsw = config::rsw_config(include_str!("../rsw.toml"));
+  let rsw_toml = config::rsw_toml_parse().unwrap();
+  // println!("{:#?}", rsw_toml);
+  // println!("name => {}", rsw_toml.name.as_ref().unwrap());
 
-    println!("{:#?}", rsw);
+  for rsw_crate in rsw_toml.crates {
+    let crate_config = rsw_crate.as_ref().unwrap();
+    println!("crate name => {:?}", crate_config.name.as_ref().unwrap());
+  }
 }
