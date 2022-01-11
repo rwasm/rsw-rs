@@ -8,7 +8,7 @@ use toml;
 #[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 pub(crate) struct CrateConfig {
-  pub name: Option<String>,
+  pub name: String,
   pub out_dir: Option<String>,
   pub target: Option<String>,
   pub profile: Option<String>,
@@ -18,8 +18,8 @@ pub(crate) struct CrateConfig {
 #[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 pub(crate) struct RswConfig {
-  pub name: Option<String>,
-  pub version: Option<String>,
+  pub name: String,
+  pub version: String,
   // npm | pnpm
   pub cli: Option<String>,
   // rust crates

@@ -1,4 +1,5 @@
 mod config;
+mod cli;
 
 fn main() {
   let rsw_toml = config::rsw_toml_parse().unwrap();
@@ -7,6 +8,10 @@ fn main() {
 
   for rsw_crate in rsw_toml.crates {
     let crate_config = rsw_crate.as_ref().unwrap();
-    println!("crate name => {:?}", crate_config.name.as_ref().unwrap());
+    println!("crate name => {:?}", crate_config.name);
   }
+
+  println!("\n##########################\n");
+
+  cli::new();
 }
