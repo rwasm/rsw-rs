@@ -1,7 +1,12 @@
 [package]
 name = "rsw"
-version = "0.1.0"
+version = "0.0.1"
 edition = "2021"
+authors = ["lencx <cxin1314@gmail.com>"]
+homepage = "https://github.com/lencx/rsw-rs"
+repository = "https://github.com/lencx/rsw-rs"
+keywords = ["rsw", "wasm-pack"]
+license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

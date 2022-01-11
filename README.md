@@ -1,11 +1,13 @@
 # rsw-rs
 
+> This project is in early experimental stage.
+
 ```bash
 # dev
-rsw --watch
+rsw watch
 
 # release
-rsw --build
+rsw build
 ```
 
 ```toml
