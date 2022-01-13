@@ -1,17 +1,10 @@
-mod config;
 mod cli;
+mod config;
 
 fn main() {
-  let rsw_toml = config::rsw_toml_parse().unwrap();
-  // println!("{:#?}", rsw_toml);
-  // println!("name => {}", rsw_toml.name.as_ref().unwrap());
-
-  for rsw_crate in rsw_toml.crates {
-    let crate_config = rsw_crate.as_ref().unwrap();
-    println!("crate name => {:?}", crate_config.name);
-  }
-
-  println!("\n##########################\n");
-
-  cli::new();
+    let rsw_config = config::RswConfig::new().unwrap();
+    // println!("version => {}", rsw_config.version);
+    for rsw_crate in &rsw_config.crates {
+        cli::new(rsw_crate);
+    }
 }

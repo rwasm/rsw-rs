@@ -1,9 +1,15 @@
-name = 'rsw-config'
+name = 'rsw'
 version = "0.0.1"
 
 [[crates]]
-name = "rsw-foo"
+name2 = "rsw-foo"
 out_dir = "./outdir"
 
 [[crates]]
 name = "@rsw/foo"
+
+[[crates]]
+name = "@rsw/bar"
+
+[[crates]]
+name = "@rsw/bar"

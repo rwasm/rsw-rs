@@ -8,17 +8,27 @@ rsw watch
 
 # release
 rsw build
+
+# create crate
+rsw new
 ```
 
 ```toml
 # rsw.toml
-name = 'rsw-config'
+name = 'rsw'
 version = "0.0.1"
 
 [[crates]]
-name = "wasm-foo"
+name = "rsw-foo"
 out_dir = "./outdir"
 
 [[crates]]
 name = "@rsw/foo"
 ```
+
+## Feature
+
+- debug
+- watch
+- build
+- new
