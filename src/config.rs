@@ -1,53 +1,96 @@
-// wasm-pack build
-// https://rustwasm.github.io/wasm-pack/book/commands/build.html
-use toml;
+//! rsw.toml parse
+//!
+//! [wasm-pack build](https://rustwasm.github.io/wasm-pack/book/commands/build.html)
+
 use std::{env, fs};
 use colored::Colorize;
 use anyhow::{Result, Error};
-use serde_derive::Deserialize;
-use std::rc::Rc;
 
-#[allow(dead_code)]
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
+// @see https://serde.rs/container-attrs.html#rename_all
+#[serde(rename_all = "kebab-case")]
 pub(crate) struct CrateConfig {
+    /// npm package
     pub name: String,
+    /// TODO
+    #[serde(default = "default_out_dir")]
     pub out_dir: Option<String>,
+    /// TODO
+    #[serde(default = "default_true")]
+    watch: Option<bool>,
+    /// TODO
+    #[serde(default = "default_true")]
+    build: Option<bool>,
+    /// TODO
+    ///
+    /// <https://rustwasm.github.io/wasm-pack/book/commands/build.html#target>
+    ///
+    /// target: bundler | nodejs | web | no-modules
+    ///
     pub target: Option<String>,
-    pub profile: Option<String>,
+    /// TODO
     pub mode: Option<String>,
+    /// <https://rustwasm.github.io/wasm-pack/book/commands/build.html#profile>
+    ///
+    /// profile: profiling | release
+    ///
+    /// When in `watch` mode, the value of `profile` is `dev`,
+    /// building this way is faster but applies few optimizations to the output,
+    /// and enables debug assertions and other runtime correctness checks.
+    #[serde(default = "default_profile")]
+    pub profile: Option<String>,
 }
 
-#[allow(dead_code)]
-#[derive(Debug, Deserialize)]
+fn default_out_dir() -> Option<String> {
+    Some("./pkg".to_string())
+}
+fn default_profile() -> Option<String> {
+    Some("release".to_string())
+}
+
+fn default_true() -> Option<bool> {
+    Some(true)
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub(crate) struct RswConfig {
-    pub name: String,
-    pub version: String,
-    // npm | pnpm
+    /// rsw name
+    pub name: Option<String>,
+    /// rsw version
+    pub version: Option<String>,
+    /// npm | yarn | pnpm
     pub cli: Option<String>,
-    // rust crates
+    /// rust crates
+    #[serde(default)]
     pub crates: Vec<CrateConfig>,
 }
 
+impl Default for RswConfig {
+    fn default() -> Self {
+        Self {
+            name: Some("rsw".to_string()),
+            version: Some("0.0.0".to_string()),
+            cli: Some("npm".to_string()),
+            crates: vec![],
+        }
+    }
+}
+
 impl RswConfig {
-	#[allow(dead_code)]
-    pub fn new() -> Result<Rc<RswConfig>, Error> {
+    pub fn new() -> Result<RswConfig, Error> {
         let rsw_file = env::current_dir().unwrap().join("rsw.toml");
         let rsw_content = fs::read_to_string(rsw_file).unwrap_or_else(|e| {
-			panic!(
-				"\n{} {}, {} must exist in the project root path.\n",
-				"[⚙️ rsw.toml]".red().on_black(),
-				e,
-				"rsw.toml".green(),
-			);
-		});
+            panic!(
+                "\n{} {}, {} must exist in the project root path.\n",
+                "[⚙️ rsw.toml]".red().on_black(),
+                e,
+                "rsw.toml".green(),
+            );
+        });
         let rsw_toml_parse = toml::from_str(&rsw_content).unwrap_or_else(|e| {
-			panic!(
-				"\n{} {}\n",
-				"[⚙️ rsw.toml]".red().on_black(),
-				e,
-			);
-		});
+            panic!("\n{} {}\n", "[⚙️ rsw.toml]".red().on_black(), e,);
+        });
 
-        Ok(Rc::new(rsw_toml_parse))
+        Ok(rsw_toml_parse)
     }
 }

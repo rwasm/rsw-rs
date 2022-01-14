@@ -13,10 +13,14 @@ pub(crate) fn new(options: &CrateConfig) {
         .get_matches();
 
     match matches.subcommand() {
+        // build --(dev | profiling | release)
         Some(("build", _)) => {
-            println!("TODO => build {}", options.name);
+            println!("TODO => build {:?}", options);
+            println!("TODO => name {}", options.name);
+            println!("TODO => out_dir {}", options.out_dir.as_ref().unwrap());
             // println!("{:?}", options);
         }
+        // watch (--dev)
         Some(("watch", _)) => {
             println!("TODO => watch {}", options.name);
         }

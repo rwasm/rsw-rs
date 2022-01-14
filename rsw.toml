@@ -2,14 +2,8 @@ name = 'rsw'
 version = "0.0.1"
 
 [[crates]]
-name2 = "rsw-foo"
-out_dir = "./outdir"
+name = "rsw-foo"
+out-dir = "./mypkg"
 
 [[crates]]
 name = "@rsw/foo"
-
-[[crates]]
-name = "@rsw/bar"
-
-[[crates]]
-name = "@rsw/bar"
