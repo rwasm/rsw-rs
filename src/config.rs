@@ -2,9 +2,9 @@
 //!
 //! [wasm-pack build](https://rustwasm.github.io/wasm-pack/book/commands/build.html)
 
+use crate::core::RswErr;
+use anyhow::{Error, Result};
 use std::{env, fs, process};
-use anyhow::{Result, Error};
-use crate::error::RswErr;
 
 #[derive(Debug, Serialize, Deserialize)]
 // @see https://serde.rs/container-attrs.html#rename_all

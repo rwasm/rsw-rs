@@ -1,5 +1,7 @@
-use clap::{App, AppSettings};
 use crate::config::CrateConfig;
+use crate::core;
+use crate::core::RswErr;
+use clap::{App, AppSettings};
 
 pub(crate) fn new(options: &CrateConfig) {
     let matches = App::new("rsw")
@@ -15,10 +17,7 @@ pub(crate) fn new(options: &CrateConfig) {
     match matches.subcommand() {
         // build --(dev | profiling | release)
         Some(("build", _)) => {
-            println!("TODO => build {:?}", options);
-            println!("TODO => name {}", options.name);
-            println!("TODO => out_dir {}", options.out_dir.as_ref().unwrap());
-            // println!("{:?}", options);
+            core::build(options);
         }
         // watch (--dev)
         Some(("watch", _)) => {
@@ -27,7 +26,10 @@ pub(crate) fn new(options: &CrateConfig) {
         Some(("new", _)) => {
             println!("TODO => new crate");
         }
-        _ => unreachable!(), // If all subcommands are defined above, anything else is unreachabe!()
+        _ => {
+            println!("{}", RswErr::CmdErr);
+            // unreachable!()
+        } // If all subcommands are defined above, anything else is unreachabe!()
     }
 
     // Continued program logic goes here...

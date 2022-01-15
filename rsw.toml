@@ -6,4 +6,4 @@ name = "rsw-foo"
 out-dir = "./mypkg"
 
 [[crates]]
-name = "@rsw/foo"
+name = "@rsw/bar"
