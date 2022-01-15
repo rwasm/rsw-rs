@@ -7,8 +7,8 @@ pub(crate) fn new(options: &CrateConfig) {
         .setting(AppSettings::SubcommandRequiredElseHelp)
         .setting(AppSettings::AllowExternalSubcommands)
         .setting(AppSettings::AllowInvalidUtf8ForExternalSubcommands)
-        .subcommand(App::new("build").about("build crate"))
-        .subcommand(App::new("watch").about("watch crate"))
+        .subcommand(App::new("build").about("build crates"))
+        .subcommand(App::new("watch").about("watch crates"))
         .subcommand(App::new("new").about("new crate"))
         .get_matches();
 

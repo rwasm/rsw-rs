@@ -2,9 +2,9 @@
 //!
 //! [wasm-pack build](https://rustwasm.github.io/wasm-pack/book/commands/build.html)
 
-use std::{env, fs};
-use colored::Colorize;
+use std::{env, fs, process};
 use anyhow::{Result, Error};
+use crate::error::RswErr;
 
 #[derive(Debug, Serialize, Deserialize)]
 // @see https://serde.rs/container-attrs.html#rename_all
@@ -80,15 +80,12 @@ impl RswConfig {
     pub fn new() -> Result<RswConfig, Error> {
         let rsw_file = env::current_dir().unwrap().join("rsw.toml");
         let rsw_content = fs::read_to_string(rsw_file).unwrap_or_else(|e| {
-            panic!(
-                "\n{} {}, {} must exist in the project root path.\n",
-                "[⚙️ rsw.toml]".red().on_black(),
-                e,
-                "rsw.toml".green(),
-            );
+            println!("{}", RswErr::FileErr(e));
+            process::exit(1);
         });
         let rsw_toml_parse = toml::from_str(&rsw_content).unwrap_or_else(|e| {
-            panic!("\n{} {}\n", "[⚙️ rsw.toml]".red().on_black(), e,);
+            println!("{}", RswErr::ParseErr(e));
+            process::exit(1);
         });
 
         Ok(rsw_toml_parse)
