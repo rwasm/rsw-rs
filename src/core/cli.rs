@@ -17,7 +17,9 @@ pub(crate) fn new(options: &CrateConfig) {
     match matches.subcommand() {
         // build --(dev | profiling | release)
         Some(("build", _)) => {
-            core::build(options);
+            if *options.build.as_ref().unwrap().run.as_ref().unwrap() {
+                core::build(options);
+            }
         }
         // watch (--dev)
         Some(("watch", _)) => {

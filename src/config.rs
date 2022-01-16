@@ -10,46 +10,50 @@ use std::{env, fs, process};
 // @see https://serde.rs/container-attrs.html#rename_all
 #[serde(rename_all = "kebab-case")]
 pub(crate) struct CrateConfig {
-    /// npm package
+    /// <https://docs.npmjs.com/cli/v8/configuring-npm/package-json#name>
+    ///
+    /// your package's name, and must be lowercase and one word,
+    /// and may contain hyphens and underscores, support `scope`.
+    /// For example: `rsw-foo`, `@rsw/foo`
     pub name: String,
-    /// TODO
+    /// <https://rustwasm.github.io/wasm-pack/book/commands/build.html#output-directory>
+    ///
+    /// By default, wasm-pack will generate a directory for it's build output called `pkg`.
+    /// You can use `out-dir` to customize the directory where files are generated.
     #[serde(default = "default_out_dir")]
     pub out_dir: Option<String>,
     /// TODO
-    #[serde(default = "default_true")]
-    watch: Option<bool>,
+    #[serde(default = "default_watch")]
+    pub watch: Option<CrateOptions>,
     /// TODO
-    #[serde(default = "default_true")]
-    build: Option<bool>,
+    #[serde(default = "default_build")]
+    pub build: Option<CrateOptions>,
     /// TODO
+    /// target: bundler | nodejs | web | no-modules
     ///
     /// <https://rustwasm.github.io/wasm-pack/book/commands/build.html#target>
-    ///
-    /// target: bundler | nodejs | web | no-modules
     ///
     pub target: Option<String>,
     /// TODO
     pub mode: Option<String>,
-    /// <https://rustwasm.github.io/wasm-pack/book/commands/build.html#profile>
-    ///
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub(crate) struct CrateOptions {
+    /// When executing the command (`watch` or `build`), whether to include this `crate`.
+    pub run: Option<bool>,
     /// profile: profiling | release
+    ///
+    /// <https://rustwasm.github.io/wasm-pack/book/commands/build.html#profile>
     ///
     /// When in `watch` mode, the value of `profile` is `dev`,
     /// building this way is faster but applies few optimizations to the output,
     /// and enables debug assertions and other runtime correctness checks.
-    #[serde(default = "default_profile")]
+    /// The `--profiling` and `--release` profiles use cargo's release profile,
+    /// but the former enables debug info as well,
+    /// which helps when investigating performance issues in a profiler.
     pub profile: Option<String>,
-}
-
-fn default_out_dir() -> Option<String> {
-    Some("./pkg".to_string())
-}
-fn default_profile() -> Option<String> {
-    Some("release".to_string())
-}
-
-fn default_true() -> Option<bool> {
-    Some(true)
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -90,4 +94,34 @@ impl RswConfig {
 
         Ok(rsw_toml_parse)
     }
+}
+
+fn default_out_dir() -> Option<String> {
+    Some("./pkg".to_string())
+}
+
+fn default_release() -> Option<String> {
+    Some("release".to_string())
+}
+
+fn default_dev() -> Option<String> {
+    Some("dev".to_string())
+}
+
+fn default_true() -> Option<bool> {
+    Some(true)
+}
+
+fn default_watch() -> Option<CrateOptions> {
+    Some(CrateOptions {
+        run: default_true(),
+        profile: default_dev(),
+    })
+}
+
+fn default_build() -> Option<CrateOptions> {
+    Some(CrateOptions {
+        run: default_true(),
+        profile: default_release(),
+    })
 }

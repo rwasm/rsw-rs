@@ -1,5 +1,5 @@
-use std::env;
-use std::fs;
+use std::{env, fs};
+use toml::Value;
 
 // https://stackoverflow.com/questions/35045996/check-if-a-command-is-in-path-executable-as-process
 pub fn check_env_cmd(program: &str) -> bool {
@@ -12,4 +12,12 @@ pub fn check_env_cmd(program: &str) -> bool {
         }
     }
     false
+}
+
+// get fields from `Cargo.toml`
+pub fn get_crate_metadata(name: &str) -> Value {
+    let crate_root = env::current_dir().unwrap().join(name).join("Cargo.toml");
+    let content = fs::read_to_string(crate_root).unwrap();
+    let value = content.parse::<Value>().unwrap();
+    value
 }
