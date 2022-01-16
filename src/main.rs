@@ -16,7 +16,7 @@ fn main() {
 
     let rsw_config = config::RswConfig::new().unwrap();
     // println!("toml => {:#?}", rsw_config);
-    for rsw_crate in &rsw_config.crates {
-        core::cli(rsw_crate);
+    for rsw_crate in rsw_config.crates {
+        core::cli(&rsw_crate);
     }
 }

@@ -48,8 +48,7 @@ pub(crate) fn new(options: &CrateConfig) {
                     notify::DebouncedEvent::Chmod(_) => {},
                     notify::DebouncedEvent::NoticeRemove(_) => {},
                     notify::DebouncedEvent::Rescan => {}
-                    notify::DebouncedEvent::Error(_, _) => {
-                    }
+                    notify::DebouncedEvent::Error(_, _) => {}
                 }
             }
             Err(e) => println!("watch error: {:?}", e),

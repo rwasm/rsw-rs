@@ -1,7 +1,8 @@
 <p align="center">
   <img src="./rsw.png" width="120">
-  <h3>rsw-rs</h3>
 </p>
+
+## rsw-rs
 
 > This project is in early experimental stage.
 
