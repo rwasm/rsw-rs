@@ -23,7 +23,8 @@ pub(crate) fn new(options: &CrateConfig) {
         }
         // watch (--dev)
         Some(("watch", _)) => {
-            println!("TODO => watch {}", options.name);
+            // println!("TODO => watch {}", options.name);
+            core::watch(options);
         }
         Some(("new", _)) => {
             println!("TODO => new crate");

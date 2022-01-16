@@ -24,10 +24,13 @@ pub(crate) fn new(options: &CrateConfig) {
 
     match status.success() {
         true => {
-            println!("{}", RswInfo::RswCrateOk(name, metadata["package"]["version"].as_str()));
+            println!(
+                "{}",
+                RswInfo::RswCrateOk(name, "build", metadata["package"]["version"].as_str())
+            );
         }
         false => {
-            println!("{}", RswInfo::RswCrateFail(name));
+            println!("{}", RswInfo::RswCrateFail(name, "build"));
         }
     }
 
