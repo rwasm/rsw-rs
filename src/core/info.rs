@@ -1,6 +1,5 @@
 use colored::Colorize;
 use core::fmt::Display;
-use notify::DebouncedEvent;
 use std::fmt::Debug;
 
 #[derive(Debug, PartialEq)]
@@ -9,7 +8,7 @@ pub(crate) enum RswInfo<'a> {
     RswCrateOk(&'a str, &'static str, Option<&'a str>),
     RswCrateFail(&'a str, &'static str),
     RswBuildCmd(&'a str),
-    RswCrateChange(DebouncedEvent),
+    RswCrateChange(&'a str, &'a str),
 }
 
 impl Display for RswInfo<'_> {
@@ -44,8 +43,8 @@ impl Display for RswInfo<'_> {
                     args
                 )
             }
-            RswInfo::RswCrateChange(event) => {
-                write!(f, " {} {:?}", "└".yellow(), event)
+            RswInfo::RswCrateChange(event, path) => {
+                write!(f, " {} {} {:?}", "└".yellow(), event, path)
             }
         }
     }

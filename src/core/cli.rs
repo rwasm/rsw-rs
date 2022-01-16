@@ -24,7 +24,9 @@ pub(crate) fn new(options: &CrateConfig) {
         // watch (--dev)
         Some(("watch", _)) => {
             // println!("TODO => watch {}", options.name);
-            core::watch(options);
+            if *options.watch.as_ref().unwrap().run.as_ref().unwrap() {
+                core::watch(options);
+            }
         }
         Some(("new", _)) => {
             println!("TODO => new crate");

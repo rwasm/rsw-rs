@@ -1,4 +1,7 @@
-# rsw-rs
+<p align="center">
+  <img src="./rsw.png" width="120">
+  <h3>rsw-rs</h3>
+</p>
 
 > This project is in early experimental stage.
 
@@ -20,10 +23,18 @@ version = "0.0.1"
 
 [[crates]]
 name = "rsw-foo"
-out_dir = "./outdir"
+out-dir = "./mypkg"
+# profile: dev | profiling, defalut `dev`
+[crates.watch]
+run = true
+profile = "dev"
+# profile: release | profiling, default `release`
+[crates.build]
+run = false
+profile = "profiling"
 
 [[crates]]
-name = "@rsw/foo"
+name = "@rsw/bar"
 ```
 
 ## Feature

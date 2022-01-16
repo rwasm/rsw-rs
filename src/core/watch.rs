@@ -1,5 +1,6 @@
 use notify::{watcher, RecursiveMode, Watcher};
-use std::path::Path;
+use notify_rust::Notification;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::sync::mpsc::channel;
 use std::time::Duration;
@@ -32,14 +33,31 @@ pub(crate) fn new(options: &CrateConfig) {
     for _ in rx.iter() {
         match rx.recv() {
             Ok(event) => {
-                watch_build(name, options, event);
+                match event {
+                    notify::DebouncedEvent::Write(path) => {
+                        watch_build(name, options, "write".to_owned(), path);
+                    },
+                    notify::DebouncedEvent::Create(path) => {
+                        watch_build(name, options, "create".to_owned(), path);
+                    },
+                    notify::DebouncedEvent::Remove(path) => {
+                        watch_build(name, options, "remove".to_owned(), path);
+                    },
+                    notify::DebouncedEvent::Rename(_, _) => {},
+                    notify::DebouncedEvent::NoticeWrite(_) => {},
+                    notify::DebouncedEvent::Chmod(_) => {},
+                    notify::DebouncedEvent::NoticeRemove(_) => {},
+                    notify::DebouncedEvent::Rescan => {}
+                    notify::DebouncedEvent::Error(_, _) => {
+                    }
+                }
             }
             Err(e) => println!("watch error: {:?}", e),
         }
     }
 }
 
-pub(crate) fn watch_build(name: &str, options: &CrateConfig, event: notify::DebouncedEvent) {
+pub(crate) fn watch_build(name: &str, options: &CrateConfig, event: String, path: PathBuf) {
     let profile = options.watch.as_ref().unwrap().profile.as_ref().unwrap();
     let mut args = vec!["build", name];
     let arg_profile = ["--", profile].join("");
@@ -62,7 +80,18 @@ pub(crate) fn watch_build(name: &str, options: &CrateConfig, event: notify::Debo
                 "{}",
                 RswInfo::RswCrateOk(name, "watch", metadata["package"]["version"].as_str())
             );
-            println!("{}", RswInfo::RswCrateChange(event));
+            let path = &path.into_os_string().into_string().unwrap();
+            println!("{}", RswInfo::RswCrateChange(event.as_ref(), path));
+
+            let mut name = "[rsw::watch] ".to_owned();
+            name.push_str(&event.to_owned());
+
+            Notification::new()
+                .summary(name.as_str())
+                .body(path)
+                .icon("firefox")
+                .timeout(3)
+                .show().unwrap();
         }
         false => {
             println!("{}", RswInfo::RswCrateFail(name, "watch"));
