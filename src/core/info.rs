@@ -3,15 +3,15 @@ use core::fmt::Display;
 use std::fmt::Debug;
 
 #[derive(Debug, PartialEq)]
-pub(crate) enum RswInfo<'a> {
+pub(crate) enum RswInfo {
     RswsSlitLine,
-    RswCrateOk(&'a str, &'static str, Option<&'a str>),
-    RswCrateFail(&'a str, &'static str),
-    RswBuildCmd(&'a str),
-    RswCrateChange(&'a str, &'a str),
+    RswCrateOk(String, String, String),
+    RswCrateFail(String, String),
+    RswBuildCmd(String),
+    RswCrateChange(String, String),
 }
 
-impl Display for RswInfo<'_> {
+impl Display for RswInfo {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             RswInfo::RswCrateOk(name, mode, version) => {
@@ -24,7 +24,7 @@ impl Display for RswInfo<'_> {
                     "{} {} {}",
                     rsw_tip.green().on_black(),
                     name.purple(),
-                    version.unwrap().blue(),
+                    version.blue(),
                 )
             }
             RswInfo::RswCrateFail(name, mode) => {

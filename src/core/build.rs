@@ -13,7 +13,7 @@ pub(crate) fn new(options: &CrateConfig) {
     args.push(&arg_profile);
 
     let metadata = utils::get_crate_metadata(name);
-    println!("{}", RswInfo::RswBuildCmd(&args.join(" ")));
+    println!("{}", RswInfo::RswBuildCmd(args.join(" ").to_string()));
 
     let status = Command::new("wasm-pack")
         .args(args)
@@ -26,11 +26,15 @@ pub(crate) fn new(options: &CrateConfig) {
         true => {
             println!(
                 "{}",
-                RswInfo::RswCrateOk(name, "build", metadata["package"]["version"].as_str())
+                RswInfo::RswCrateOk(
+                    name.to_string(),
+                    "build".to_string(),
+                    metadata["package"]["version"].to_string(),
+                )
             );
         }
         false => {
-            println!("{}", RswInfo::RswCrateFail(name, "build"));
+            println!("{}", RswInfo::RswCrateFail(name.to_string(), "build".to_string()));
         }
     }
 

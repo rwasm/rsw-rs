@@ -64,7 +64,7 @@ pub(crate) fn watch_build(name: &str, options: &CrateConfig, event: String, path
     args.push(&arg_profile);
 
     let metadata = utils::get_crate_metadata(name);
-    println!("{}", RswInfo::RswBuildCmd(&args.join(" ")));
+    println!("{}", RswInfo::RswBuildCmd(args.join(" ").to_string()));
 
     let status = Command::new("wasm-pack")
         .args(args)
@@ -77,10 +77,14 @@ pub(crate) fn watch_build(name: &str, options: &CrateConfig, event: String, path
         true => {
             println!(
                 "{}",
-                RswInfo::RswCrateOk(name, "watch", metadata["package"]["version"].as_str())
+                RswInfo::RswCrateOk(
+                    name.to_string(),
+                    "watch".to_string(),
+                    metadata["package"]["version"].to_string(),
+                )
             );
             let path = &path.into_os_string().into_string().unwrap();
-            println!("{}", RswInfo::RswCrateChange(event.as_ref(), path));
+            println!("{}", RswInfo::RswCrateChange(event.to_string(), path.to_string()));
 
             let mut name = "[rsw::watch] ".to_owned();
             name.push_str(&event.to_owned());
@@ -93,7 +97,7 @@ pub(crate) fn watch_build(name: &str, options: &CrateConfig, event: String, path
                 .show().unwrap();
         }
         false => {
-            println!("{}", RswInfo::RswCrateFail(name, "watch"));
+            println!("{}", RswInfo::RswCrateFail(name.to_string(), "watch".to_string()));
         }
     }
 
