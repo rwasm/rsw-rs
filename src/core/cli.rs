@@ -2,8 +2,8 @@ use clap::{App, AppSettings};
 
 use crate::config::RswConfig;
 use crate::core::error::RswErr;
-use crate::core::Watch;
 use crate::core::Build;
+use crate::core::Watch;
 
 pub struct Cli;
 
@@ -29,11 +29,14 @@ impl Cli {
             }
             // watch (--dev)
             Some(("watch", _)) => {
-                Watch::new(config, Box::new(|crate_config, e| {
-                    // TODO: buid crate
-                    println!("[rsw::fs] {:?}", e);
-                    Build::new(&crate_config, "watch".to_string());
-                }));
+                Watch::new(
+                    config,
+                    Box::new(|crate_config, e| {
+                        // TODO: buid crate
+                        println!("[rsw::fs] {:?}", e);
+                        Build::new(&crate_config, "watch".to_string());
+                    }),
+                );
             }
             Some(("new", _)) => {
                 println!("TODO => new crate");

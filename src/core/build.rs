@@ -40,10 +40,7 @@ impl Build {
             false => {
                 println!(
                     "{}",
-                    RswInfo::RswCrateFail(
-                        name.to_owned(),
-                        rsw_type.to_owned()
-                    )
+                    RswInfo::RswCrateFail(name.to_owned(), rsw_type.to_owned())
                 );
             }
         }

@@ -1,15 +1,11 @@
+use notify::{DebouncedEvent::*, RecursiveMode::*, Watcher};
+use std::collections::HashMap;
+use std::path::PathBuf;
 use std::sync::mpsc::channel;
 use std::thread::sleep;
 use std::time::Duration;
-use std::path::PathBuf;
-use std::collections::HashMap;
-use notify::{
-	Watcher,
-	DebouncedEvent::*,
-	RecursiveMode::*
-};
 
-use crate::config::{RswConfig, CrateConfig};
+use crate::config::{CrateConfig, RswConfig};
 
 pub struct Watch;
 
@@ -29,8 +25,7 @@ impl Watch {
 
         for i in &config.crates {
             // TODO: local deps watch
-            let crate_root = PathBuf::from(&i.root.as_ref().unwrap())
-                .join(&i.name);
+            let crate_root = PathBuf::from(&i.root.as_ref().unwrap()).join(&i.name);
             let _ = watcher.watch(crate_root.join("src"), Recursive);
             let _ = watcher.watch(crate_root.join("Cargo.toml"), NonRecursive);
 
@@ -55,7 +50,7 @@ impl Watch {
                     Create(path) | Write(path) | Remove(path) | Rename(_, path) => {
                         // TODO: match package name
                         callback(&config.crates[0], &path);
-                    },
+                    }
                     _ => (),
                 }
             }
