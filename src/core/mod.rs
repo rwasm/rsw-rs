@@ -1,11 +1,11 @@
-mod build;
 mod cli;
 mod error;
 mod info;
 mod watch;
+mod build;
 
-pub(crate) use build::new as build;
-pub(crate) use cli::new as cli;
-pub(crate) use error::RswErr;
-pub(crate) use info::RswInfo;
-pub(crate) use watch::new as watch;
+pub use self::cli::Cli;
+pub use self::info::RswInfo;
+pub use self::error::RswErr;
+pub use self::watch::Watch;
+pub use self::build::Build;

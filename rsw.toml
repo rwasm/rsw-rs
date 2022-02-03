@@ -2,6 +2,7 @@ name = 'rsw'
 version = "0.0.1"
 
 [[crates]]
+root = "."
 name = "rsw-foo"
 out-dir = "./mypkg"
 # profile: dev | profiling, defalut `dev`

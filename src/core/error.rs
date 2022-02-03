@@ -1,7 +1,7 @@
 use colored::Colorize;
 use core::fmt::Display;
 
-pub(crate) enum RswErr {
+pub enum RswErr {
     FileErr(std::io::Error),
     ParseErr(toml::de::Error),
     EnvErr,

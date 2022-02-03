@@ -3,7 +3,7 @@ use core::fmt::Display;
 use std::fmt::Debug;
 
 #[derive(Debug, PartialEq)]
-pub(crate) enum RswInfo {
+pub enum RswInfo {
     RswsSlitLine,
     RswCrateOk(String, String, String),
     RswCrateFail(String, String),

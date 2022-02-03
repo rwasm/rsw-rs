@@ -2,20 +2,23 @@
 //!
 //! [wasm-pack build](https://rustwasm.github.io/wasm-pack/book/commands/build.html)
 
-use crate::core::RswErr;
 use anyhow::{Error, Result};
 use std::{env, fs, process};
+use crate::core::RswErr;
 
 #[derive(Debug, Serialize, Deserialize)]
 // @see https://serde.rs/container-attrs.html#rename_all
 #[serde(rename_all = "kebab-case")]
-pub(crate) struct CrateConfig {
+pub struct CrateConfig {
     /// <https://docs.npmjs.com/cli/v8/configuring-npm/package-json#name>
     ///
-    /// your package's name, and must be lowercase and one word,
+    /// Your package's name, and must be lowercase and one word,
     /// and may contain hyphens and underscores, support `scope`.
     /// For example: `rsw-foo`, `@rsw/foo`
     pub name: String,
+    #[serde(default = "default_root")]
+    /// crate root path, default is `.`
+    pub root: Option<String>,
     /// <https://rustwasm.github.io/wasm-pack/book/commands/build.html#output-directory>
     ///
     /// By default, wasm-pack will generate a directory for it's build output called `pkg`.
@@ -40,7 +43,7 @@ pub(crate) struct CrateConfig {
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
-pub(crate) struct CrateOptions {
+pub struct CrateOptions {
     /// When executing the command (`watch` or `build`), whether to include this `crate`.
     pub run: Option<bool>,
     /// profile: profiling | release
@@ -57,7 +60,7 @@ pub(crate) struct CrateOptions {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub(crate) struct RswConfig {
+pub struct RswConfig {
     /// rsw name
     pub name: Option<String>,
     /// rsw version
@@ -94,6 +97,10 @@ impl RswConfig {
 
         Ok(rsw_toml_parse)
     }
+}
+
+fn default_root() -> Option<String> {
+    Some(".".to_string())
 }
 
 fn default_out_dir() -> Option<String> {

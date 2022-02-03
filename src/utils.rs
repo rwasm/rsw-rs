@@ -15,7 +15,7 @@ pub fn check_env_cmd(program: &str) -> bool {
 }
 
 // get fields from `Cargo.toml`
-pub fn get_crate_metadata(name: &str) -> Value {
+pub fn get_crate_metadata(name: &String) -> Value {
     let crate_root = env::current_dir().unwrap().join(name).join("Cargo.toml");
     let content = fs::read_to_string(crate_root).unwrap();
     let value = content.parse::<Value>().unwrap();

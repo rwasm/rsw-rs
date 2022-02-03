@@ -4,39 +4,50 @@ use crate::config::CrateConfig;
 use crate::core::RswInfo;
 use crate::utils;
 
-pub(crate) fn new(options: &CrateConfig) {
-    let name = options.name.as_str();
-    let profile = options.build.as_ref().unwrap().profile.as_ref().unwrap();
-    let mut args = vec!["build", name];
-    let arg_profile = ["--", profile].join("");
+pub struct Build;
 
-    args.push(&arg_profile);
+impl Build {
+    pub fn new(options: &CrateConfig, rsw_type: String) {
+        let name = &options.name;
+        let profile = options.build.as_ref().unwrap().profile.as_ref().unwrap();
+        let mut args = vec!["build", name];
+        let arg_profile = ["--", profile].join("");
 
-    let metadata = utils::get_crate_metadata(name);
-    println!("{}", RswInfo::RswBuildCmd(args.join(" ").to_string()));
+        args.push(&arg_profile);
 
-    let status = Command::new("wasm-pack")
-        .args(args)
-        .status()
-        .expect("failed to execute process");
+        let metadata = utils::get_crate_metadata(name);
+        println!("{}", RswInfo::RswBuildCmd(args.join(" ").to_string()));
 
-    println!("");
+        let status = Command::new("wasm-pack")
+            .args(args)
+            .status()
+            .expect("failed to execute process");
 
-    match status.success() {
-        true => {
-            println!(
-                "{}",
-                RswInfo::RswCrateOk(
-                    name.to_string(),
-                    "build".to_string(),
-                    metadata["package"]["version"].to_string(),
-                )
-            );
+        println!("");
+
+        match status.success() {
+            true => {
+                println!(
+                    "{}",
+                    RswInfo::RswCrateOk(
+                        name.to_owned(),
+                        rsw_type.to_owned(),
+                        metadata["package"]["version"].to_string(),
+                    )
+                );
+                // callback(options);
+            }
+            false => {
+                println!(
+                    "{}",
+                    RswInfo::RswCrateFail(
+                        name.to_owned(),
+                        rsw_type.to_owned()
+                    )
+                );
+            }
         }
-        false => {
-            println!("{}", RswInfo::RswCrateFail(name.to_string(), "build".to_string()));
-        }
+
+        println!("\n{}\n", RswInfo::RswsSlitLine);
     }
-
-    println!("\n{}\n", RswInfo::RswsSlitLine);
 }

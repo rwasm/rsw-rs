@@ -2,10 +2,10 @@ mod config;
 mod core;
 mod utils;
 
-use crate::core::RswErr;
-
 #[macro_use]
 extern crate serde_derive;
+
+use crate::core::{Cli, RswErr};
 
 fn main() {
     if !utils::check_env_cmd("wasm-pack") {
@@ -15,8 +15,6 @@ fn main() {
     }
 
     let rsw_config = config::RswConfig::new().unwrap();
+    Cli::new(&rsw_config);
     // println!("toml => {:#?}", rsw_config);
-    for rsw_crate in rsw_config.crates {
-        core::cli(&rsw_crate);
-    }
 }
