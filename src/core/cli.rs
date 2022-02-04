@@ -14,7 +14,7 @@ impl Cli {
             .setting(AppSettings::AllowInvalidUtf8ForExternalSubcommands)
             .subcommand(App::new("build").about("build crates"))
             .subcommand(App::new("watch").about("watch crates"))
-            .subcommand(App::new("new").about("new crate"))
+            // .subcommand(App::new("new").about("new crate"))
             .get_matches();
 
         match matches.subcommand() {

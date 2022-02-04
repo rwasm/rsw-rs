@@ -2,29 +2,38 @@
   <img src="./rsw.png" width="120">
 </p>
 
+「🌐 Language」[简体中文](./README.zh_CN.md)
+
 ## rsw-rs
 
 > This project is in early experimental stage.
 
+## Usage
+
 ```bash
+cargo install rsw
+```
+
+```bash
+# help
+rsw -h
+
 # dev
 rsw watch
 
 # release
 rsw build
-
-# create crate
-rsw new
 ```
 
 ```toml
-# rsw.toml
 name = 'rsw'
 version = "0.0.1"
+interval = 50
 
 [[crates]]
+root = "."
 name = "rsw-foo"
-out-dir = "./mypkg"
+# out-dir = "./mypkg"
 # profile: dev | profiling, defalut `dev`
 [crates.watch]
 run = true
@@ -40,7 +49,15 @@ name = "@rsw/bar"
 
 ## Feature
 
-- debug
-- watch
-- build
-- new
+- rsw watch
+- rsw build
+
+## TODO
+
+- rsw init - `rsw.toml`
+- rsw new - rust crate
+- deps watch - local sub-dependency file changes trigger hot updates
+
+## License
+
+MIT License © 2022 lencx
