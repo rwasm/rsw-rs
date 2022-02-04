@@ -1,10 +1,11 @@
 name = 'rsw'
 version = "0.0.1"
+interval = 50
 
 [[crates]]
 root = "."
 name = "rsw-foo"
-out-dir = "./mypkg"
+# out-dir = "./mypkg"
 # profile: dev | profiling, defalut `dev`
 [crates.watch]
 run = true

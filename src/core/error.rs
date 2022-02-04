@@ -4,6 +4,7 @@ use core::fmt::Display;
 pub enum RswErr {
     FileErr(std::io::Error),
     ParseErr(toml::de::Error),
+    WatchErr(notify::Error),
     EnvErr,
     CmdErr,
 }
@@ -32,6 +33,14 @@ impl Display for RswErr {
             }
             RswErr::CmdErr => {
                 write!(f, "{} rsw -h", "[⚠️ rsw::cmd]".red().on_black(),)
+            }
+            RswErr::WatchErr(e) => {
+                write!(
+                    f,
+                    "{} Error while trying to watch the files:\n\t{}",
+                    "[⚠️ rsw::fs]".red().on_black(),
+                    e
+                )
             }
         }
     }

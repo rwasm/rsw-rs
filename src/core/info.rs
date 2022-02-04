@@ -8,7 +8,7 @@ pub enum RswInfo {
     RswCrateOk(String, String, String),
     RswCrateFail(String, String),
     RswBuildCmd(String),
-    RswCrateChange(String, String),
+    RswCrateChange(std::path::PathBuf),
 }
 
 impl Display for RswInfo {
@@ -32,7 +32,7 @@ impl Display for RswInfo {
                 write!(f, "{} {}", rsw_tip.red().on_black(), name)
             }
             RswInfo::RswsSlitLine => {
-                write!(f, "{}", "*".repeat(36).yellow())
+                write!(f, "{}", "◼◻".repeat(24).yellow())
             }
             RswInfo::RswBuildCmd(args) => {
                 write!(
@@ -43,8 +43,13 @@ impl Display for RswInfo {
                     args
                 )
             }
-            RswInfo::RswCrateChange(event, path) => {
-                write!(f, " {} {} {:?}", "└".yellow(), event, path)
+            RswInfo::RswCrateChange(path) => {
+                write!(
+                    f,
+                    "{} {}",
+                    "[📝 rsw::fs]".yellow().on_black(),
+                    path.display()
+                )
             }
         }
     }

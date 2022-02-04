@@ -1,16 +1,21 @@
 use notify::{DebouncedEvent::*, RecursiveMode::*, Watcher};
-use std::collections::HashMap;
-use std::path::PathBuf;
-use std::sync::mpsc::channel;
-use std::thread::sleep;
-use std::time::Duration;
+use regex::Regex;
+use std::{
+    fs,
+    path::PathBuf,
+    thread::sleep,
+    time::Duration,
+    sync::mpsc::channel,
+    collections::HashMap,
+};
 
 use crate::config::{CrateConfig, RswConfig};
+use crate::core::RswErr;
 
 pub struct Watch;
 
 impl Watch {
-    pub fn new(config: &RswConfig, callback: Box<dyn Fn(&CrateConfig, &PathBuf)>) {
+    pub fn new(config: &RswConfig, callback: Box<dyn Fn(&CrateConfig, PathBuf)>) {
         let mut crate_map = HashMap::new();
         let mut path_map = HashMap::new();
         let (tx, rx) = channel();
@@ -18,7 +23,7 @@ impl Watch {
         let mut watcher = match notify::watcher(tx, Duration::from_secs(1)) {
             Ok(w) => w,
             Err(e) => {
-                println!("Error while trying to watch the files:\n\n\t{:?}", e);
+                println!("{}", RswErr::WatchErr(e));
                 std::process::exit(1)
             }
         };
@@ -30,26 +35,34 @@ impl Watch {
             let _ = watcher.watch(crate_root.join("Cargo.toml"), NonRecursive);
 
             crate_map.insert(&i.name, i);
-            path_map.insert(&i.name, crate_root);
+            path_map.insert(&i.name, fs::canonicalize(&crate_root).unwrap().to_owned());
         }
 
-        println!("{:#?}", crate_map);
+        // println!("{:#?}", crate_map);
 
         loop {
             let first_event = rx.recv().unwrap();
             // TODO: rsw options
-            sleep(Duration::from_millis(50));
+            sleep(Duration::from_millis(config.interval.unwrap()));
             let other_events = rx.try_iter();
 
             let all_events = std::iter::once(first_event).chain(other_events);
 
             for event in all_events {
-                println!("event {:?}", event);
+                // println!("event {:?}", event);
 
                 match event {
-                    Create(path) | Write(path) | Remove(path) | Rename(_, path) => {
+                    Write(path) | Remove(path) | Rename(_, path) => {
                         // TODO: match package name
-                        callback(&config.crates[0], &path);
+                        for (key, val) in &path_map {
+                            if Regex::new(val.to_str().unwrap())
+                                .unwrap()
+                                .is_match(path.to_owned().to_str().unwrap())
+                            {
+                                callback(crate_map.get(key).unwrap(), path);
+                                break;
+                            }
+                        }
                     }
                     _ => (),
                 }

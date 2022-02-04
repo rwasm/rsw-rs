@@ -68,6 +68,8 @@ pub struct RswConfig {
     pub version: Option<String>,
     /// npm | yarn | pnpm
     pub cli: Option<String>,
+    /// In `watch` mode, the time interval for `wasm-pack build`, in milliseconds.
+    pub interval: Option<u64>,
     /// rust crates
     #[serde(default)]
     pub crates: Vec<CrateConfig>,
@@ -79,6 +81,7 @@ impl Default for RswConfig {
             name: Some("rsw".to_string()),
             version: Some("0.0.0".to_string()),
             cli: Some("npm".to_string()),
+            interval: Some(50),
             crates: vec![],
         }
     }
