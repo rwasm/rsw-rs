@@ -8,6 +8,17 @@
 
 ## rsw-rs
 
+### Feature
+
+- rsw watch
+- rsw build
+
+### TODO
+
+- rsw init - `rsw.toml`
+- rsw new - rust crate
+- deps watch - local sub-dependency file changes trigger hot updates
+
 ## Usage
 
 ```bash
@@ -58,17 +69,6 @@ profile = "profiling"
 [[crates]]
 name = "@rsw/bar"
 ```
-
-## Feature
-
-- rsw watch
-- rsw build
-
-## TODO
-
-- rsw init - `rsw.toml`
-- rsw new - rust crate
-- deps watch - local sub-dependency file changes trigger hot updates
 
 ## License
 

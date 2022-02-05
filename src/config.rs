@@ -1,6 +1,6 @@
 //! rsw.toml parse
 //!
-//! [wasm-pack build](https://rustwasm.github.io/wasm-pack/book/commands/build.html)
+//! [wasm-pack build](https://rustwasm.github.io/docs/wasm-pack/commands/build.html)
 
 use anyhow::{Error, Result};
 use std::{env, fs, process};
@@ -26,17 +26,14 @@ pub struct CrateConfig {
     /// You can use `out-dir` to customize the directory where files are generated.
     #[serde(default = "default_out_dir")]
     pub out_dir: Option<String>,
-    /// TODO
     #[serde(default = "default_watch")]
-    pub watch: Option<CrateOptions>,
-    /// TODO
+    pub watch: Option<WatchOptions>,
     #[serde(default = "default_build")]
-    pub build: Option<CrateOptions>,
-    /// TODO
+    pub build: Option<BuildOptions>,
     /// target: bundler | nodejs | web | no-modules
     ///
     /// <https://rustwasm.github.io/wasm-pack/book/commands/build.html#target>
-    ///
+    /// TODO
     pub target: Option<String>,
     /// TODO
     pub mode: Option<String>,
@@ -44,10 +41,11 @@ pub struct CrateConfig {
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
-pub struct CrateOptions {
-    /// When executing the command (`watch` or `build`), whether to include this `crate`.
+pub struct WatchOptions {
+    /// When executing the command `rsw watch`, whether to include this `crate`.
+    #[serde(default = "default_true")]
     pub run: Option<bool>,
-    /// profile: profiling | release
+    /// profile: dev | profiling
     ///
     /// <https://rustwasm.github.io/wasm-pack/book/commands/build.html#profile>
     ///
@@ -57,6 +55,24 @@ pub struct CrateOptions {
     /// The `--profiling` and `--release` profiles use cargo's release profile,
     /// but the former enables debug info as well,
     /// which helps when investigating performance issues in a profiler.
+    #[serde(default = "default_dev")]
+    pub profile: Option<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub struct BuildOptions {
+    /// When executing the command `rsw build`, whether to include this `crate`.
+    #[serde(default = "default_true")]
+    pub run: Option<bool>,
+    /// profile: release | profiling
+    ///
+    /// <https://rustwasm.github.io/wasm-pack/book/commands/build.html#profile>
+    ///
+    /// The `--profiling` and `--release` profiles use cargo's release profile,
+    /// but the former enables debug info as well,
+    /// which helps when investigating performance issues in a profiler.
+    #[serde(default = "default_release")]
     pub profile: Option<String>,
 }
 
@@ -123,15 +139,15 @@ fn default_true() -> Option<bool> {
     Some(true)
 }
 
-fn default_watch() -> Option<CrateOptions> {
-    Some(CrateOptions {
+fn default_watch() -> Option<WatchOptions> {
+    Some(WatchOptions {
         run: default_true(),
         profile: default_dev(),
     })
 }
 
-fn default_build() -> Option<CrateOptions> {
-    Some(CrateOptions {
+fn default_build() -> Option<BuildOptions> {
+    Some(BuildOptions {
         run: default_true(),
         profile: default_release(),
     })

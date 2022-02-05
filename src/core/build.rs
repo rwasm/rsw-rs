@@ -8,15 +8,21 @@ use crate::utils;
 pub struct Build;
 
 impl Build {
-    pub fn new(options: &CrateConfig, rsw_type: String) {
+    pub fn new(options: &CrateConfig, rsw_type: &String) {
         let name = &options.name;
-        let profile = options.build.as_ref().unwrap().profile.as_ref().unwrap();
-        let arg_profile = format!("--{}", profile);
         let out_dir = &options.out_dir.as_ref().unwrap();
-        let mut args = vec!["build", name.as_str(), "--out-dir", out_dir, &arg_profile];
+        let mut args = vec!["build", name.as_str(), "--out-dir", out_dir];
 
+        // profile
+        let mut profile = options.build.as_ref().unwrap().profile.as_ref().unwrap();
+        if rsw_type == "watch" {
+            profile = options.watch.as_ref().unwrap().profile.as_ref().unwrap();
+        }
+        let arg_profile = format!("--{}", profile);
+        args.push(&arg_profile);
+
+        // scope
         let (_, scope) = Build::get_pkg(&options.name);
-
         if scope != "" {
             args.push("--scope");
             args.push(scope.as_str());

@@ -22,13 +22,13 @@ name = "rsw-foo"
 out-dir = "mypkg"
 [crates.watch]
 # default `true`
-run = false
+# run = false
 # profile: `dev` | `profiling`, defalut `dev`
-profile = "dev"
+# profile = "dev"
 [crates.build]
-run = false
+# run = false
 # profile: `release` | `profiling`, default `release`
-profile = "profiling"
+# profile = "profiling"
 
 # ---------------------------
 

@@ -8,6 +8,11 @@
 
 ## rsw-rs
 
+### 功能
+
+- `rsw build` - 基于 `rsw.toml` 配置同时构建多个 `rust crate`
+- `rsw watch` - 基于 `rsw.toml` 配置同时监听多个 `rust crate` 中的文件变更，自动触发构建。
+
 ## 用法
 
 ```bash
@@ -35,6 +40,7 @@ rsw build
 - **`name`** - 配置文件名称（无意义，可选）
 - **`version`** - 配置文件版本（无意义，可选）
 - **`interval`** - 开发模式 `rsw watch` 下，文件变更触发 `wasm-pack build` 的时间间隔，默认 `50` 毫秒
+- **`[new]`** - 创建项目
 - **`[[crates]]`** - 数组，支持多个 `rust crate` 配置
   - **`name`** - npm 包名，支持组织，例如 `@rsw/foo`
   - **`root`** - 当前 `rust crate` 所在目录，默认 `.`

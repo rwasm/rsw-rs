@@ -12,29 +12,25 @@ impl Cli {
             .setting(AppSettings::SubcommandRequiredElseHelp)
             .setting(AppSettings::AllowExternalSubcommands)
             .setting(AppSettings::AllowInvalidUtf8ForExternalSubcommands)
-            .subcommand(App::new("build").about("build crates"))
-            .subcommand(App::new("watch").about("watch crates"))
+            .subcommand(App::new("build").about("build rust crates, useful for shipping to production"))
+            .subcommand(App::new("watch").about("automatically rebuilding local changes, useful for development and debugging"))
             // .subcommand(App::new("new").about("new crate"))
             .get_matches();
 
         match matches.subcommand() {
-            // build --(dev | profiling | release)
             Some(("build", _)) => {
-                // println!("config {:?}", config.crates);
-                for i in &config.crates {
-                    if i.build.as_ref().unwrap().run.unwrap() {
-                        Build::new(i, "build".to_string());
-                    }
-                }
+                Cli::build(config, &"build".to_string());
             }
-            // watch (--dev)
             Some(("watch", _)) => {
+                // initial build
+                Cli::build(config, &"watch".to_string());
+
                 Watch::new(
                     config,
                     Box::new(|crate_config, e| {
                         // TODO: build crate
                         println!("{}", RswInfo::RswCrateChange(e));
-                        Build::new(&crate_config, "watch".to_string());
+                        Build::new(&crate_config, &"watch".to_string());
                     }),
                 );
             }
@@ -44,10 +40,17 @@ impl Cli {
             }
             _ => {
                 println!("{}", RswErr::CmdErr);
-                // unreachable!()
             } // If all subcommands are defined above, anything else is unreachabe!()
         }
 
         // Continued program logic goes here...
+    }
+
+    pub fn build(config: &RswConfig, rsw_type: &String) {
+        for i in &config.crates {
+            if i.build.as_ref().unwrap().run.unwrap() {
+                Build::new(i, rsw_type);
+            }
+        }
     }
 }
