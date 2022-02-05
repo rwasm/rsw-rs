@@ -5,9 +5,10 @@ use std::fmt::Debug;
 #[derive(Debug, PartialEq)]
 pub enum RswInfo {
     RswsSlitLine,
-    RswCrateOk(String, String, String),
-    RswCrateFail(String, String),
     RswBuildCmd(String),
+    RswRunWatch(String),
+    RswCrateFail(String, String),
+    RswCrateOk(String, String, String),
     RswCrateChange(std::path::PathBuf),
 }
 
@@ -49,6 +50,14 @@ impl Display for RswInfo {
                     "{} {}",
                     "[📝 rsw::fs]".yellow().on_black(),
                     path.display()
+                )
+            }
+            RswInfo::RswRunWatch(name) => {
+                write!(
+                    f,
+                    "{} {}",
+                    "[🦀 rsw::watch]".yellow().on_black(),
+                    name.purple()
                 )
             }
         }

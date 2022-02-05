@@ -10,7 +10,7 @@ impl Build {
     pub fn new(options: &CrateConfig, rsw_type: String) {
         let name = &options.name;
         let profile = options.build.as_ref().unwrap().profile.as_ref().unwrap();
-        let mut args = vec!["build", name];
+        let mut args = vec!["build", name, "--out-dir", &options.out_dir.as_ref().unwrap()];
         let arg_profile = ["--", profile].join("");
 
         args.push(&arg_profile);

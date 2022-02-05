@@ -108,7 +108,7 @@ fn default_root() -> Option<String> {
 }
 
 fn default_out_dir() -> Option<String> {
-    Some("./pkg".to_string())
+    Some("pkg".to_string())
 }
 
 fn default_release() -> Option<String> {

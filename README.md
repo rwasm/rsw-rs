@@ -26,23 +26,35 @@ rsw build
 ```
 
 ```toml
-name = 'rsw'
+# rsw.toml
+name = "rsw"
 version = "0.0.1"
+# default `50` ms
 interval = 50
 
+# ---------------------------
+
+# package: rsw-foo
 [[crates]]
+# default `.`
 root = "."
+# npm package name
 name = "rsw-foo"
-# out-dir = "./mypkg"
-# profile: dev | profiling, defalut `dev`
+# default `pkg`
+out-dir = "mypkg"
 [crates.watch]
-run = true
+# default `true`
+run = false
+# profile: `dev` | `profiling`, defalut `dev`
 profile = "dev"
-# profile: release | profiling, default `release`
 [crates.build]
 run = false
+# profile: `release` | `profiling`, default `release`
 profile = "profiling"
 
+# ---------------------------
+
+# package: @rsw/bar
 [[crates]]
 name = "@rsw/bar"
 ```

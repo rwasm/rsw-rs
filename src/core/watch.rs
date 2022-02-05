@@ -10,7 +10,7 @@ use std::{
 };
 
 use crate::config::{CrateConfig, RswConfig};
-use crate::core::RswErr;
+use crate::core::{RswErr, RswInfo};
 
 pub struct Watch;
 
@@ -29,13 +29,16 @@ impl Watch {
         };
 
         for i in &config.crates {
-            // TODO: local deps watch
-            let crate_root = PathBuf::from(&i.root.as_ref().unwrap()).join(&i.name);
-            let _ = watcher.watch(crate_root.join("src"), Recursive);
-            let _ = watcher.watch(crate_root.join("Cargo.toml"), NonRecursive);
+            if i.watch.as_ref().unwrap().run.unwrap() {
+                // TODO: local deps watch
+                println!("{}", RswInfo::RswRunWatch(i.name.clone()));
+                let crate_root = PathBuf::from(&i.root.as_ref().unwrap()).join(&i.name);
+                let _ = watcher.watch(crate_root.join("src"), Recursive);
+                let _ = watcher.watch(crate_root.join("Cargo.toml"), NonRecursive);
 
-            crate_map.insert(&i.name, i);
-            path_map.insert(&i.name, fs::canonicalize(&crate_root).unwrap().to_owned());
+                crate_map.insert(&i.name, i);
+                path_map.insert(&i.name, fs::canonicalize(&crate_root).unwrap().to_owned());
+            }
         }
 
         // println!("{:#?}", crate_map);
