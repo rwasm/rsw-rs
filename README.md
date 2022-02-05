@@ -4,9 +4,9 @@
 
 「🌐 Language」[简体中文](./README.zh_CN.md)
 
-## rsw-rs
+**`rsw = rs(rust) → w(wasm)`** - A command-line tool for automatically rebuilding local changes, based on the `wasm-pack` implementation.
 
-> This project is in early experimental stage.
+## rsw-rs
 
 ## Usage
 

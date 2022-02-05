@@ -22,7 +22,9 @@ impl Cli {
             Some(("build", _)) => {
                 // println!("config {:?}", config.crates);
                 for i in &config.crates {
-                    Build::new(i, "build".to_string());
+                    if i.build.as_ref().unwrap().run.unwrap() {
+                        Build::new(i, "build".to_string());
+                    }
                 }
             }
             // watch (--dev)

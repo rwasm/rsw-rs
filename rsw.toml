@@ -5,6 +5,13 @@ interval = 50
 
 # ---------------------------
 
+# rsw new my-wasm
+[new]
+use = true
+dir = ""
+
+# ---------------------------
+
 # package: rsw-foo
 [[crates]]
 # default `.`

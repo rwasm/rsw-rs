@@ -25,7 +25,7 @@ impl Display for RswInfo {
                     "{} {} {}",
                     rsw_tip.green().on_black(),
                     name.purple(),
-                    version.blue(),
+                    version.yellow(),
                 )
             }
             RswInfo::RswCrateFail(name, mode) => {
