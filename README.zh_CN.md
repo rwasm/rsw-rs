@@ -35,57 +35,82 @@ rsw build
 
 > 配置文件
 
+- [TOML 文档](https://toml.io/cn/)
+- [`wasm-pack build` 文档](https://rustwasm.github.io/docs/wasm-pack/commands/build.html)
+
+## 配置信息
+
 在项目根路径下创建 `rsw.toml`，配置 `rust crate` 参数，然后执行 `rsw watch` 或者 `rsw build`。
 
 - **`name`** - 配置文件名称（无意义，可选）
 - **`version`** - 配置文件版本（无意义，可选）
 - **`interval`** - 开发模式 `rsw watch` 下，文件变更触发 `wasm-pack build` 的时间间隔，默认 `50` 毫秒
-- **`[new]`** - 创建项目
-- **`[[crates]]`** - 数组，支持多个 `rust crate` 配置
+- **`[new]`** - 生成一个 `rust crate`
+- **`[[crates]]`** - 是一个数组，支持多个 `rust crate` 配置
   - **`name`** - npm 包名，支持组织，例如 `@rsw/foo`
-  - **`root`** - 当前 `rust crate` 所在目录，默认 `.`
-  - **`out-dir`** - wasm 文件输出路径，默认 `pkg`
-  - **`[crates.watch]`** - 监听模式下的配置
+  - **`root`** - 此 `rust crate` 在项目根路径下的相对路径，默认 `.`
+  - **`out-dir`** - npm 包输出路径，默认 `pkg`
+  - **`[crates.watch]`** - 开发模式下的配置
     - **`run`** - 是否执行，默认为 `true`
     - **`profile`** - `dev` | `profiling`，默认 `dev`
   - **`[crates.build]`** - 生产构建下的配置
     - **`run`** - 是否执行，默认为 `true`
     - **`profile`** - `release` | `profiling`，默认 `release`
 
-了解更多 [wasm-pack build](https://rustwasm.github.io/docs/wasm-pack/commands/build.html)
+**注意：`[[crates]]` 中 `name` 是必须的，其他字段均为可选。**
+
+### 示例
 
 ```toml
 # rsw.toml
+
 name = "rsw"
-version = "0.0.1"
-# default `50` ms
+version = "0.1.0"
+#! default value `50` ms
 interval = 50
 
-# ---------------------------
+#! ---------------------------
 
-# package: rsw-foo
+#! rsw new <name>
+[new]
+#! @see https://rustwasm.github.io/docs/wasm-pack/commands/new.html
+#! use: wasm-pack | rsw | user
+#! 1. wasm-pack: `rsw new <name> --template <template> --mode <normal|noinstall|force>`
+#! 2. rsw: `rsw new <name>`, built-in templates
+#! 3. user: `rsw new <name>`, if `dir` is not configured, use `wasm-pack new <name>` to initialize the project
+use = "wasm-pack"
+#! this field needs to be configured when `use = "user"`
+#! `use = "wasm-pack"` or `use = "rsw"`, this field will be ignored
+dir = "my-template"
+
+#! ################# NPM Package #################
+
+#! When there is only `name`, other fields will use the default configuration
+#! -------- package: rsw-hello --------
 [[crates]]
-# default `.`
-root = "."
-# npm package name
-name = "rsw-foo"
-# default `pkg`
-out-dir = "mypkg"
-[crates.watch]
-# default `true`
-run = false
-# profile: `dev` | `profiling`, defalut `dev`
-profile = "dev"
-[crates.build]
-run = false
-# profile: `release` | `profiling`, default `release`
-profile = "profiling"
+name = "rsw-hello"
 
-# ---------------------------
+#! =======================================================
 
-# package: @rsw/bar
-[[crates]]
-name = "@rsw/bar"
+#! -------- package: @rsw/hello --------
+# [[crates]]
+# #! default value `.`
+# root = "."
+# #! npm package name
+# name = "@rsw/hello"
+# #! default value `pkg`
+# out-dir = "pkg"
+# #! rsw watch
+# [crates.watch]
+# #! default value `true`
+# run = false
+# #! profile: `dev` | `profiling`, default value `dev`
+# profile = "dev"
+# #! rsw build
+# [crates.build]
+# run = false
+# #! profile: `release` | `profiling`, default value `release`
+# profile = "release"
 ```
 
 ## License

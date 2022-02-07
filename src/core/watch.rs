@@ -23,15 +23,15 @@ impl Watch {
         let mut watcher = match notify::watcher(tx, Duration::from_secs(1)) {
             Ok(w) => w,
             Err(e) => {
-                println!("{}", RswErr::WatchErr(e));
-                std::process::exit(1)
+                println!("{}", RswErr::WatchFile(e));
+                std::process::exit(1);
             }
         };
 
         for i in &config.crates {
             if i.watch.as_ref().unwrap().run.unwrap() {
                 // TODO: local deps watch
-                println!("{}", RswInfo::RswRunWatch(i.name.clone()));
+                println!("{}", RswInfo::RunWatch(i.name.clone()));
                 let crate_root = PathBuf::from(&i.root.as_ref().unwrap()).join(&i.name);
                 let _ = watcher.watch(crate_root.join("src"), Recursive);
                 let _ = watcher.watch(crate_root.join("Cargo.toml"), NonRecursive);
@@ -41,11 +41,8 @@ impl Watch {
             }
         }
 
-        // println!("{:#?}", crate_map);
-
         loop {
             let first_event = rx.recv().unwrap();
-            // TODO: rsw options
             sleep(Duration::from_millis(config.interval.unwrap()));
             let other_events = rx.try_iter();
 
@@ -56,7 +53,6 @@ impl Watch {
 
                 match event {
                     Write(path) | Remove(path) | Rename(_, path) => {
-                        // TODO: match package name
                         for (key, val) in &path_map {
                             if Regex::new(val.to_str().unwrap())
                                 .unwrap()

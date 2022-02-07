@@ -7,6 +7,8 @@ use std::{env, fs, process};
 
 use crate::core::RswErr;
 
+pub static RSW_FILE: &'static str = "rsw.toml";
+
 #[derive(Debug, Serialize, Deserialize)]
 // @see https://serde.rs/container-attrs.html#rename_all
 #[serde(rename_all = "kebab-case")]
@@ -105,13 +107,13 @@ impl Default for RswConfig {
 
 impl RswConfig {
     pub fn new() -> Result<RswConfig, Error> {
-        let rsw_file = env::current_dir().unwrap().join("rsw.toml");
+        let rsw_file = env::current_dir().unwrap().join(RSW_FILE);
         let rsw_content = fs::read_to_string(rsw_file).unwrap_or_else(|e| {
-            println!("{}", RswErr::FileErr(e));
+            println!("{}", RswErr::Config(e));
             process::exit(1);
         });
         let rsw_toml_parse = toml::from_str(&rsw_content).unwrap_or_else(|e| {
-            println!("{}", RswErr::ParseErr(e));
+            println!("{}", RswErr::ParseToml(e));
             process::exit(1);
         });
 

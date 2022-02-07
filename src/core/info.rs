@@ -4,18 +4,19 @@ use std::fmt::Debug;
 
 #[derive(Debug, PartialEq)]
 pub enum RswInfo {
-    RswsSlitLine,
-    RswBuildCmd(String),
-    RswRunWatch(String),
-    RswCrateFail(String, String),
-    RswCrateOk(String, String, String),
-    RswCrateChange(std::path::PathBuf),
+    SplitLine,
+    FileExist,
+    BuildCmd(String),
+    RunWatch(String),
+    CrateFail(String, String),
+    CrateOk(String, String, String),
+    CrateChange(std::path::PathBuf),
 }
 
 impl Display for RswInfo {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            RswInfo::RswCrateOk(name, mode, version) => {
+            RswInfo::CrateOk(name, mode, version) => {
                 let rsw_tip = match *mode == "watch" {
                     true => "[👀 rsw::watch]",
                     false => "[✨ rsw::build]",
@@ -28,36 +29,44 @@ impl Display for RswInfo {
                     version.yellow(),
                 )
             }
-            RswInfo::RswCrateFail(name, mode) => {
+            RswInfo::CrateFail(name, mode) => {
                 let rsw_tip = format!("[💢 rsw::{}]", mode);
                 write!(f, "{} {}", rsw_tip.red().on_black(), name)
             }
-            RswInfo::RswsSlitLine => {
+            RswInfo::SplitLine => {
                 write!(f, "{}", "◼◻".repeat(24).yellow())
             }
-            RswInfo::RswBuildCmd(args) => {
+            RswInfo::BuildCmd(args) => {
                 write!(
                     f,
                     "{} {} {}",
                     "[🚧 rsw::build]".yellow().on_black(),
                     "wasm-pack".green(),
-                    args
+                    args,
                 )
             }
-            RswInfo::RswCrateChange(path) => {
+            RswInfo::CrateChange(path) => {
                 write!(
                     f,
                     "{} {}",
-                    "[📝 rsw::fs]".yellow().on_black(),
-                    path.display()
+                    "[📝 rsw::crate]".yellow().on_black(),
+                    path.display(),
                 )
             }
-            RswInfo::RswRunWatch(name) => {
+            RswInfo::RunWatch(name) => {
                 write!(
                     f,
                     "{} {}",
                     "[🦀 rsw::watch]".yellow().on_black(),
-                    name.purple()
+                    name.purple(),
+                )
+            }
+            RswInfo::FileExist => {
+                write!(
+                    f,
+                    "{} {} already exists",
+                    "[⚙️ rsw.toml]".red().on_black(),
+                    "rsw.toml".yellow(),
                 )
             }
         }

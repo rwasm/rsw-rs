@@ -10,7 +10,7 @@ pub struct Build;
 impl Build {
     pub fn new(options: &CrateConfig, rsw_type: &String) {
         let name = &options.name;
-        let out_dir = &options.out_dir.as_ref().unwrap();
+        let out_dir = options.out_dir.as_ref().unwrap();
         let mut args = vec!["build", name.as_str(), "--out-dir", out_dir];
 
         // profile
@@ -29,7 +29,7 @@ impl Build {
         }
 
         let metadata = utils::get_crate_metadata(name.as_str());
-        println!("{}", RswInfo::RswBuildCmd(args.join(" ").to_string()));
+        println!("{}", RswInfo::BuildCmd(args.join(" ").to_string()));
 
         let status = Command::new("wasm-pack")
             .args(args)
@@ -42,7 +42,7 @@ impl Build {
             true => {
                 println!(
                     "{}",
-                    RswInfo::RswCrateOk(
+                    RswInfo::CrateOk(
                         name.to_owned(),
                         rsw_type.to_owned(),
                         metadata["package"]["version"].to_string(),
@@ -52,12 +52,12 @@ impl Build {
             false => {
                 println!(
                     "{}",
-                    RswInfo::RswCrateFail(name.to_owned(), rsw_type.to_owned())
+                    RswInfo::CrateFail(name.to_owned(), rsw_type.to_owned())
                 );
             }
         }
 
-        println!("\n{}\n", RswInfo::RswsSlitLine);
+        println!("\n{}\n", RswInfo::SplitLine);
     }
 
     // https://docs.npmjs.com/creating-a-package-json-file#required-name-and-version-fields
