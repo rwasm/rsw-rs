@@ -5,12 +5,14 @@ use std::fmt::Debug;
 #[derive(Debug, PartialEq)]
 pub enum RswInfo {
     SplitLine,
-    FileExist,
+    RswTomlOk,
+    RswTomExist,
     BuildCmd(String),
     RunWatch(String),
     CrateFail(String, String),
     CrateOk(String, String, String),
     CrateChange(std::path::PathBuf),
+    // NewHelp,
 }
 
 impl Display for RswInfo {
@@ -61,7 +63,7 @@ impl Display for RswInfo {
                     name.purple(),
                 )
             }
-            RswInfo::FileExist => {
+            RswInfo::RswTomExist => {
                 write!(
                     f,
                     "{} {} already exists",
@@ -69,6 +71,23 @@ impl Display for RswInfo {
                     "rsw.toml".yellow(),
                 )
             }
+            &RswInfo::RswTomlOk => {
+                write!(
+                    f,
+                    "{} {} created successfully",
+                    "[⚙️ rsw.toml]".green().on_black(),
+                    "rsw.toml".yellow(),
+                )
+            }
+            // RswInfo::NewHelp => {
+            //     write!(
+            //         f,
+            //         "{} {} {}",
+            //         "[💢 rsw::cmd]".red().on_black(),
+            //         "For more information try",
+            //         "rsw new -h".green(),
+            //     )
+            // }
         }
     }
 }

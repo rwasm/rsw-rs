@@ -79,6 +79,15 @@ pub struct BuildOptions {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub struct NewOptions {
+    #[serde(default = "default_wasmpack")]
+    pub using: Option<String>,
+    #[serde(default = "default_empty")]
+    pub dir: Option<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct RswConfig {
     /// rsw name
     pub name: Option<String>,
@@ -88,6 +97,8 @@ pub struct RswConfig {
     pub cli: Option<String>,
     /// In `watch` mode, the time interval for `wasm-pack build`, in milliseconds.
     pub interval: Option<u64>,
+    #[serde(default = "default_new")]
+    pub new: Option<NewOptions>,
     /// rust crates
     #[serde(default)]
     pub crates: Vec<CrateConfig>,
@@ -100,6 +111,7 @@ impl Default for RswConfig {
             version: Some("0.0.0".to_string()),
             cli: Some("npm".to_string()),
             interval: Some(50),
+            new: default_new(),
             crates: vec![],
         }
     }
@@ -139,6 +151,21 @@ fn default_dev() -> Option<String> {
 
 fn default_true() -> Option<bool> {
     Some(true)
+}
+
+fn default_wasmpack() -> Option<String> {
+    Some("wasm-pack".to_string())
+}
+
+fn default_empty() -> Option<String> {
+    Some("".to_string())
+}
+
+fn default_new() -> Option<NewOptions> {
+    Some(NewOptions {
+        using: default_wasmpack(),
+        dir: default_empty(),
+    })
 }
 
 fn default_watch() -> Option<WatchOptions> {

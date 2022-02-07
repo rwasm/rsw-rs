@@ -1,12 +1,7 @@
 use notify::{DebouncedEvent::*, RecursiveMode::*, Watcher};
 use regex::Regex;
 use std::{
-    fs,
-    path::PathBuf,
-    thread::sleep,
-    time::Duration,
-    sync::mpsc::channel,
-    collections::HashMap,
+    collections::HashMap, fs, path::PathBuf, sync::mpsc::channel, thread::sleep, time::Duration,
 };
 
 use crate::config::{CrateConfig, RswConfig};

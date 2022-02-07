@@ -3,7 +3,6 @@ use core::fmt::Display;
 
 pub enum RswErr {
     WasmPack,
-    Command,
     Config(std::io::Error),
     ParseToml(toml::de::Error),
     WatchFile(notify::Error),
@@ -31,9 +30,6 @@ impl Display for RswErr {
             }
             RswErr::ParseToml(err) => {
                 write!(f, "{} {}", "[⚙️ rsw.toml]".red().on_black(), err)
-            }
-            RswErr::Command => {
-                write!(f, "{} rsw -h", "[⚠️ rsw::cmd]".red().on_black())
             }
             RswErr::WatchFile(e) => {
                 write!(

@@ -8,13 +8,13 @@ interval = 50
 #! rsw new <name>
 [new]
 #! @see https://rustwasm.github.io/docs/wasm-pack/commands/new.html
-#! use: wasm-pack | rsw | user
+#! using: wasm-pack | rsw | user
 #! 1. wasm-pack: `rsw new <name> --template <template> --mode <normal|noinstall|force>`
 #! 2. rsw: `rsw new <name>`, built-in templates
 #! 3. user: `rsw new <name>`, if `dir` is not configured, use `wasm-pack new <name>` to initialize the project
-use = "wasm-pack"
-#! this field needs to be configured when `use = "user"`
-#! `use = "wasm-pack"` or `use = "rsw"`, this field will be ignored
+using = "wasm-pack"
+#! this field needs to be configured when `using = "user"`
+#! `using = "wasm-pack"` or `using = "rsw"`, this field will be ignored
 dir = "my-template"
 
 #! ################# NPM Package #################

@@ -31,3 +31,17 @@ pub fn get_crate_metadata(name: &str) -> Value {
 pub fn path_exists(path: &str) -> bool {
     fs::metadata(path).is_ok()
 }
+
+// Parse a single key-value pair
+// pub fn parse_key_val<T: std::fmt::Display>(s: &Option<String>, msg: T) -> (&str, &str) {
+//     let s = s.as_deref().unwrap();
+//     let pos = s
+//         .find('=')
+//         .unwrap_or_else(|| {
+//             println!("invalid KEY=value: no `=` found in `{}`", s);
+//             println!("{}", msg);
+//             std::process::exit(1);
+//         });
+
+//     (&s[..pos], &s[pos + 1..])
+// }

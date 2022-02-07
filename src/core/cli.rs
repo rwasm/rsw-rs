@@ -1,30 +1,47 @@
-use clap::{App, AppSettings};
+use clap::{AppSettings, Parser, Subcommand};
 
 use crate::config::RswConfig;
-use crate::core::{error::RswErr, Build, RswInfo, Watch, Init};
+use crate::core::{Build, Create, Init, RswInfo, Watch};
 
-pub struct Cli;
+#[derive(Parser)]
+#[clap(version, about, long_about = None)]
+#[clap(global_setting(AppSettings::PropagateVersion))]
+#[clap(global_setting(AppSettings::UseLongFormatForHelpSubcommand))]
+pub struct Cli {
+    #[clap(subcommand)]
+    command: Commands,
+}
+
+#[derive(Subcommand)]
+enum Commands {
+    /// build rust crates, useful for shipping to production
+    Build,
+    /// automatically rebuilding local changes, useful for development and debugging
+    Watch,
+    /// generate `rsw.toml` configuration file
+    Init,
+    /// quickly generate a crate with `wasm-pack new`, or set a custom template in `rsw.toml [new]`
+    New {
+        /// the name of the project
+        name: String,
+        /// `wasm-pack new`: The URL to the template [default: https://github.com/rustwasm/wasm-pack-template]
+        #[clap(short = 't', long)]
+        template: Option<String>,
+        /// `wasm-pack new`: Should we install or check the presence of binary tools. [possible values: no-install, normal, force] [default: normal]
+        #[clap(short = 'm', long)]
+        mode: Option<String>,
+    },
+}
 
 impl Cli {
     pub fn new() {
-        let matches = App::new("rsw")
-            .about("wasm-pack based build tool")
-            .setting(AppSettings::SubcommandRequiredElseHelp)
-            .setting(AppSettings::AllowExternalSubcommands)
-            .setting(AppSettings::AllowInvalidUtf8ForExternalSubcommands)
-            .subcommand(App::new("build").about("build rust crates, useful for shipping to production"))
-            .subcommand(App::new("watch").about("automatically rebuilding local changes, useful for development and debugging"))
-            .subcommand(App::new("new").about("quickly generate a crate with `wasm-pack new`, or set a custom template in `rsw.toml [new]`"))
-            .subcommand(App::new("init").about("generate `rsw.toml` configuration file"))
-            .get_matches();
-
-        match matches.subcommand() {
-            Some(("build", _)) => {
-                Cli::build(&Cli::parse(), &"build".to_string());
+        match &Cli::parse().command {
+            Commands::Build => {
+                Cli::build(&Cli::parse_toml(), &"build".to_string());
             }
-            Some(("watch", _)) => {
+            Commands::Watch => {
                 // initial build
-                let config = &Cli::parse();
+                let config = &Cli::parse_toml();
                 Cli::build(config, &"watch".to_string());
 
                 Watch::new(
@@ -36,22 +53,18 @@ impl Cli {
                     }),
                 );
             }
-            // TODO: crate template
-            Some(("new", _)) => {
-                println!("TODO => new crate");
-            }
-            Some(("init", _)) => {
+            Commands::Init => {
                 Init::new().unwrap();
             }
-            _ => {
-                println!("{}", RswErr::Command);
-            } // If all subcommands are defined above, anything else is unreachabe!()
+            Commands::New { name, template, mode } => {
+                let config = &Cli::parse_toml();
+                let new_config = config.new.as_ref().unwrap();
+                Create::new(new_config, name, template, mode);
+            }
         }
-
-        // Continued program logic goes here...
     }
 
-    pub fn parse() -> RswConfig {
+    pub fn parse_toml() -> RswConfig {
         RswConfig::new().unwrap()
     }
 
