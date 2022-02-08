@@ -1,6 +1,6 @@
 [package]
 name = "rsw"
-version = "0.0.2"
+version = "0.1.0"
 description = "wasm-pack based build tool"
 edition = "2021"
 authors = ["lencx <cxin1314@gmail.com>"]
@@ -15,7 +15,6 @@ license = "MIT"
 anyhow = "1.0.52"
 clap = { version = "3.0.5", features = ["derive"] }
 colored = "2.0.0"
-# notify = "5.0.0-pre.13"
 notify = "4.0.17"
 regex = "1.5.4"
 serde = "1.0.133"

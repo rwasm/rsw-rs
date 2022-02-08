@@ -13,7 +13,12 @@ pub struct Create {
 ///
 /// <https://rustwasm.github.io/docs/wasm-pack/commands/new.html>
 impl Create {
-    pub fn new(config: NewOptions, name: String, template: Option<String>, mode: Option<String>) -> Create {
+    pub fn new(
+        config: NewOptions,
+        name: String,
+        template: Option<String>,
+        mode: Option<String>,
+    ) -> Create {
         Create {
             name,
             config,

@@ -52,7 +52,8 @@ impl Cli {
                         println!("{}", RswInfo::CrateChange(e));
                         Build::new(crate_config.clone(), "watch").init();
                     }),
-                ).init();
+                )
+                .init();
             }
             Commands::Init => {
                 Init::new().unwrap();
@@ -66,8 +67,9 @@ impl Cli {
                     Cli::parse_toml().new.unwrap(),
                     name.to_string(),
                     template.to_owned(),
-                    mode.to_owned()
-                ).init();
+                    mode.to_owned(),
+                )
+                .init();
             }
         }
     }
