@@ -2,19 +2,31 @@ use std::process::Command;
 
 use crate::config::NewOptions;
 
-pub struct Create;
+pub struct Create {
+    name: String,
+    config: NewOptions,
+    template: Option<String>,
+    mode: Option<String>,
+}
 
 /// wasm-pack new
 ///
 /// <https://rustwasm.github.io/docs/wasm-pack/commands/new.html>
 impl Create {
-    pub fn new(config: &NewOptions, name: &str, template: &Option<String>, mode: &Option<String>) {
-        // println!("{:?}", config);
-
-        let mut args = vec!["new", name];
-        let arg_tpl = template.as_deref();
-        let arg_mode = mode.as_deref();
-        let arg_use = config.using.as_ref().unwrap();
+    pub fn new(config: NewOptions, name: String, template: Option<String>, mode: Option<String>) -> Create {
+        Create {
+            name,
+            config,
+            template,
+            mode,
+        }
+    }
+    pub fn init(self) {
+        // println!("{:?}", self.config);
+        let mut args = vec!["new", self.name.as_str()];
+        let arg_tpl = self.template.as_deref();
+        let arg_mode = self.mode.as_deref();
+        let arg_use = self.config.using.as_ref().unwrap();
 
         // --template: https://rustwasm.github.io/docs/wasm-pack/commands/new.html#template
         if !arg_tpl.is_none() {
@@ -35,6 +47,10 @@ impl Create {
                 .args(args)
                 .status()
                 .expect("failed to execute process");
+        }
+
+        if arg_use == "rsw" {
+            // TODO:
         }
     }
 }

@@ -1,4 +1,5 @@
 use clap::{AppSettings, Parser, Subcommand};
+use std::rc::Rc;
 
 use crate::config::RswConfig;
 use crate::core::{Build, Create, Init, RswInfo, Watch};
@@ -37,29 +38,36 @@ impl Cli {
     pub fn new() {
         match &Cli::parse().command {
             Commands::Build => {
-                Cli::build(&Cli::parse_toml(), &"build".to_string());
+                Cli::build(Rc::new(Cli::parse_toml()), "build");
             }
             Commands::Watch => {
                 // initial build
-                let config = &Cli::parse_toml();
-                Cli::build(config, &"watch".to_string());
+                let config = Rc::new(Cli::parse_toml());
+                Cli::build(config.clone(), "watch");
 
                 Watch::new(
                     config,
                     Box::new(|crate_config, e| {
                         // TODO: build crate
                         println!("{}", RswInfo::CrateChange(e));
-                        Build::new(&crate_config, &"watch".to_string());
+                        Build::new(crate_config.clone(), "watch").init();
                     }),
-                );
+                ).init();
             }
             Commands::Init => {
                 Init::new().unwrap();
             }
-            Commands::New { name, template, mode } => {
-                let config = &Cli::parse_toml();
-                let new_config = config.new.as_ref().unwrap();
-                Create::new(new_config, name, template, mode);
+            Commands::New {
+                name,
+                template,
+                mode,
+            } => {
+                Create::new(
+                    Cli::parse_toml().new.unwrap(),
+                    name.to_string(),
+                    template.to_owned(),
+                    mode.to_owned()
+                ).init();
             }
         }
     }
@@ -68,10 +76,10 @@ impl Cli {
         RswConfig::new().unwrap()
     }
 
-    pub fn build(config: &RswConfig, rsw_type: &String) {
+    pub fn build(config: Rc<RswConfig>, rsw_type: &str) {
         for i in &config.crates {
             if i.build.as_ref().unwrap().run.unwrap() {
-                Build::new(i, rsw_type);
+                Build::new(i.clone(), rsw_type).init();
             }
         }
     }

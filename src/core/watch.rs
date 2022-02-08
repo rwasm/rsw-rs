@@ -1,16 +1,25 @@
 use notify::{DebouncedEvent::*, RecursiveMode::*, Watcher};
 use regex::Regex;
 use std::{
-    collections::HashMap, fs, path::PathBuf, sync::mpsc::channel, thread::sleep, time::Duration,
+    collections::HashMap, fs, path::PathBuf, rc::Rc, sync::mpsc::channel, thread::sleep,
+    time::Duration,
 };
 
 use crate::config::{CrateConfig, RswConfig};
 use crate::core::{RswErr, RswInfo};
 
-pub struct Watch;
+pub struct Watch {
+    config: Rc<RswConfig>,
+    callback: Box<dyn Fn(&CrateConfig, PathBuf)>,
+}
 
 impl Watch {
-    pub fn new(config: &RswConfig, callback: Box<dyn Fn(&CrateConfig, PathBuf)>) {
+    pub fn new(config: Rc<RswConfig>, callback: Box<dyn Fn(&CrateConfig, PathBuf)>) -> Watch {
+        Watch { config, callback }
+    }
+    pub fn init(self) {
+        let config = self.config;
+        let caller = self.callback;
         let mut crate_map = HashMap::new();
         let mut path_map = HashMap::new();
         let (tx, rx) = channel();
@@ -27,7 +36,7 @@ impl Watch {
             if i.watch.as_ref().unwrap().run.unwrap() {
                 // TODO: local deps watch
                 println!("{}", RswInfo::RunWatch(i.name.clone()));
-                let crate_root = PathBuf::from(&i.root.as_ref().unwrap()).join(&i.name);
+                let crate_root = PathBuf::from(i.root.as_ref().unwrap()).join(&i.name);
                 let _ = watcher.watch(crate_root.join("src"), Recursive);
                 let _ = watcher.watch(crate_root.join("Cargo.toml"), NonRecursive);
 
@@ -53,7 +62,7 @@ impl Watch {
                                 .unwrap()
                                 .is_match(path.to_owned().to_str().unwrap())
                             {
-                                callback(crate_map.get(key).unwrap(), path);
+                                caller(*crate_map.get(key).unwrap(), path);
                                 break;
                             }
                         }

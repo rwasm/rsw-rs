@@ -78,16 +78,15 @@ impl Display for RswInfo {
                     "[⚙️ rsw.toml]".green().on_black(),
                     "rsw.toml".yellow(),
                 )
-            }
-            // RswInfo::NewHelp => {
-            //     write!(
-            //         f,
-            //         "{} {} {}",
-            //         "[💢 rsw::cmd]".red().on_black(),
-            //         "For more information try",
-            //         "rsw new -h".green(),
-            //     )
-            // }
+            } // RswInfo::NewHelp => {
+              //     write!(
+              //         f,
+              //         "{} {} {}",
+              //         "[💢 rsw::cmd]".red().on_black(),
+              //         "For more information try",
+              //         "rsw new -h".green(),
+              //     )
+              // }
         }
     }
 }

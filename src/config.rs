@@ -9,7 +9,7 @@ use crate::core::RswErr;
 
 pub static RSW_FILE: &'static str = "rsw.toml";
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 // @see https://serde.rs/container-attrs.html#rename_all
 #[serde(rename_all = "kebab-case")]
 pub struct CrateConfig {
@@ -41,7 +41,7 @@ pub struct CrateConfig {
     pub mode: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub struct WatchOptions {
     /// When executing the command `rsw watch`, whether to include this `crate`.
@@ -61,7 +61,7 @@ pub struct WatchOptions {
     pub profile: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub struct BuildOptions {
     /// When executing the command `rsw build`, whether to include this `crate`.
@@ -78,7 +78,7 @@ pub struct BuildOptions {
     pub profile: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub struct NewOptions {
     #[serde(default = "default_wasmpack")]
@@ -87,7 +87,7 @@ pub struct NewOptions {
     pub dir: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RswConfig {
     /// rsw name
     pub name: Option<String>,

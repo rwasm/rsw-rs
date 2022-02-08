@@ -5,24 +5,37 @@ use crate::config::CrateConfig;
 use crate::core::RswInfo;
 use crate::utils;
 
-pub struct Build;
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Build {
+    config: CrateConfig,
+    rsw_type: String,
+}
 
 impl Build {
-    pub fn new(options: &CrateConfig, rsw_type: &String) {
-        let name = &options.name;
-        let out_dir = options.out_dir.as_ref().unwrap();
-        let mut args = vec!["build", name.as_str(), "--out-dir", out_dir];
+    pub fn new(config: CrateConfig, rsw_type: &str) -> Build {
+        Build {
+            config,
+            rsw_type: rsw_type.into(),
+        }
+    }
+
+    pub fn init(&self) {
+        let config = &self.config;
+        let rsw_type = &self.rsw_type;
+        let name = &config.name;
+        let out_dir = config.out_dir.as_ref().unwrap();
+        let mut args = vec!["build", name, "--out-dir", out_dir];
 
         // profile
-        let mut profile = options.build.as_ref().unwrap().profile.as_ref().unwrap();
+        let mut profile = config.build.as_ref().unwrap().profile.as_ref().unwrap();
         if rsw_type == "watch" {
-            profile = options.watch.as_ref().unwrap().profile.as_ref().unwrap();
+            profile = config.watch.as_ref().unwrap().profile.as_ref().unwrap();
         }
         let arg_profile = format!("--{}", profile);
         args.push(&arg_profile);
 
         // scope
-        let (_, scope) = Build::get_pkg(&options.name);
+        let (_, scope) = self.get_pkg();
         if scope != "" {
             args.push("--scope");
             args.push(scope.as_str());
@@ -43,17 +56,14 @@ impl Build {
                 println!(
                     "{}",
                     RswInfo::CrateOk(
-                        name.to_owned(),
-                        rsw_type.to_owned(),
+                        name.into(),
+                        rsw_type.into(),
                         metadata["package"]["version"].to_string(),
                     )
                 );
             }
             false => {
-                println!(
-                    "{}",
-                    RswInfo::CrateFail(name.to_owned(), rsw_type.to_owned())
-                );
+                println!("{}", RswInfo::CrateFail(name.into(), rsw_type.into()));
             }
         }
 
@@ -61,10 +71,10 @@ impl Build {
     }
 
     // https://docs.npmjs.com/creating-a-package-json-file#required-name-and-version-fields
-    fn get_pkg(name: &str) -> (String, String) {
+    fn get_pkg(&self) -> (String, String) {
         // example: @rsw/test | rsw-test | wasm123
         let re = Regex::new(r"(?x)(@([\w\d_-]+)/)?((?P<pkg_name>[\w\d_-]+))").unwrap();
-        let caps = re.captures(name).unwrap();
+        let caps = re.captures(&self.config.name).unwrap();
         let mut scope = "".to_string();
         if caps.get(2) != None {
             scope = caps.get(2).unwrap().as_str().to_string();
@@ -80,25 +90,53 @@ mod pkg_name_tests {
 
     #[test]
     fn pkg_word() {
-        assert_eq!(
-            Build::get_pkg("@rsw/test").to_owned(),
-            ("test".to_string(), "rsw".to_string())
-        );
+        let build = Build {
+            config: CrateConfig {
+                name: "@rsw/test".into(),
+                root: None,
+                out_dir: None,
+                watch: None,
+                build: None,
+                target: None,
+                mode: None,
+            },
+            rsw_type: "build".into(),
+        };
+
+        assert_eq!(build.get_pkg(), ("test".into(), "rsw".into()));
     }
 
     #[test]
     fn pkg_word_num() {
-        assert_eq!(
-            Build::get_pkg("wasm123").to_owned(),
-            ("wasm123".to_string(), "".to_string())
-        );
+        let build = Build {
+            config: CrateConfig {
+                name: "wasm123".into(),
+                root: None,
+                out_dir: None,
+                watch: None,
+                build: None,
+                target: None,
+                mode: None,
+            },
+            rsw_type: "build".into(),
+        };
+        assert_eq!(build.get_pkg(), ("wasm123".into(), "".into()));
     }
 
     #[test]
     fn pkg_word_num_line() {
-        assert_eq!(
-            Build::get_pkg("@rsw-org/my_wasm").to_owned(),
-            ("my_wasm".to_string(), "rsw-org".to_string())
-        );
+        let build = Build {
+            config: CrateConfig {
+                name: "@rsw-org/my_wasm".into(),
+                root: None,
+                out_dir: None,
+                watch: None,
+                build: None,
+                target: None,
+                mode: None,
+            },
+            rsw_type: "build".into(),
+        };
+        assert_eq!(build.get_pkg(), ("my_wasm".into(), "rsw-org".into()));
     }
 }
