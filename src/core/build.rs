@@ -1,3 +1,5 @@
+//! rsw build
+
 use std::process::Command;
 
 use crate::config::CrateConfig;
@@ -22,7 +24,8 @@ impl Build {
         let rsw_type = &self.rsw_type;
         let name = &config.name;
         let out_dir = config.out_dir.as_ref().unwrap();
-        let mut args = vec!["build", name, "--out-dir", out_dir];
+        let target = config.target.as_ref().unwrap();
+        let mut args = vec!["build", name, "--out-dir", out_dir, "--target", target];
 
         // profile
         let mut profile = config.build.as_ref().unwrap().profile.as_ref().unwrap();
@@ -40,7 +43,7 @@ impl Build {
         }
 
         let metadata = utils::get_crate_metadata(name.as_str());
-        println!("{}", RswInfo::BuildCmd(args.join(" ").to_string()));
+        info!("🚧  wasm-pack {}", args.join(" "));
 
         let status = Command::new("wasm-pack")
             .args(args)
@@ -58,10 +61,10 @@ impl Build {
                         rsw_type.into(),
                         metadata["package"]["version"].to_string(),
                     )
-                );
+                )
             }
             false => {
-                println!("{}", RswInfo::CrateFail(name.into(), rsw_type.into()));
+                println!("{}", RswInfo::CrateFail(name.into(), rsw_type.into()))
             }
         }
 

@@ -1,3 +1,5 @@
+//! rsw template
+
 use std::path::Path;
 
 use crate::utils::load_file_contents;

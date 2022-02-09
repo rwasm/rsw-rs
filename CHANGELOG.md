@@ -1,12 +1,17 @@
 # Changelog
 
+## 0.2.0 (2022-02-09)
+
+- rsw new (rsw | user)
+- add logger
+
 ## 0.1.0 (2022-02-08)
 
 ### Features
 
-- rsw new
+- rsw new (wasm-pack new)
+- rsw init - generate `rsw.toml`
 - rsw watch
-- rsw init (wasm-pack new)
 
 ## 0.0.2 (2022-01-17)
 

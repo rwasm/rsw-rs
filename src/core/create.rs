@@ -1,9 +1,11 @@
+//! rsw new
+
 use anyhow::Result;
 use regex::Regex;
 use std::process::Command;
 
 use crate::config::NewOptions;
-use crate::core::RswErr;
+use crate::core::RswInfo;
 use crate::template;
 use crate::utils::{self, write_file};
 
@@ -40,6 +42,8 @@ impl Create {
         let arg_use = self.config.using.as_ref().unwrap();
         let user_dirs = self.config.dir.as_ref().unwrap();
 
+        self.check_crate();
+
         // --template: https://rustwasm.github.io/docs/wasm-pack/commands/new.html#template
         if !arg_tpl.is_none() {
             args.push("--template");
@@ -52,21 +56,33 @@ impl Create {
             args.push(arg_mode.unwrap());
         }
 
-        // use wasm-pack
+        // wasm-pack
         if arg_use == "wasm-pack" || !arg_tpl.is_none() {
             self.wp_cmd(&args);
         }
 
+        // built-in template
         if arg_use == "rsw" {
             self.create_crate().unwrap();
         }
 
+        // custom template
         if arg_use == "user" {
             if user_dirs.is_empty() {
                 self.wp_cmd(&args);
             } else {
                 self.user_crate(user_dirs);
             }
+        }
+
+        println!("{}", RswInfo::CrateNewOk(name.into()));
+    }
+    fn check_crate(&self) {
+        let name = &self.name;
+        let path = std::env::current_dir().unwrap().join(name);
+        if utils::path_exists(path.as_path()) {
+            println!("{}", RswInfo::CrateNewExist(name.into()));
+            std::process::exit(1);
         }
     }
     fn wp_cmd(&self, args: &Vec<&str>) {
@@ -96,7 +112,7 @@ impl Create {
         let root = std::env::current_dir().unwrap();
         let source = root.join(dir);
         if !utils::path_exists(source.as_path()) {
-            println!("{}", RswErr::ConfigNew(dir.to_string(), source));
+            println!("{}", RswInfo::ConfigNewDir(dir.into(), source));
             std::process::exit(1);
         }
         utils::copy_dirs(root.join(dir), root.join(&self.name)).unwrap();

@@ -1,3 +1,5 @@
+//! rsw command parse
+
 use clap::{AppSettings, Parser, Subcommand};
 use std::rc::Rc;
 
@@ -14,7 +16,7 @@ pub struct Cli {
 }
 
 #[derive(Subcommand)]
-enum Commands {
+pub enum Commands {
     /// build rust crates, useful for shipping to production
     Build,
     /// automatically rebuilding local changes, useful for development and debugging
@@ -25,7 +27,7 @@ enum Commands {
     New {
         /// the name of the project
         name: String,
-        /// `wasm-pack new`: The URL to the template [default: https://github.com/rustwasm/wasm-pack-template]
+        /// `wasm-pack new`: The URL to the template <https://github.com/rustwasm/wasm-pack-template>
         #[clap(short = 't', long)]
         template: Option<String>,
         /// `wasm-pack new`: Should we install or check the presence of binary tools. [possible values: no-install, normal, force] [default: normal]
@@ -65,7 +67,7 @@ impl Cli {
             } => {
                 Create::new(
                     Cli::parse_toml().new.unwrap(),
-                    name.to_string(),
+                    name.into(),
                     template.to_owned(),
                     mode.to_owned(),
                 )
@@ -73,11 +75,11 @@ impl Cli {
             }
         }
     }
-
     pub fn parse_toml() -> RswConfig {
-        RswConfig::new().unwrap()
+        let config = RswConfig::new().unwrap();
+        trace!("{:#?}", config);
+        config
     }
-
     pub fn build(config: Rc<RswConfig>, rsw_type: &str) {
         for i in &config.crates {
             if i.build.as_ref().unwrap().run.unwrap() {

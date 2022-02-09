@@ -1,6 +1,4 @@
 //! rsw.toml parse
-//!
-//! [wasm-pack build](https://rustwasm.github.io/docs/wasm-pack/commands/build.html)
 
 use anyhow::{Error, Result};
 use std::{env, fs, process};
@@ -9,6 +7,7 @@ use crate::core::RswErr;
 
 pub static RSW_FILE: &'static str = "rsw.toml";
 
+/// rust crate config
 #[derive(Debug, Clone, Serialize, Deserialize)]
 // @see https://serde.rs/container-attrs.html#rename_all
 #[serde(rename_all = "kebab-case")]
@@ -35,12 +34,13 @@ pub struct CrateConfig {
     /// target: bundler | nodejs | web | no-modules
     ///
     /// <https://rustwasm.github.io/wasm-pack/book/commands/build.html#target>
-    /// TODO
+    #[serde(default = "default_target")]
     pub target: Option<String>,
-    /// TODO
-    pub mode: Option<String>,
+    // TODO
+    // pub mode: Option<String>,
 }
 
+/// `rsw watch` - watch config
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub struct WatchOptions {
@@ -61,6 +61,7 @@ pub struct WatchOptions {
     pub profile: Option<String>,
 }
 
+/// `rsw build` - build config
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub struct BuildOptions {
@@ -78,15 +79,25 @@ pub struct BuildOptions {
     pub profile: Option<String>,
 }
 
+/// `rsw new` - new config
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub struct NewOptions {
     #[serde(default = "default_wasmpack")]
+    /// using: `wasm-pack` | `rsw` | `user`, default is `wasm-pack`
+    ///
+    /// - `wasm-pack` - `rsw new <name> --template <template> --mode <normal|noinstall|force>` [wasm-pack new doc](https://rustwasm.github.io/docs/wasm-pack/commands/new.html)
+    /// - `rsw` - `rsw new <name>`, built-in templates
+    /// - `user` - `rsw new <name>`, if `dir` is not configured, use `wasm-pack new <name>` to initialize the project.
     pub using: Option<String>,
     #[serde(default = "default_empty")]
+    /// Copy all files in this directory.
+    /// This field needs to be configured when `using = "user"`.
+    /// `using = "wasm-pack"` or `using = "rsw"`, this field will be ignored.
     pub dir: Option<String>,
 }
 
+/// rsw config
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RswConfig {
     /// rsw name
@@ -107,9 +118,9 @@ pub struct RswConfig {
 impl Default for RswConfig {
     fn default() -> Self {
         Self {
-            name: Some("rsw".to_string()),
-            version: Some("0.0.0".to_string()),
-            cli: Some("npm".to_string()),
+            name: Some("rsw".into()),
+            version: Some("0.0.0".into()),
+            cli: Some("npm".into()),
             interval: Some(50),
             new: default_new(),
             crates: vec![],
@@ -134,19 +145,23 @@ impl RswConfig {
 }
 
 fn default_root() -> Option<String> {
-    Some(".".to_string())
+    Some(".".into())
 }
 
 fn default_out_dir() -> Option<String> {
-    Some("pkg".to_string())
+    Some("pkg".into())
 }
 
 fn default_release() -> Option<String> {
-    Some("release".to_string())
+    Some("release".into())
 }
 
 fn default_dev() -> Option<String> {
-    Some("dev".to_string())
+    Some("dev".into())
+}
+
+fn default_target() -> Option<String> {
+    Some("web".into())
 }
 
 fn default_true() -> Option<bool> {
@@ -154,11 +169,11 @@ fn default_true() -> Option<bool> {
 }
 
 fn default_wasmpack() -> Option<String> {
-    Some("wasm-pack".to_string())
+    Some("wasm-pack".into())
 }
 
 fn default_empty() -> Option<String> {
-    Some("".to_string())
+    Some("".into())
 }
 
 fn default_new() -> Option<NewOptions> {

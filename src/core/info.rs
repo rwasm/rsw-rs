@@ -7,12 +7,13 @@ pub enum RswInfo {
     SplitLine,
     RswTomlOk,
     RswTomExist,
-    BuildCmd(String),
     RunWatch(String),
     CrateFail(String, String),
     CrateOk(String, String, String),
     CrateChange(std::path::PathBuf),
-    // NewHelp,
+    CrateNewOk(String),
+    CrateNewExist(String),
+    ConfigNewDir(String, std::path::PathBuf),
 }
 
 impl Display for RswInfo {
@@ -38,15 +39,6 @@ impl Display for RswInfo {
             RswInfo::SplitLine => {
                 write!(f, "{}", "◼◻".repeat(24).yellow())
             }
-            RswInfo::BuildCmd(args) => {
-                write!(
-                    f,
-                    "{} {} {}",
-                    "[🚧 rsw::build]".yellow().on_black(),
-                    "wasm-pack".green(),
-                    args,
-                )
-            }
             RswInfo::CrateChange(path) => {
                 write!(
                     f,
@@ -71,22 +63,40 @@ impl Display for RswInfo {
                     "rsw.toml".yellow(),
                 )
             }
-            &RswInfo::RswTomlOk => {
+            RswInfo::RswTomlOk => {
                 write!(
                     f,
                     "{} {} created successfully",
                     "[⚙️ rsw.toml]".green().on_black(),
                     "rsw.toml".yellow(),
                 )
-            } // RswInfo::NewHelp => {
-              //     write!(
-              //         f,
-              //         "{} {} {}",
-              //         "[💢 rsw::cmd]".red().on_black(),
-              //         "For more information try",
-              //         "rsw new -h".green(),
-              //     )
-              // }
+            }
+            RswInfo::CrateNewOk(name) => {
+                write!(
+                    f,
+                    "{} {} created successfully, please add the following code to `rsw.toml`\n\n{}",
+                    "[🦀 rsw::crate]".green().on_black(),
+                    name.yellow(),
+                    format!("[[crates]]\nname = {:?}", name).yellow(),
+                )
+            }
+            RswInfo::CrateNewExist(name) => {
+                write!(
+                    f,
+                    "{} {} already exists",
+                    "[🦀 rsw::crate]".red().on_black(),
+                    name.yellow(),
+                )
+            }
+            RswInfo::ConfigNewDir(template, path) => {
+                write!(
+                    f,
+                    "{} [new] dir = \"{}\"\n{:?} No such file or director",
+                    "[⚙️ rsw.toml]".red().on_black(),
+                    template.yellow(),
+                    path.display(),
+                )
+            }
         }
     }
 }

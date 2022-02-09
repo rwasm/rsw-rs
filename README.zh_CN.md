@@ -10,8 +10,16 @@
 
 ### 功能
 
+- `rsw init` - 生成配置文件 `rsw.toml`
 - `rsw build` - 基于 `rsw.toml` 配置同时构建多个 `rust crate`
-- `rsw watch` - 基于 `rsw.toml` 配置同时监听多个 `rust crate` 中的文件变更，自动触发构建。
+- `rsw watch` - 基于 `rsw.toml` 配置同时监听多个 `rust crate` 中的文件变更，自动触发构建
+- `rsw new` - 基于 `rsw.toml` `[new]` 字段配置，默认使用 `wasm-pack` 创建项目
+- `RUST_LOG=rsw rsw <SUBCOMMAND>` - 输出关键日志信息，便于错误排查
+
+## TODO
+
+- 本地依赖变更触发热更新
+- 集成前端脚手架，如 `vite`，`webpack` 等
 
 ## 用法
 
@@ -29,6 +37,18 @@ rsw watch
 
 # 生产构建
 rsw build
+```
+
+## 日志
+
+```bash
+# @see: https://github.com/env-logger-rs/env_logger
+# RUST_LOG=rsw=<info|trace|debug|error|warn> rsw <watch|build|new>
+# 1. info
+RUST_LOG=rsw=info rsw <SUBCOMMAND>
+
+# 2. all: info, trace, debug, error, warn
+RUST_LOG=rsw rsw <SUBCOMMAND>
 ```
 
 ## rsw.toml
@@ -55,6 +75,7 @@ rsw build
 - **`[[crates]]`** - 是一个数组，支持多个 `rust crate` 配置
   - **`name`** - npm 包名，支持组织，例如 `@rsw/foo`
   - **`root`** - 此 `rust crate` 在项目根路径下的相对路径，默认 `.`
+  - **`target`** - `bundler` | `nodejs` | `web` | `no-modules`, 默认 `web`
   - **`out-dir`** - npm 包输出路径，默认 `pkg`
   - **`[crates.watch]`** - 开发模式下的配置
     - **`run`** - 是否执行，默认为 `true`
@@ -101,12 +122,14 @@ name = "rsw-hello"
 
 #! -------- package: @rsw/hello --------
 # [[crates]]
-# #! default is `.`
-# root = "."
 # #! npm package name
 # name = "@rsw/hello"
+# #! default is `.`
+# root = "."
 # #! default is `pkg`
 # out-dir = "pkg"
+# #! target: bundler | nodejs | web | no-modules, default is `web`
+# target = "web"
 # #! rsw watch
 # [crates.watch]
 # #! default is `true`

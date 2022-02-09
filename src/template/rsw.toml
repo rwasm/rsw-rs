@@ -29,12 +29,14 @@ name = "rsw-hello"
 
 #! -------- package: @rsw/hello --------
 # [[crates]]
-# #! default is `.`
-# root = "."
 # #! npm package name
 # name = "@rsw/hello"
+# #! default is `.`
+# root = "."
 # #! default is `pkg`
 # out-dir = "pkg"
+# #! target: bundler | nodejs | web | no-modules, default is `web`
+# target = "web"
 # #! rsw watch
 # [crates.watch]
 # #! default is `true`

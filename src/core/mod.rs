@@ -1,3 +1,5 @@
+//! rsw cli
+
 mod build;
 mod cli;
 mod create;

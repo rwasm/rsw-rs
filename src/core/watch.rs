@@ -1,3 +1,5 @@
+//! rsw watch
+
 use notify::{DebouncedEvent::*, RecursiveMode::*, Watcher};
 use regex::Regex;
 use std::{
@@ -53,7 +55,7 @@ impl Watch {
             let all_events = std::iter::once(first_event).chain(other_events);
 
             for event in all_events {
-                // println!("event {:?}", event);
+                debug!("{:?}", event);
 
                 match event {
                     Write(path) | Remove(path) | Rename(_, path) => {

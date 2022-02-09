@@ -10,17 +10,19 @@
 
 ### Feature
 
+- rsw init
 - rsw watch
 - rsw build
+- rsw new
+  - `wasm-pack`
+  - `rsw`
+  - `user`
+- debug info
 
 ### TODO
 
-- rsw init - `rsw.toml`
-- rsw new - rust crate
-  - wasm-pack new
-  - custom template
-- deps watch - local sub-dependency file changes trigger hot updates
-- debug info
+- local sub-dependency file changes trigger hot updates
+- integrate front-end scaffolding, such as `vite`, `webpack`, etc.
 
 ## Usage
 
@@ -37,6 +39,18 @@ rsw watch
 
 # release
 rsw build
+```
+
+## Logger
+
+```bash
+# @see: https://github.com/env-logger-rs/env_logger
+# RUST_LOG=rsw=<info|trace|debug|error|warn> rsw <watch|build|new>
+# 1. info
+RUST_LOG=rsw=info rsw <SUBCOMMAND>
+
+# 2. all: info, trace, debug, error, warn
+RUST_LOG=rsw rsw <SUBCOMMAND>
 ```
 
 ## rsw.toml
@@ -62,6 +76,7 @@ Create `rsw.toml` in the project root path, configure the `rust crate` parameter
 - **`[[crates]]`** - Is an array that supports multiple `rust crate` configurations
   - **`name`** - npm package name, supporting organization, e.g. `@rsw/foo`
   - **`root`** - Relative to the project root path, default is `.`
+  - **`target`** - `bundler` | `nodejs` | `web` | `no-modules`, default is `web`
   - **`out-dir`** - npm package output path, default `pkg`
   - **`[crates.watch]`** - Development mode
     - **`run`** - Whether this `crate` needs to be watching, default is `true`
@@ -108,12 +123,14 @@ name = "rsw-hello"
 
 #! -------- package: @rsw/hello --------
 # [[crates]]
-# #! default is `.`
-# root = "."
 # #! npm package name
 # name = "@rsw/hello"
+# #! default is `.`
+# root = "."
 # #! default is `pkg`
 # out-dir = "pkg"
+# #! target: bundler | nodejs | web | no-modules, default is `web`
+# target = "web"
 # #! rsw watch
 # [crates.watch]
 # #! default is `true`

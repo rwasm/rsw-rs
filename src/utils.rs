@@ -44,9 +44,9 @@ pub fn get_pkg(name: &str) -> (String, String) {
     // example: @rsw/test | rsw-test | wasm123
     let re = Regex::new(r"(?x)(@([\w\d_-]+)/)?((?P<pkg_name>[\w\d_-]+))").unwrap();
     let caps = re.captures(name).unwrap();
-    let mut scope = "".to_string();
+    let mut scope = "".into();
     if caps.get(2) != None {
-        scope = caps.get(2).unwrap().as_str().to_string();
+        scope = caps.get(2).unwrap().as_str().into();
     }
 
     (caps["pkg_name"].to_owned(), scope)
@@ -73,11 +73,11 @@ pub fn load_file_contents<P: AsRef<Path>>(filename: P, dest: &mut Vec<u8>) -> Re
 // it checks every directory in the path to see if it exists,
 // and if it does not it will be created.
 pub fn create_file(path: &Path) -> Result<File> {
-    println!("Creating {}", path.display());
+    debug!("Creating {}", path.display());
 
     // Construct path
     if let Some(p) = path.parent() {
-        println!("Parent directory is: {:?}", p);
+        trace!("Parent directory is: {:?}", p);
 
         fs::create_dir_all(p)?;
     }
@@ -89,7 +89,6 @@ pub fn create_file(path: &Path) -> Result<File> {
 // Write the given data to a file, creating it first if necessary
 pub fn write_file<P: AsRef<Path>>(build_dir: &Path, filename: P, content: &[u8]) -> Result<()> {
     let path = build_dir.join(filename);
-
     create_file(&path)?.write_all(content).map_err(Into::into)
 }
 
@@ -99,6 +98,7 @@ pub fn copy_dirs(source: impl AsRef<Path>, target: impl AsRef<Path>) -> std::io:
     for entry in fs::read_dir(source)? {
         let entry = entry?;
         let entry_target = target.as_ref().join(entry.file_name());
+        trace!("Copy {} to {}", entry.path().display(), entry_target.display());
         if entry.file_type()?.is_dir() {
             copy_dirs(entry.path(), entry_target)?;
         } else {
@@ -108,19 +108,49 @@ pub fn copy_dirs(source: impl AsRef<Path>, target: impl AsRef<Path>) -> std::io:
     Ok(())
 }
 
-// Parse a single key-value pair
-// pub fn parse_key_val<T: std::fmt::Display>(s: &Option<String>, msg: T) -> (&str, &str) {
-//     let s = s.as_deref().unwrap();
-//     let pos = s
-//         .find('=')
-//         .unwrap_or_else(|| {
-//             println!("invalid KEY=value: no `=` found in `{}`", s);
-//             println!("{}", msg);
-//             std::process::exit(1);
-//         });
+// rsw log
+pub fn init_logger() {
+    use env_logger::Builder;
+    use log::LevelFilter;
+    use log::Level;
+    use colored::Colorize;
 
-//     (&s[..pos], &s[pos + 1..])
-// }
+    let mut builder = Builder::new();
+
+    builder.format(|formatter, record| {
+        let level = record.level().as_str();
+        let log_level = match record.level() {
+            Level::Info => level.blue(),
+            Level::Debug => level.magenta(),
+            Level::Trace => level.green(),
+            Level::Error => level.red(),
+            Level::Warn => level.yellow(),
+        };
+
+        let log_target = match record.level() {
+            Level::Info | Level::Error => format!(""),
+            _ => format!(" {}", record.target().yellow())
+        };
+
+        let rsw_log = format!("[rsw::{}]", log_level);
+        writeln!(
+            formatter,
+            "{}{} {}",
+            rsw_log.bold().on_black(),
+            log_target,
+            record.args()
+        )
+    });
+
+    if let Ok(var) = env::var("RUST_LOG") {
+        builder.parse_filters(&var);
+    } else {
+        // if no RUST_LOG provided, default to logging at the Info level
+        builder.filter(None, LevelFilter::Info);
+    }
+
+    builder.init();
+}
 
 #[cfg(test)]
 mod pkg_name_tests {
