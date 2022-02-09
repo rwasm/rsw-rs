@@ -98,7 +98,11 @@ pub fn copy_dirs(source: impl AsRef<Path>, target: impl AsRef<Path>) -> std::io:
     for entry in fs::read_dir(source)? {
         let entry = entry?;
         let entry_target = target.as_ref().join(entry.file_name());
-        trace!("Copy {} to {}", entry.path().display(), entry_target.display());
+        trace!(
+            "Copy {} to {}",
+            entry.path().display(),
+            entry_target.display()
+        );
         if entry.file_type()?.is_dir() {
             copy_dirs(entry.path(), entry_target)?;
         } else {
@@ -110,10 +114,10 @@ pub fn copy_dirs(source: impl AsRef<Path>, target: impl AsRef<Path>) -> std::io:
 
 // rsw log
 pub fn init_logger() {
-    use env_logger::Builder;
-    use log::LevelFilter;
-    use log::Level;
     use colored::Colorize;
+    use env_logger::Builder;
+    use log::Level;
+    use log::LevelFilter;
 
     let mut builder = Builder::new();
 
@@ -129,7 +133,7 @@ pub fn init_logger() {
 
         let log_target = match record.level() {
             Level::Info | Level::Error => format!(""),
-            _ => format!(" {}", record.target().yellow())
+            _ => format!(" {}", record.target().yellow()),
         };
 
         let rsw_log = format!("[rsw::{}]", log_level);
