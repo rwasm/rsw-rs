@@ -6,7 +6,7 @@ use std::process::Command;
 
 use crate::config::NewOptions;
 use crate::core::RswInfo;
-use crate::template;
+use crate::template::Template;
 use crate::utils::{self, write_file};
 
 pub struct Create {
@@ -95,7 +95,7 @@ impl Create {
     fn create_crate(&self) -> Result<()> {
         let target = std::env::current_dir().unwrap().join(&self.name);
         let root = std::path::Path::new(&target);
-        let template = template::Template::new(&root);
+        let template = Template::new(&root);
 
         let (name, _) = utils::get_pkg(&self.name);
         let re = Regex::new(r"(?P<name>rsw-template)").unwrap();

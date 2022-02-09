@@ -8,9 +8,9 @@ use crate::utils::load_file_contents;
 pub static RSW_TOML: &[u8] = include_bytes!("rsw.toml");
 
 // crate
-pub static CARGO_TOML: &[u8] = include_bytes!("Cargo.toml");
-pub static LIB_RS: &[u8] = include_bytes!("lib.rs");
-pub static README: &[u8] = include_bytes!("README.md");
+pub static CARGO_TOML: &[u8] = include_bytes!("rsw_cargo.toml");
+pub static LIB_RS: &[u8] = include_bytes!("rsw_lib.rs");
+pub static README: &[u8] = include_bytes!("rsw_readme.md");
 
 #[derive(Debug, PartialEq)]
 pub struct Template {
