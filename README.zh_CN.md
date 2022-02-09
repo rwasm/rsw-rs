@@ -46,6 +46,12 @@ rsw build
 - **`version`** - 配置文件版本（无意义，可选）
 - **`interval`** - 开发模式 `rsw watch` 下，文件变更触发 `wasm-pack build` 的时间间隔，默认 `50` 毫秒
 - **`[new]`** - 生成一个 `rust crate`
+- **`[new]`** - 使用 `wasm-pack new` 快速生成一个 `rust crate`, 或者使用自定义模板 `rsw.toml -> [new] -> using`
+  - **`using`** - `wasm-pack` | `rsw` | `user`, 默认是 `wasm-pack`
+    - `wasm-pack` - `rsw new <name> --template <template> --mode <normal|noinstall|force>`，了解更多 [wasm-pack new 文档](https://rustwasm.github.io/docs/wasm-pack/commands/new.html)
+    - `rsw` - `rsw new <name>`, 使用内置模板
+    - `user` - `rsw new <name>`, 如果未设置 `dir`，则使用 `wasm-pack new <name>` 初始化项目
+  - **`dir`** - 如果 `using = "user"` 则复制此目录下的所有文件初始化项目，`using = "wasm-pack"` 或 `using = "rsw"` 时，则忽略这个字段
 - **`[[crates]]`** - 是一个数组，支持多个 `rust crate` 配置
   - **`name`** - npm 包名，支持组织，例如 `@rsw/foo`
   - **`root`** - 此 `rust crate` 在项目根路径下的相对路径，默认 `.`
@@ -66,7 +72,7 @@ rsw build
 
 name = "rsw"
 version = "0.1.0"
-#! default value `50` ms
+#! default is `50` ms
 interval = 50
 
 #! ---------------------------
@@ -74,13 +80,14 @@ interval = 50
 #! rsw new <name>
 [new]
 #! @see https://rustwasm.github.io/docs/wasm-pack/commands/new.html
-#! use: wasm-pack | rsw | user
+#! using: `wasm-pack` | `rsw` | `user`, default is `wasm-pack`
 #! 1. wasm-pack: `rsw new <name> --template <template> --mode <normal|noinstall|force>`
 #! 2. rsw: `rsw new <name>`, built-in templates
 #! 3. user: `rsw new <name>`, if `dir` is not configured, use `wasm-pack new <name>` to initialize the project
-use = "wasm-pack"
-#! this field needs to be configured when `use = "user"`
-#! `use = "wasm-pack"` or `use = "rsw"`, this field will be ignored
+using = "wasm-pack"
+#! this field needs to be configured when `using = "user"`
+#! `using = "wasm-pack"` or `using = "rsw"`, this field will be ignored
+#! copy all files in this directory
 dir = "my-template"
 
 #! ################# NPM Package #################
@@ -94,22 +101,22 @@ name = "rsw-hello"
 
 #! -------- package: @rsw/hello --------
 # [[crates]]
-# #! default value `.`
+# #! default is `.`
 # root = "."
 # #! npm package name
 # name = "@rsw/hello"
-# #! default value `pkg`
+# #! default is `pkg`
 # out-dir = "pkg"
 # #! rsw watch
 # [crates.watch]
-# #! default value `true`
+# #! default is `true`
 # run = false
-# #! profile: `dev` | `profiling`, default value `dev`
+# #! profile: `dev` | `profiling`, default is `dev`
 # profile = "dev"
 # #! rsw build
 # [crates.build]
 # run = false
-# #! profile: `release` | `profiling`, default value `release`
+# #! profile: `release` | `profiling`, default is `release`
 # profile = "release"
 ```
 

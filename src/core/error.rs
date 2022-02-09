@@ -7,6 +7,7 @@ pub enum RswErr {
     ParseToml(toml::de::Error),
     WatchFile(notify::Error),
     Crate(String, std::io::Error),
+    ConfigNew(String, std::path::PathBuf),
 }
 
 impl Display for RswErr {
@@ -46,6 +47,15 @@ impl Display for RswErr {
                     "[🦀 rsw::crate]".red().on_black(),
                     name.yellow(),
                     err
+                )
+            }
+            RswErr::ConfigNew(template, path) => {
+                write!(
+                    f,
+                    "{} [new] dir = \"{}\"\n{:?} No such file or director",
+                    "[⚙️ rsw.toml]".red().on_black(),
+                    template.yellow(),
+                    path.display(),
                 )
             }
         }

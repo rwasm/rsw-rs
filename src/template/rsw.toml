@@ -1,6 +1,6 @@
 name = "rsw"
 version = "0.1.0"
-#! default value `50` ms
+#! default is `50` ms
 interval = 50
 
 #! ---------------------------
@@ -8,13 +8,14 @@ interval = 50
 #! rsw new <name>
 [new]
 #! @see https://rustwasm.github.io/docs/wasm-pack/commands/new.html
-#! using: wasm-pack | rsw | user
+#! using: `wasm-pack` | `rsw` | `user`, default is `wasm-pack`
 #! 1. wasm-pack: `rsw new <name> --template <template> --mode <normal|noinstall|force>`
 #! 2. rsw: `rsw new <name>`, built-in templates
 #! 3. user: `rsw new <name>`, if `dir` is not configured, use `wasm-pack new <name>` to initialize the project
 using = "wasm-pack"
 #! this field needs to be configured when `using = "user"`
 #! `using = "wasm-pack"` or `using = "rsw"`, this field will be ignored
+#! copy all files in this directory
 dir = "my-template"
 
 #! ################# NPM Package #################
@@ -28,20 +29,20 @@ name = "rsw-hello"
 
 #! -------- package: @rsw/hello --------
 # [[crates]]
-# #! default value `.`
+# #! default is `.`
 # root = "."
 # #! npm package name
 # name = "@rsw/hello"
-# #! default value `pkg`
+# #! default is `pkg`
 # out-dir = "pkg"
 # #! rsw watch
 # [crates.watch]
-# #! default value `true`
+# #! default is `true`
 # run = false
-# #! profile: `dev` | `profiling`, default value `dev`
+# #! profile: `dev` | `profiling`, default is `dev`
 # profile = "dev"
 # #! rsw build
 # [crates.build]
 # run = false
-# #! profile: `release` | `profiling`, default value `release`
+# #! profile: `release` | `profiling`, default is `release`
 # profile = "release"
