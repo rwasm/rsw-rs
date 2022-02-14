@@ -40,47 +40,59 @@ impl Cli {
     pub fn new() {
         match &Cli::parse().command {
             Commands::Build => {
-                Cli::build(Rc::new(Cli::parse_toml()), "build");
+                Cli::rsw_build();
             }
             Commands::Watch => {
-                // initial build
-                let config = Rc::new(Cli::parse_toml());
-                Cli::build(config.clone(), "watch");
-
-                Watch::new(
-                    config,
-                    Box::new(|crate_config, e| {
-                        // TODO: build crate
-                        println!("{}", RswInfo::CrateChange(e));
-                        Build::new(crate_config.clone(), "watch").init();
-                    }),
-                )
-                .init();
+                Cli::rsw_watch();
             }
             Commands::Init => {
-                Init::new().unwrap();
+                Cli::rsw_init();
             }
             Commands::New {
                 name,
                 template,
                 mode,
             } => {
-                Create::new(
-                    Cli::parse_toml().new.unwrap(),
-                    name.into(),
-                    template.to_owned(),
-                    mode.to_owned(),
-                )
-                .init();
+                Cli::rsw_new(name, template, mode);
             }
         }
+    }
+    pub fn rsw_build() {
+        Cli::wp_build(Rc::new(Cli::parse_toml()), "build");
+    }
+    pub fn rsw_watch() {
+        // initial build
+        let config = Rc::new(Cli::parse_toml());
+        Cli::wp_build(config.clone(), "watch");
+
+        Watch::new(
+            config,
+            Box::new(|crate_config, e| {
+                // TODO: build crate
+                println!("{}", RswInfo::CrateChange(e));
+                Build::new(crate_config.clone(), "watch").init();
+            }),
+        )
+        .init();
+    }
+    pub fn rsw_init() {
+        Init::new().unwrap();
+    }
+    pub fn rsw_new(name: &String, template: &Option<String>, mode: &Option<String>) {
+        Create::new(
+            Cli::parse_toml().new.unwrap(),
+            name.into(),
+            template.to_owned(),
+            mode.to_owned(),
+        )
+        .init();
     }
     pub fn parse_toml() -> RswConfig {
         let config = RswConfig::new().unwrap();
         trace!("{:#?}", config);
         config
     }
-    pub fn build(config: Rc<RswConfig>, rsw_type: &str) {
+    pub fn wp_build(config: Rc<RswConfig>, rsw_type: &str) {
         for i in &config.crates {
             if i.build.as_ref().unwrap().run.unwrap() {
                 Build::new(i.clone(), rsw_type).init();
