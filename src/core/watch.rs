@@ -8,7 +8,7 @@ use std::{
 };
 
 use crate::config::{CrateConfig, RswConfig};
-use crate::core::{RswErr, RswInfo};
+use crate::core::{Build, RswErr, RswInfo};
 
 pub struct Watch {
     config: Rc<RswConfig>,
@@ -59,12 +59,18 @@ impl Watch {
 
                 match event {
                     Write(path) | Remove(path) | Rename(_, path) => {
+                        let path = Rc::new(path);
                         for (key, val) in &path_map {
                             if Regex::new(val.to_str().unwrap())
                                 .unwrap()
                                 .is_match(path.to_owned().to_str().unwrap())
                             {
-                                caller(*crate_map.get(key).unwrap(), path);
+                                let crate_config = *crate_map.get(key).unwrap();
+                                // TODO: build crate
+                                println!("{}", RswInfo::CrateChange(path.clone().to_path_buf()));
+                                // caller(crate_config, e);
+                                Build::new(crate_config.clone(), "watch").init();
+                                caller(crate_config, path.clone().to_path_buf());
                                 break;
                             }
                         }

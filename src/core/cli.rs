@@ -3,8 +3,8 @@
 use clap::{AppSettings, Parser, Subcommand};
 use std::rc::Rc;
 
-use crate::config::RswConfig;
-use crate::core::{Build, Create, Init, RswInfo, Watch};
+use crate::config::{CrateConfig, RswConfig};
+use crate::core::{Build, Create, Init, Watch};
 
 #[derive(Parser)]
 #[clap(version, about, long_about = None)]
@@ -43,7 +43,7 @@ impl Cli {
                 Cli::rsw_build();
             }
             Commands::Watch => {
-                Cli::rsw_watch();
+                Cli::rsw_watch(None);
             }
             Commands::Init => {
                 Cli::rsw_init();
@@ -60,20 +60,14 @@ impl Cli {
     pub fn rsw_build() {
         Cli::wp_build(Rc::new(Cli::parse_toml()), "build");
     }
-    pub fn rsw_watch() {
+
+    // std::boxed::Box<dyn for<'r> std::ops::Fn(&'r config::CrateConfig, std::path::PathBuf)>
+    pub fn rsw_watch(callback: Option<Box<dyn Fn(&CrateConfig, std::path::PathBuf)>>) {
         // initial build
         let config = Rc::new(Cli::parse_toml());
         Cli::wp_build(config.clone(), "watch");
 
-        Watch::new(
-            config,
-            Box::new(|crate_config, e| {
-                // TODO: build crate
-                println!("{}", RswInfo::CrateChange(e));
-                Build::new(crate_config.clone(), "watch").init();
-            }),
-        )
-        .init();
+        Watch::new(config, callback.unwrap()).init();
     }
     pub fn rsw_init() {
         Init::new().unwrap();

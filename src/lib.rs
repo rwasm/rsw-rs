@@ -84,7 +84,8 @@ extern crate serde_derive;
 #[macro_use]
 extern crate log;
 
-use crate::core::{Cli, RswErr};
+use crate::core::RswErr;
+pub use crate::core::Cli;
 
 pub fn rsw_cli() {
     utils::init_logger();
