@@ -74,10 +74,10 @@
 //! # profile = "release"
 //! ```
 
-mod config;
-mod core;
-mod template;
-mod utils;
+pub mod config;
+pub mod core;
+pub mod template;
+pub mod utils;
 
 #[macro_use]
 extern crate serde_derive;
@@ -85,6 +85,8 @@ extern crate serde_derive;
 extern crate log;
 
 use crate::core::RswErr;
+use crate::utils::print;
+
 pub use crate::core::Cli;
 
 pub fn rsw_cli() {
@@ -92,7 +94,7 @@ pub fn rsw_cli() {
 
     if !utils::check_env_cmd("wasm-pack") {
         // TODO: ask if you want to install `wasm-pack` now
-        println!("{}", RswErr::WasmPack);
+        print(RswErr::WasmPack);
         std::process::exit(1);
     }
 

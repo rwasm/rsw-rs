@@ -10,6 +10,8 @@ use std::{
 use crate::config::{CrateConfig, RswConfig};
 use crate::core::{Build, RswErr, RswInfo};
 
+use crate::utils::print;
+
 pub struct Watch {
     config: Rc<RswConfig>,
     callback: Box<dyn Fn(&CrateConfig, PathBuf)>,
@@ -29,7 +31,7 @@ impl Watch {
         let mut watcher = match notify::watcher(tx, Duration::from_secs(1)) {
             Ok(w) => w,
             Err(e) => {
-                println!("{}", RswErr::WatchFile(e));
+                print(RswErr::WatchFile(e));
                 std::process::exit(1);
             }
         };
@@ -37,7 +39,7 @@ impl Watch {
         for i in &config.crates {
             if i.watch.as_ref().unwrap().run.unwrap() {
                 // TODO: local deps watch
-                println!("{}", RswInfo::RunWatch(i.name.clone()));
+                print(RswInfo::RunWatch(i.name.clone()));
                 let crate_root = PathBuf::from(i.root.as_ref().unwrap()).join(&i.name);
                 let _ = watcher.watch(crate_root.join("src"), Recursive);
                 let _ = watcher.watch(crate_root.join("Cargo.toml"), NonRecursive);
@@ -67,7 +69,7 @@ impl Watch {
                             {
                                 let crate_config = *crate_map.get(key).unwrap();
                                 // TODO: build crate
-                                println!("{}", RswInfo::CrateChange(path.clone().to_path_buf()));
+                                print(RswInfo::CrateChange(path.clone().to_path_buf()));
                                 // caller(crate_config, e);
                                 Build::new(crate_config.clone(), "watch").init();
                                 caller(crate_config, path.clone().to_path_buf());

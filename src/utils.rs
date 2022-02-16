@@ -28,7 +28,7 @@ pub fn get_crate_metadata(name: &str) -> Value {
     let crate_root = env::current_dir().unwrap().join(name).join("Cargo.toml");
     let content = fs::read_to_string(crate_root).unwrap_or_else(|e| {
         // TODO: create crate
-        println!("{}", RswErr::Crate(name.to_string(), e));
+        print(RswErr::Crate(name.to_string(), e));
         std::process::exit(1);
     });
     let value = content.parse::<Value>().unwrap();
@@ -177,4 +177,8 @@ mod pkg_name_tests {
             ("my_wasm".into(), "rsw-org".into())
         );
     }
+}
+
+pub fn print<T: std::fmt::Display>(a: T) {
+    println!("{}", a)
 }

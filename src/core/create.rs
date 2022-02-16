@@ -7,7 +7,7 @@ use std::process::Command;
 use crate::config::NewOptions;
 use crate::core::RswInfo;
 use crate::template::Template;
-use crate::utils::{self, write_file};
+use crate::utils::{self, print, write_file};
 
 pub struct Create {
     name: String,
@@ -75,13 +75,13 @@ impl Create {
             }
         }
 
-        println!("{}", RswInfo::CrateNewOk(name.into()));
+        print(RswInfo::CrateNewOk(name.into()));
     }
     fn check_crate(&self) {
         let name = &self.name;
         let path = std::env::current_dir().unwrap().join(name);
         if utils::path_exists(path.as_path()) {
-            println!("{}", RswInfo::CrateNewExist(name.into()));
+            print(RswInfo::CrateNewExist(name.into()));
             std::process::exit(1);
         }
     }
@@ -112,7 +112,7 @@ impl Create {
         let root = std::env::current_dir().unwrap();
         let source = root.join(dir);
         if !utils::path_exists(source.as_path()) {
-            println!("{}", RswInfo::ConfigNewDir(dir.into(), source));
+            print(RswInfo::ConfigNewDir(dir.into(), source));
             std::process::exit(1);
         }
         utils::copy_dirs(root.join(dir), root.join(&self.name)).unwrap();

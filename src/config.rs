@@ -4,6 +4,7 @@ use anyhow::{Error, Result};
 use std::{env, fs, process};
 
 use crate::core::RswErr;
+use crate::utils::print;
 
 pub static RSW_FILE: &'static str = "rsw.toml";
 
@@ -132,11 +133,11 @@ impl RswConfig {
     pub fn new() -> Result<RswConfig, Error> {
         let rsw_file = env::current_dir().unwrap().join(RSW_FILE);
         let rsw_content = fs::read_to_string(rsw_file).unwrap_or_else(|e| {
-            println!("{}", RswErr::Config(e));
+            print(RswErr::Config(e));
             process::exit(1);
         });
         let rsw_toml_parse = toml::from_str(&rsw_content).unwrap_or_else(|e| {
-            println!("{}", RswErr::ParseToml(e));
+            print(RswErr::ParseToml(e));
             process::exit(1);
         });
 

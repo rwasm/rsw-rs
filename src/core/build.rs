@@ -4,7 +4,7 @@ use std::process::Command;
 
 use crate::config::CrateConfig;
 use crate::core::RswInfo;
-use crate::utils;
+use crate::utils::{get_crate_metadata, get_pkg, print};
 
 pub struct Build {
     config: CrateConfig,
@@ -36,13 +36,13 @@ impl Build {
         args.push(&arg_profile);
 
         // scope
-        let (_, scope) = utils::get_pkg(&self.config.name);
+        let (_, scope) = get_pkg(&self.config.name);
         if scope != "" {
             args.push("--scope");
             args.push(scope.as_str());
         }
 
-        let metadata = utils::get_crate_metadata(name.as_str());
+        let metadata = get_crate_metadata(name.as_str());
         info!("🚧  wasm-pack {}", args.join(" "));
 
         let status = Command::new("wasm-pack")
@@ -53,21 +53,16 @@ impl Build {
         println!("");
 
         match status.success() {
-            true => {
-                println!(
-                    "{}",
-                    RswInfo::CrateOk(
-                        name.into(),
-                        rsw_type.into(),
-                        metadata["package"]["version"].to_string(),
-                    )
-                )
-            }
+            true => print(RswInfo::CrateOk(
+                name.into(),
+                rsw_type.into(),
+                metadata["package"]["version"].to_string(),
+            )),
             false => {
-                println!("{}", RswInfo::CrateFail(name.into(), rsw_type.into()))
+                print(RswInfo::CrateFail(name.into(), rsw_type.into()));
             }
         }
 
-        println!("\n{}\n", RswInfo::SplitLine);
+        print(RswInfo::SplitLine);
     }
 }

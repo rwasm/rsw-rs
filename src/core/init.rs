@@ -5,17 +5,20 @@ use std::io::prelude::*;
 use std::path::Path;
 
 use crate::core::RswInfo;
-use crate::{config, template, utils};
+use crate::{
+    config, template,
+    utils::{path_exists, print},
+};
 
 pub struct Init;
 
 impl Init {
     pub fn new() -> std::io::Result<()> {
-        if !utils::path_exists(Path::new(config::RSW_FILE)) {
+        if !path_exists(Path::new(config::RSW_FILE)) {
             File::create(config::RSW_FILE)?.write_all(template::RSW_TOML)?;
-            println!("{}", RswInfo::RswTomlOk);
+            print(RswInfo::RswTomlOk);
         } else {
-            println!("{}", RswInfo::RswTomExist);
+            print(RswInfo::RswTomExist);
         }
 
         Ok(())
