@@ -33,17 +33,27 @@
 ## Usage
 
 ```bash
+# Rust
 cargo install rsw
+
+# Or Node.js
+npm install -g @rsw/cli
 ```
 
 ```bash
 # help
 rsw -h
 
-# dev
+# rsw.toml - initial configuration
+rsw init
+
+# generate a wasm project
+rsw new <name>
+
+# dev mode
 rsw watch
 
-# release
+# release mode
 rsw build
 ```
 
@@ -92,6 +102,16 @@ Create `rsw.toml` in the project root path, configure the `rust crate` parameter
     - **`profile`** - `release` | `profiling`, default is `release`
 
 **Note: `name` in `[[crates]]` is required, other fields are optional.**
+
+## rsw.log
+
+> watch info
+
+- `[RSW::ERROR]`
+- `[RSW::ARGS]`
+- `[RSW::BUILD]`
+- `[RSW::WATCH]`
+- `[RSW::FILE]`
 
 ### Example
 

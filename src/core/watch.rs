@@ -71,8 +71,12 @@ impl Watch {
                                 // TODO: build crate
                                 print(RswInfo::CrateChange(path.clone().to_path_buf()));
                                 // caller(crate_config, e);
-                                Build::new(crate_config.clone(), "watch").init();
-                                caller(crate_config, path.clone().to_path_buf());
+                                let is_ok = Build::new(crate_config.clone(), "watch").init();
+
+                                if is_ok {
+                                    caller(crate_config, path.clone().to_path_buf());
+                                }
+
                                 break;
                             }
                         }

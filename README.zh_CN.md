@@ -30,13 +30,22 @@
 ## 用法
 
 ```bash
-# 安装
+# 在 Rust 环境下安装
 cargo install rsw
+
+# 或者在 Node.js 环境下安装
+npm install -g @rsw/cli
 ```
 
 ```bash
 # 查看帮助
 rsw -h
+
+# rsw.toml - 初始化配置
+rsw init
+
+# 生成一个 wasm 项目
+rsw new <name>
 
 # 开发模式
 rsw watch
@@ -91,6 +100,16 @@ RUST_LOG=rsw rsw <SUBCOMMAND>
     - **`profile`** - `release` | `profiling`，默认 `release`
 
 **注意：`[[crates]]` 中 `name` 是必须的，其他字段均为可选。**
+
+## rsw.log
+
+> 监听 `rust crate` 文件变更，输出日志信息
+
+- `[RSW::ERROR]`
+- `[RSW::ARGS]`
+- `[RSW::BUILD]`
+- `[RSW::WATCH]`
+- `[RSW::FILE]`
 
 ### 示例
 

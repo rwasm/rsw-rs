@@ -11,9 +11,23 @@
 ```bash
 # install
 npm install -g @rsw/cli
+```
 
-# usage
+```bash
+# help
 rsw -h
+
+# rsw.toml - initial configuration
+rsw init
+
+# generate a wasm project
+rsw new <name>
+
+# dev mode
+rsw watch
+
+# release mode
+rsw build
 ```
 
 [rsw docs](https://github.com/lencx/rsw-rs/blob/main/README.md)

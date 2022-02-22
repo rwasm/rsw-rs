@@ -5,6 +5,7 @@ use std::rc::Rc;
 
 use crate::config::{CrateConfig, RswConfig};
 use crate::core::{Build, Create, Init, Watch};
+use crate::utils::rsw_watch_file;
 
 #[derive(Parser)]
 #[clap(version, about, long_about = None)]
@@ -43,7 +44,12 @@ impl Cli {
                 Cli::rsw_build();
             }
             Commands::Watch => {
-                Cli::rsw_watch(None);
+                Cli::rsw_watch(Some(Box::new(|a, b| {
+                    let name = &a.name;
+                    let path = &b.to_string_lossy().to_string();
+                    let content = ["[RSW::WATCH]: ", name, "\n\n[RSW::FILE]: ", path];
+                    rsw_watch_file(content.concat().as_bytes()).unwrap();
+                })));
             }
             Commands::Init => {
                 Cli::rsw_init();
@@ -64,6 +70,8 @@ impl Cli {
         // initial build
         let config = Rc::new(Cli::parse_toml());
         Cli::wp_build(config.clone(), "watch");
+
+        println!("");
 
         Watch::new(config, callback.unwrap()).init();
     }

@@ -8,6 +8,7 @@ use std::{
 };
 use toml::Value;
 
+use crate::config;
 use crate::core::RswErr;
 
 // https://stackoverflow.com/questions/35045996/check-if-a-command-is-in-path-executable-as-process
@@ -156,6 +157,21 @@ pub fn init_logger() {
     builder.init();
 }
 
+pub fn print<T: std::fmt::Display>(a: T) {
+    println!("{}", a)
+}
+
+pub fn rsw_watch_file(content: &[u8]) -> Result<()> {
+    let rsw_file = std::env::current_dir()
+        .unwrap()
+        .join(config::RSW_WATCH_FILE);
+    if !path_exists(rsw_file.as_path()) {
+        File::create(&rsw_file)?;
+    }
+    fs::write(rsw_file, content)?;
+    Ok(())
+}
+
 #[cfg(test)]
 mod pkg_name_tests {
     use super::*;
@@ -177,8 +193,4 @@ mod pkg_name_tests {
             ("my_wasm".into(), "rsw-org".into())
         );
     }
-}
-
-pub fn print<T: std::fmt::Display>(a: T) {
-    println!("{}", a)
 }

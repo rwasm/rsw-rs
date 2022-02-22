@@ -4,7 +4,7 @@ use std::process::Command;
 
 use crate::config::CrateConfig;
 use crate::core::RswInfo;
-use crate::utils::{get_crate_metadata, get_pkg, print};
+use crate::utils::{get_crate_metadata, get_pkg, print, rsw_watch_file};
 
 pub struct Build {
     config: CrateConfig,
@@ -19,7 +19,7 @@ impl Build {
         }
     }
 
-    pub fn init(&self) {
+    pub fn init(&self) -> bool {
         let config = &self.config;
         let rsw_type = &self.rsw_type;
         let name = &config.name;
@@ -46,11 +46,13 @@ impl Build {
         info!("🚧  wasm-pack {}", args.join(" "));
 
         let status = Command::new("wasm-pack")
-            .args(args)
+            .args(&args)
             .status()
             .expect("failed to execute process");
 
         println!("");
+
+        let mut is_ok = true;
 
         match status.success() {
             true => print(RswInfo::CrateOk(
@@ -59,10 +61,29 @@ impl Build {
                 metadata["package"]["version"].to_string(),
             )),
             false => {
+                let output = Command::new("wasm-pack")
+                    .args(&args)
+                    .stderr(std::process::Stdio::piped())
+                    .output()
+                    .unwrap();
+                let err = std::str::from_utf8(&output.stderr).unwrap();
+                let content = [
+                    "[RSW::ERROR]: ",
+                    name,
+                    "\n\n[RSW::ARGS]: wasm-pack ",
+                    &args.join(" "),
+                    "\n\n[RSW::BUILD]:\n",
+                    err,
+                ];
+                rsw_watch_file(content.concat().as_bytes()).unwrap();
                 print(RswInfo::CrateFail(name.into(), rsw_type.into()));
+
+                is_ok = false;
             }
         }
 
         print(RswInfo::SplitLine);
+
+        is_ok
     }
 }

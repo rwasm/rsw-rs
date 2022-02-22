@@ -1,6 +1,6 @@
 {
   "name": "@rsw/cli",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "🦞 wasm-pack based build tool",
   "main": "binary.js",
   "author": "lencx <cxin1314@gmail.com>",
@@ -10,7 +10,7 @@
     "preuninstall": "node ./uninstall.js"
   },
   "bin": {
-    "wasm-pack": "./run.js"
+    "rsw": "./run.js"
   },
   "repository": {
     "type": "git",
