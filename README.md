@@ -24,6 +24,12 @@
 - local sub-dependency file changes trigger hot updates
 - integrate front-end scaffolding, such as `vite`, `webpack`, etc.
 
+## Pre-installed
+
+- [rust](https://www.rust-lang.org/learn/get-started)
+- [nodejs](https://nodejs.org)
+- [wasm-pack](https://github.com/rustwasm/wasm-pack)
+
 ## Usage
 
 ```bash

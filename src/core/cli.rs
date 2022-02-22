@@ -60,8 +60,6 @@ impl Cli {
     pub fn rsw_build() {
         Cli::wp_build(Rc::new(Cli::parse_toml()), "build");
     }
-
-    // std::boxed::Box<dyn for<'r> std::ops::Fn(&'r config::CrateConfig, std::path::PathBuf)>
     pub fn rsw_watch(callback: Option<Box<dyn Fn(&CrateConfig, std::path::PathBuf)>>) {
         // initial build
         let config = Rc::new(Cli::parse_toml());

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.0 (2022-02-22)
+
+- npm install
+
 ## 0.2.0 (2022-02-09)
 
 - rsw new (rsw | user)

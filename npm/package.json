@@ -1,0 +1,39 @@
+{
+  "name": "@rsw/cli",
+  "version": "0.3.0",
+  "description": "🦞 wasm-pack based build tool",
+  "main": "binary.js",
+  "author": "lencx <cxin1314@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "postinstall": "node ./install.js",
+    "preuninstall": "node ./uninstall.js"
+  },
+  "bin": {
+    "wasm-pack": "./run.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lencx/rsw-rs.git"
+  },
+  "keywords": [
+    "rsw",
+    "wasm",
+    "rust-wasm",
+    "registry",
+    "cli",
+    "rust",
+    "npm",
+    "package"
+  ],
+  "bugs": {
+    "url": "https://github.com/lencx/rsw-rs/issues"
+  },
+  "homepage": "https://github.com/lencx/rsw-rs#readme",
+  "dependencies": {
+    "binary-install": "^0.1.0"
+  },
+  "resolutions": {
+    "axios": "0.26.0"
+  }
+}

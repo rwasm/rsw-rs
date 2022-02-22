@@ -21,6 +21,12 @@
 - 本地依赖变更触发热更新
 - 集成前端脚手架，如 `vite`，`webpack` 等
 
+## 预安装
+
+- [rust](https://www.rust-lang.org/learn/get-started)
+- [nodejs](https://nodejs.org)
+- [wasm-pack](https://github.com/rustwasm/wasm-pack)
+
 ## 用法
 
 ```bash
