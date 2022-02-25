@@ -1,7 +1,16 @@
 name = "rsw"
 version = "0.1.0"
-#! default is `50` ms
+
+#! time interval for file changes to trigger wasm-pack build, default `50` milliseconds
 interval = 50
+
+# npm link
+# @see https://docs.npmjs.com/cli/v8/commands/npm-link
+[link]
+#! type: `npm` | `pnpm`, default is `npm`
+type = "npm"
+#! run `npm link`: `true` | `false`, default is `false`
+run = false
 
 #! ---------------------------
 

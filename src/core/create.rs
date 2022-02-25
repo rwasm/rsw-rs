@@ -7,7 +7,7 @@ use std::process::Command;
 use crate::config::NewOptions;
 use crate::core::RswInfo;
 use crate::template::Template;
-use crate::utils::{self, print, write_file};
+use crate::utils::{self, path_exists, print, write_file};
 
 pub struct Create {
     name: String,
@@ -36,7 +36,13 @@ impl Create {
     pub fn init(&self) {
         // println!("{:?}", self.config);
         let name = self.name.as_str();
-        let mut args = vec!["new", name];
+        let (name2, scope) = utils::get_pkg(name);
+
+        let scope2 = format!("@{}", scope);
+
+        self.check_scope(&scope2);
+
+        let mut args = vec!["new", &name2];
         let arg_tpl = self.template.as_deref();
         let arg_mode = self.mode.as_deref();
         let arg_use = self.config.using.as_ref().unwrap();
@@ -58,7 +64,7 @@ impl Create {
 
         // wasm-pack
         if arg_use == "wasm-pack" || !arg_tpl.is_none() {
-            self.wp_cmd(&args);
+            self.wp_cmd(&args, &scope2);
         }
 
         // built-in template
@@ -69,13 +75,21 @@ impl Create {
         // custom template
         if arg_use == "user" {
             if user_dirs.is_empty() {
-                self.wp_cmd(&args);
+                self.wp_cmd(&args, &scope2);
             } else {
                 self.user_crate(user_dirs);
             }
         }
 
         print(RswInfo::CrateNewOk(name.into()));
+    }
+    fn check_scope(&self, scope: &String) {
+        if scope != "@" {
+            let scope_dir = std::env::current_dir().unwrap().join(scope);
+            if !path_exists(scope_dir.as_path()) {
+                std::fs::create_dir(&scope_dir).unwrap();
+            }
+        }
     }
     fn check_crate(&self) {
         let name = &self.name;
@@ -85,9 +99,13 @@ impl Create {
             std::process::exit(1);
         }
     }
-    fn wp_cmd(&self, args: &Vec<&str>) {
-        // println!("{:?}", args);
+    fn wp_cmd(&self, args: &Vec<&str>, scope: &String) {
+        let mut scope_dir = std::env::current_dir().unwrap();
+        if scope != "@" {
+            scope_dir = scope_dir.join(scope);
+        }
         Command::new("wasm-pack")
+            .current_dir(scope_dir)
             .args(args)
             .status()
             .expect("failed to execute process");
@@ -111,7 +129,7 @@ impl Create {
     fn user_crate(&self, dir: &str) {
         let root = std::env::current_dir().unwrap();
         let source = root.join(dir);
-        if !utils::path_exists(source.as_path()) {
+        if !path_exists(source.as_path()) {
             print(RswInfo::ConfigNewDir(dir.into(), source));
             std::process::exit(1);
         }
