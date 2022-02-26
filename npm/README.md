@@ -28,6 +28,9 @@ rsw watch
 
 # release mode
 rsw build
+
+# clean - link & build
+rsw clean
 ```
 
 [rsw docs](https://github.com/lencx/rsw-rs/blob/main/README.md)

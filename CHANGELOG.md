@@ -1,29 +1,34 @@
 # Changelog
 
-## 0.4.0 (2022-02-23)
+## 0.5.0
+
+- link - npm, yarn or pnpm
+- rsw clean - link & build
+
+## 0.4.0
 
 - rsw.log - generate log files in watch mode
 
-## 0.3.0 (2022-02-22)
+## 0.3.0
 
 - npm install
 
-## 0.2.0 (2022-02-09)
+## 0.2.0
 
 - rsw new (rsw | user)
 - add logger
 
-## 0.1.0 (2022-02-08)
+## 0.1.0
 
 - rsw new (wasm-pack new)
 - rsw init - generate `rsw.toml`
 - rsw watch
 
-## 0.0.2 (2022-01-17)
+## 0.0.2
 
 - rsw build
 - rsw.toml
 
-## 0.0.1 (2022-01-12)
+## 0.0.1
 
 Initial release.

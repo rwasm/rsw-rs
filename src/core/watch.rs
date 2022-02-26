@@ -67,9 +67,7 @@ impl Watch {
                                 .is_match(path.to_owned().to_str().unwrap())
                             {
                                 let crate_config = *crate_map.get(key).unwrap();
-                                // TODO: build crate
                                 print(RswInfo::CrateChange(path.clone().to_path_buf()));
-                                // caller(crate_config, e);
                                 let is_ok = Build::new(
                                     crate_config.clone(),
                                     "watch",
