@@ -55,7 +55,6 @@ impl Watch {
             let other_events = rx.try_iter();
 
             let all_events = std::iter::once(first_event).chain(other_events);
-
             for event in all_events {
                 debug!("{:?}", event);
 
@@ -71,7 +70,12 @@ impl Watch {
                                 // TODO: build crate
                                 print(RswInfo::CrateChange(path.clone().to_path_buf()));
                                 // caller(crate_config, e);
-                                let is_ok = Build::new(crate_config.clone(), "watch").init();
+                                let is_ok = Build::new(
+                                    crate_config.clone(),
+                                    "watch",
+                                    config.cli.to_owned().unwrap(),
+                                )
+                                .init();
 
                                 if is_ok {
                                     caller(crate_config, path.clone().to_path_buf());

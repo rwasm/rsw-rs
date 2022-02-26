@@ -52,6 +52,9 @@ rsw watch
 
 # 生产构建
 rsw build
+
+# 清除 link 及 build 产物
+rsw clean
 ```
 
 ## 日志
@@ -80,7 +83,7 @@ RUST_LOG=rsw rsw <SUBCOMMAND>
 - **`name`** - 配置文件名称（无意义，可选）
 - **`version`** - 配置文件版本（无意义，可选）
 - **`interval`** - 开发模式 `rsw watch` 下，文件变更触发 `wasm-pack build` 的时间间隔，默认 `50` 毫秒
-- **`[new]`** - 生成一个 `rust crate`
+- **`cli`** - `npm` | `yarn` | `pnpm`，默认是 `npm`。使用指定的 `cli` 执行 `link`，例如 `npm link`
 - **`[new]`** - 使用 `wasm-pack new` 快速生成一个 `rust crate`, 或者使用自定义模板 `rsw.toml -> [new] -> using`
   - **`using`** - `wasm-pack` | `rsw` | `user`, 默认是 `wasm-pack`
     - `wasm-pack` - `rsw new <name> --template <template> --mode <normal|noinstall|force>`，了解更多 [wasm-pack new 文档](https://rustwasm.github.io/docs/wasm-pack/commands/new.html)
@@ -90,6 +93,7 @@ RUST_LOG=rsw rsw <SUBCOMMAND>
 - **`[[crates]]`** - 是一个数组，支持多个 `rust crate` 配置
   - **`name`** - npm 包名，支持组织，例如 `@rsw/foo`
   - **`root`** - 此 `rust crate` 在项目根路径下的相对路径，默认 `.`
+  - **`link`** - `true` | `false`，默认为 `false`，此 `rust crate` 构建后是否执行 `link` 命令，与 `cli` 配合使用
   - **`target`** - `bundler` | `nodejs` | `web` | `no-modules`, 默认 `web`
   - **`out-dir`** - npm 包输出路径，默认 `pkg`
   - **`[crates.watch]`** - 开发模式下的配置
@@ -118,8 +122,17 @@ RUST_LOG=rsw rsw <SUBCOMMAND>
 
 name = "rsw"
 version = "0.1.0"
-#! default is `50` ms
+
+#! time interval for file changes to trigger wasm-pack build, default `50` milliseconds
 interval = 50
+
+#! link
+#! npm link @see https://docs.npmjs.com/cli/v8/commands/npm-link
+#! yarn link @see https://classic.yarnpkg.com/en/docs/cli/link
+#! pnpm link @see https://pnpm.io/cli/link
+#! The link command will only be executed if `[[crates]] link = true`
+#! cli: `npm` | `yarn` | `pnpm`, default is `npm`
+cli = "npm"
 
 #! ---------------------------
 
@@ -141,7 +154,10 @@ dir = "my-template"
 #! When there is only `name`, other fields will use the default configuration
 #! -------- package: rsw-hello --------
 [[crates]]
+#! npm package name
 name = "rsw-hello"
+#! run `npm link`: `true` | `false`, default is `false`
+link = false
 
 #! =======================================================
 
@@ -155,6 +171,8 @@ name = "rsw-hello"
 # out-dir = "pkg"
 # #! target: bundler | nodejs | web | no-modules, default is `web`
 # target = "web"
+#! run `npm link`: `true` | `false`, default is `false`
+# link = false
 # #! rsw watch
 # [crates.watch]
 # #! default is `true`

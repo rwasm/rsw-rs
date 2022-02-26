@@ -8,17 +8,37 @@ pub enum RswInfo {
     RswTomlOk,
     RswTomExist,
     RunWatch(String),
+    CrateLink(String, String),
     CrateFail(String, String),
     CrateOk(String, String, String),
     CrateChange(std::path::PathBuf),
     CrateNewOk(String),
     CrateNewExist(String),
     ConfigNewDir(String, std::path::PathBuf),
+    Clean(String, String),
 }
 
 impl Display for RswInfo {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
+            RswInfo::CrateLink(cli, name) => {
+                write!(
+                    f,
+                    "{} {} {}",
+                    "[🔗 rsw::link]".green().on_black(),
+                    cli,
+                    name.yellow()
+                )
+            }
+            RswInfo::Clean(a, b) => {
+                write!(
+                    f,
+                    "{} {} {}",
+                    "[🗑 rsw::clean]".green().on_black(),
+                    a,
+                    b.yellow()
+                )
+            }
             RswInfo::CrateOk(name, mode, version) => {
                 let rsw_tip = match *mode == "watch" {
                     true => "[👀 rsw::watch]",

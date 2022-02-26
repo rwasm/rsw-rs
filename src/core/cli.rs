@@ -1,10 +1,13 @@
 //! rsw command parse
 
 use clap::{AppSettings, Parser, Subcommand};
+use std::cell::RefCell;
+use std::collections::HashMap;
+use std::path::PathBuf;
 use std::rc::Rc;
 
 use crate::config::{CrateConfig, RswConfig};
-use crate::core::{Build, Create, Init, Watch};
+use crate::core::{Build, Clean, Create, Init, Link, Watch};
 use crate::utils::rsw_watch_file;
 
 #[derive(Parser)]
@@ -18,12 +21,14 @@ pub struct Cli {
 
 #[derive(Subcommand)]
 pub enum Commands {
+    /// generate `rsw.toml` configuration file
+    Init,
     /// build rust crates, useful for shipping to production
     Build,
     /// automatically rebuilding local changes, useful for development and debugging
     Watch,
-    /// generate `rsw.toml` configuration file
-    Init,
+    /// clean - `npm link` and `wasm-pack build`
+    Clean,
     /// quickly generate a crate with `wasm-pack new`, or set a custom template in `rsw.toml [new]`
     New {
         /// the name of the project
@@ -40,6 +45,8 @@ pub enum Commands {
 impl Cli {
     pub fn new() {
         match &Cli::parse().command {
+            Commands::Init => Cli::rsw_init(),
+            Commands::Clean => Cli::rsw_clean(),
             Commands::Build => {
                 Cli::rsw_build();
             }
@@ -50,9 +57,6 @@ impl Cli {
                     let content = ["[RSW::WATCH]: ", name, "\n\n[RSW::FILE]: ", path];
                     rsw_watch_file(content.concat().as_bytes()).unwrap();
                 })));
-            }
-            Commands::Init => {
-                Cli::rsw_init();
             }
             Commands::New {
                 name,
@@ -78,6 +82,9 @@ impl Cli {
     pub fn rsw_init() {
         Init::new().unwrap();
     }
+    pub fn rsw_clean() {
+        Clean::new(Cli::parse_toml());
+    }
     pub fn rsw_new(name: &String, template: &Option<String>, mode: &Option<String>) {
         Create::new(
             Cli::parse_toml().new.unwrap(),
@@ -93,10 +100,37 @@ impl Cli {
         config
     }
     pub fn wp_build(config: Rc<RswConfig>, rsw_type: &str) {
+        // let crates_map = Rc::new(RefCell::new(HashMap::new()));
+        let crates_map = Rc::new(RefCell::new(HashMap::new()));
+
+        let cli = &config.cli.to_owned().unwrap();
+        let mut has_crates = false;
+
         for i in &config.crates {
-            if i.build.as_ref().unwrap().run.unwrap() {
-                Build::new(i.clone(), rsw_type).init();
+            if cli == "npm" && i.link.unwrap() {
+                has_crates = true;
+                let rsw_crate = i.clone();
+                let crate_path = PathBuf::from(rsw_crate.root.as_ref().unwrap())
+                    .join(&i.name)
+                    .join(rsw_crate.out_dir.unwrap());
+                crates_map.borrow_mut().insert(
+                    rsw_crate.name.to_string(),
+                    crate_path.to_string_lossy().to_string(),
+                );
             }
+
+            if i.build.as_ref().unwrap().run.unwrap() {
+                Build::new(i.clone(), rsw_type, cli.into()).init();
+            }
+        }
+
+        // npm link foo bar ...
+        let crates = crates_map.borrow();
+        if cli == "npm" && has_crates {
+            Link::npm_link(
+                cli.into(),
+                &Vec::from_iter(crates.values().map(|i| i.as_str())),
+            );
         }
     }
 }

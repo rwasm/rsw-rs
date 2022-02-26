@@ -1,21 +1,25 @@
 //! rsw build
 
+use std::path::PathBuf;
 use std::process::Command;
 
 use crate::config::CrateConfig;
+use crate::core::Link;
 use crate::core::RswInfo;
 use crate::utils::{get_crate_metadata, get_pkg, print, rsw_watch_file};
 
 pub struct Build {
     config: CrateConfig,
     rsw_type: String,
+    cli: String,
 }
 
 impl Build {
-    pub fn new(config: CrateConfig, rsw_type: &str) -> Build {
+    pub fn new(config: CrateConfig, rsw_type: &str, cli: String) -> Build {
         Build {
             config,
             rsw_type: rsw_type.into(),
+            cli,
         }
     }
 
@@ -80,6 +84,17 @@ impl Build {
 
                 is_ok = false;
             }
+        }
+
+        // TODO: link
+        if config.link.unwrap() {
+            let cli = &self.cli;
+            Link::new(
+                cli.into(),
+                PathBuf::from(name).join(out_dir),
+                name.to_string(),
+            )
+            .init();
         }
 
         print(RswInfo::SplitLine);

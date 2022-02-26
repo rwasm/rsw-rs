@@ -29,6 +29,9 @@ pub struct CrateConfig {
     /// You can use `out-dir` to customize the directory where files are generated.
     #[serde(default = "default_out_dir")]
     pub out_dir: Option<String>,
+    /// run npm link: `true` | `false`, default is `false`
+    #[serde(default = "default_false")]
+    pub link: Option<bool>,
     #[serde(default = "default_watch")]
     pub watch: Option<WatchOptions>,
     #[serde(default = "default_build")]
@@ -106,7 +109,7 @@ pub struct RswConfig {
     pub name: Option<String>,
     /// rsw version
     pub version: Option<String>,
-    /// npm | yarn | pnpm
+    /// npm link - `npm` | `yarn` | `pnpm`, default is `npm`
     pub cli: Option<String>,
     /// In `watch` mode, the time interval for `wasm-pack build`, in milliseconds.
     pub interval: Option<u64>,
@@ -122,8 +125,8 @@ impl Default for RswConfig {
         Self {
             name: Some("rsw".into()),
             version: Some("0.0.0".into()),
-            cli: Some("npm".into()),
             interval: Some(50),
+            cli: Some("npm".into()),
             new: default_new(),
             crates: vec![],
         }
@@ -168,6 +171,10 @@ fn default_target() -> Option<String> {
 
 fn default_true() -> Option<bool> {
     Some(true)
+}
+
+fn default_false() -> Option<bool> {
+    Some(false)
 }
 
 fn default_wasmpack() -> Option<String> {

@@ -4,13 +4,13 @@ version = "0.1.0"
 #! time interval for file changes to trigger wasm-pack build, default `50` milliseconds
 interval = 50
 
-# npm link
-# @see https://docs.npmjs.com/cli/v8/commands/npm-link
-[link]
-#! type: `npm` | `pnpm`, default is `npm`
-type = "npm"
-#! run `npm link`: `true` | `false`, default is `false`
-run = false
+#! link
+#! npm link @see https://docs.npmjs.com/cli/v8/commands/npm-link
+#! yarn link @see https://classic.yarnpkg.com/en/docs/cli/link
+#! pnpm link @see https://pnpm.io/cli/link
+#! The link command will only be executed if `[[crates]] link = true`
+#! cli: `npm` | `yarn` | `pnpm`, default is `npm`
+cli = "npm"
 
 #! ---------------------------
 
@@ -32,7 +32,10 @@ dir = "my-template"
 #! When there is only `name`, other fields will use the default configuration
 #! -------- package: rsw-hello --------
 [[crates]]
+#! npm package name
 name = "rsw-hello"
+#! run `npm link`: `true` | `false`, default is `false`
+link = false
 
 #! =======================================================
 
@@ -46,6 +49,8 @@ name = "rsw-hello"
 # out-dir = "pkg"
 # #! target: bundler | nodejs | web | no-modules, default is `web`
 # target = "web"
+#! run `npm link`: `true` | `false`, default is `false`
+# link = false
 # #! rsw watch
 # [crates.watch]
 # #! default is `true`

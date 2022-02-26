@@ -55,6 +55,9 @@ rsw watch
 
 # release mode
 rsw build
+
+# clean - link & build
+rsw clean
 ```
 
 ## Logger
@@ -83,6 +86,7 @@ Create `rsw.toml` in the project root path, configure the `rust crate` parameter
 - **`name`** - Profile name (optional)
 - **`version`** - Profile version (optional)
 - **`interval`** - Development mode `rsw watch`, time interval for file changes to trigger `wasm-pack build`, default `50` milliseconds
+- **`cli`** - `npm` | `yarn` | `pnpm`, default is `npm`. Execute `link` using the specified `cli`, e.g. `npm link`
 - **`[new]`** - Quickly generate a crate with `wasm-pack new`, or set a custom template in `rsw.toml -> [new] -> using`
   - **`using`** - `wasm-pack` | `rsw` | `user`, default is `wasm-pack`
     - `wasm-pack` - `rsw new <name> --template <template> --mode <normal|noinstall|force>` [wasm-pack new doc](https://rustwasm.github.io/docs/wasm-pack/commands/new.html)
@@ -92,6 +96,7 @@ Create `rsw.toml` in the project root path, configure the `rust crate` parameter
 - **`[[crates]]`** - Is an array that supports multiple `rust crate` configurations
   - **`name`** - npm package name, supporting organization, e.g. `@rsw/foo`
   - **`root`** - Relative to the project root path, default is `.`
+  - **`link`** - `true` | `false`，default is `false`, Whether to execute the `link` command after this `rust crate` is built
   - **`target`** - `bundler` | `nodejs` | `web` | `no-modules`, default is `web`
   - **`out-dir`** - npm package output path, default `pkg`
   - **`[crates.watch]`** - Development mode
@@ -120,8 +125,17 @@ Create `rsw.toml` in the project root path, configure the `rust crate` parameter
 
 name = "rsw"
 version = "0.1.0"
-#! default is `50` ms
+
+#! time interval for file changes to trigger wasm-pack build, default `50` milliseconds
 interval = 50
+
+#! link
+#! npm link @see https://docs.npmjs.com/cli/v8/commands/npm-link
+#! yarn link @see https://classic.yarnpkg.com/en/docs/cli/link
+#! pnpm link @see https://pnpm.io/cli/link
+#! The link command will only be executed if `[[crates]] link = true`
+#! cli: `npm` | `yarn` | `pnpm`, default is `npm`
+cli = "npm"
 
 #! ---------------------------
 
@@ -143,7 +157,10 @@ dir = "my-template"
 #! When there is only `name`, other fields will use the default configuration
 #! -------- package: rsw-hello --------
 [[crates]]
+#! npm package name
 name = "rsw-hello"
+#! run `npm link`: `true` | `false`, default is `false`
+link = false
 
 #! =======================================================
 
@@ -157,6 +174,8 @@ name = "rsw-hello"
 # out-dir = "pkg"
 # #! target: bundler | nodejs | web | no-modules, default is `web`
 # target = "web"
+#! run `npm link`: `true` | `false`, default is `false`
+# link = false
 # #! rsw watch
 # [crates.watch]
 # #! default is `true`
