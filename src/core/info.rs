@@ -57,7 +57,7 @@ impl Display for RswInfo {
                 write!(f, "{} {}", rsw_tip.red().on_black(), name)
             }
             RswInfo::SplitLine => {
-                write!(f, "\n{}", "◼◻".repeat(24).yellow())
+                write!(f, "\n{}\n", "◼◻".repeat(24).yellow())
             }
             RswInfo::CrateChange(path) => {
                 write!(

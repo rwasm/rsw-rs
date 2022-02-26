@@ -161,14 +161,28 @@ pub fn print<T: std::fmt::Display>(a: T) {
     println!("{}", a)
 }
 
-pub fn rsw_watch_file(content: &[u8]) -> Result<()> {
-    let rsw_file = std::env::current_dir()
-        .unwrap()
-        .join(config::RSW_WATCH_FILE);
-    if !path_exists(rsw_file.as_path()) {
-        File::create(&rsw_file)?;
+pub fn rsw_watch_file(info_content: &[u8], err_content: &[u8], file_type: String) -> Result<()> {
+    let rsw_root = std::env::current_dir().unwrap().join(config::RSW_DIR);
+
+    if !path_exists(rsw_root.as_path()) {
+        fs::create_dir(&rsw_root)?;
     }
-    fs::write(rsw_file, content)?;
+    let rsw_info = rsw_root.join(config::RSW_INFO);
+    let rsw_err = rsw_root.join(config::RSW_ERR);
+    if !path_exists(rsw_info.as_path()) {
+        File::create(&rsw_info)?;
+    }
+    if !path_exists(rsw_err.as_path()) {
+        File::create(&rsw_err)?;
+    }
+    fs::write(&rsw_info, info_content)?;
+    if file_type == "info" {
+        fs::write(&rsw_err, "".as_bytes())?;
+    }
+    if file_type == "err" {
+        fs::write(rsw_err, err_content)?;
+    }
+
     Ok(())
 }
 

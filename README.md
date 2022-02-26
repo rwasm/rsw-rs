@@ -108,15 +108,17 @@ Create `rsw.toml` in the project root path, configure the `rust crate` parameter
 
 **Note: `name` in `[[crates]]` is required, other fields are optional.**
 
-## rsw.log
+## .rsw
 
-> watch info
+> `rsw watch` - temp dir
 
-- `[RSW::ERROR]`
-- `[RSW::ARGS]`
-- `[RSW::BUILD]`
-- `[RSW::WATCH]`
-- `[RSW::FILE]`
+- rsw.info - information about the `watch` mode
+  - `[RSW::OK]`
+  - `[RSW::NAME]`
+  - `[RSW::FILE]`
+  - `[RSW::ERR]`
+  - `[RSW::ARGS]`
+- rsw.err - `wasm-pack build` error
 
 ### Example
 

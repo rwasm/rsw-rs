@@ -3,5 +3,9 @@
 target/
 Cargo.lock
 
+node_modules/
+
+/rsw.toml
 /@rsw
 /rsw-*
+/.rsw

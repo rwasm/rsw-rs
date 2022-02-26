@@ -105,15 +105,17 @@ RUST_LOG=rsw rsw <SUBCOMMAND>
 
 **注意：`[[crates]]` 中 `name` 是必须的，其他字段均为可选。**
 
-## rsw.log
+## .rsw
 
-> 监听 `rust crate` 文件变更，输出日志信息
+> `rsw watch` - 临时目录
 
-- `[RSW::ERROR]`
-- `[RSW::ARGS]`
-- `[RSW::BUILD]`
-- `[RSW::WATCH]`
-- `[RSW::FILE]`
+- rsw.info - `watch` 模式下相关信息
+  - `[RSW::OK]`
+  - `[RSW::NAME]`
+  - `[RSW::FILE]`
+  - `[RSW::ERR]`
+  - `[RSW::ARGS]`
+- rsw.err - `wasm-pack build` 失败信息
 
 ### 示例
 

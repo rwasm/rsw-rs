@@ -58,32 +58,34 @@ impl Build {
 
         let mut is_ok = true;
 
-        match status.success() {
-            true => print(RswInfo::CrateOk(
-                name.into(),
-                rsw_type.into(),
-                metadata["package"]["version"].to_string(),
-            )),
-            false => {
-                let output = Command::new("wasm-pack")
-                    .args(&args)
-                    .stderr(std::process::Stdio::piped())
-                    .output()
-                    .unwrap();
-                let err = std::str::from_utf8(&output.stderr).unwrap();
-                let content = [
-                    "[RSW::ERROR]: ",
-                    name,
-                    "\n\n[RSW::ARGS]: wasm-pack ",
-                    &args.join(" "),
-                    "\n\n[RSW::BUILD]:\n",
-                    err,
-                ];
-                rsw_watch_file(content.concat().as_bytes()).unwrap();
-                print(RswInfo::CrateFail(name.into(), rsw_type.into()));
+        match status.code() {
+            Some(code) => {
+                if code == 0 {
+                    print(RswInfo::CrateOk(
+                        name.into(),
+                        rsw_type.into(),
+                        metadata["package"]["version"].to_string(),
+                    ));
+                } else {
+                    let output = Command::new("wasm-pack")
+                        .args(&args)
+                        .stderr(std::process::Stdio::piped())
+                        .output()
+                        .unwrap();
 
-                is_ok = false;
+                    let err = std::str::from_utf8(&output.stderr).unwrap();
+                    let info_content = format!(
+                        "[RSW::ERR]\n[RSW::NAME] {}\n[RSW::ARGS] wasm-pack {}",
+                        name,
+                        &args.join(" ")
+                    );
+                    rsw_watch_file(info_content.as_bytes(), err.as_bytes(), "err".into()).unwrap();
+                    print(RswInfo::CrateFail(name.into(), rsw_type.into()));
+
+                    is_ok = false;
+                }
             }
+            None => {}
         }
 
         // TODO: link

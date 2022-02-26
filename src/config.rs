@@ -7,7 +7,9 @@ use crate::core::RswErr;
 use crate::utils::print;
 
 pub static RSW_FILE: &'static str = "rsw.toml";
-pub static RSW_WATCH_FILE: &'static str = "rsw.log";
+pub static RSW_DIR: &'static str = ".rsw";
+pub static RSW_INFO: &'static str = "rsw.info";
+pub static RSW_ERR: &'static str = "rsw.err";
 
 /// rust crate config
 #[derive(Debug, Clone, Serialize, Deserialize)]

@@ -15,17 +15,31 @@
 //!
 //! #! generate a project quickly
 //! rsw new <name>
+//!
+//! #! clean - link & build
+//! rsw clean
 //! ```
-
+//!
 //! ----------
-
+//!
 //! rsw.toml
+//!
+//! <https://github.com/lencx/rsw-rs/blob/main/src/template/rsw.toml>
 //!
 //! ```toml
 //! name = "rsw"
 //! version = "0.1.0"
-//! #! default is `50` ms
+//!
+//! #! time interval for file changes to trigger wasm-pack build, default `50` milliseconds
 //! interval = 50
+//!
+//! #! link
+//! #! npm link @see https://docs.npmjs.com/cli/v8/commands/npm-link
+//! #! yarn link @see https://classic.yarnpkg.com/en/docs/cli/link
+//! #! pnpm link @see https://pnpm.io/cli/link
+//! #! The link command will only be executed if `[[crates]] link = true`
+//! #! cli: `npm` | `yarn` | `pnpm`, default is `npm`
+//! cli = "npm"
 //!
 //! #! ---------------------------
 //!
@@ -47,7 +61,10 @@
 //! #! When there is only `name`, other fields will use the default configuration
 //! #! -------- package: rsw-hello --------
 //! [[crates]]
+//! #! npm package name
 //! name = "rsw-hello"
+//! #! run `npm link`: `true` | `false`, default is `false`
+//! link = false
 //!
 //! #! =======================================================
 //!
@@ -61,6 +78,8 @@
 //! # out-dir = "pkg"
 //! # #! target: bundler | nodejs | web | no-modules, default is `web`
 //! # target = "web"
+//! #! run `npm link`: `true` | `false`, default is `false`
+//! # link = false
 //! # #! rsw watch
 //! # [crates.watch]
 //! # #! default is `true`

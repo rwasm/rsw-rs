@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.0
+
+- add `.rsw` dir
+
 ## 0.5.0
 
 - link - npm, yarn or pnpm

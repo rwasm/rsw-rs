@@ -54,8 +54,9 @@ impl Cli {
                 Cli::rsw_watch(Some(Box::new(|a, b| {
                     let name = &a.name;
                     let path = &b.to_string_lossy().to_string();
-                    let content = ["[RSW::WATCH]: ", name, "\n\n[RSW::FILE]: ", path];
-                    rsw_watch_file(content.concat().as_bytes()).unwrap();
+                    let info_content =
+                        format!("[RSW::OK]\n[RSW::NAME] {}\n[RSW::FILE] {}", name, path);
+                    rsw_watch_file(info_content.as_bytes(), "".as_bytes(), "info".into()).unwrap();
                 })));
             }
             Commands::New {

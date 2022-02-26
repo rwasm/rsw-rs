@@ -49,6 +49,8 @@ impl Watch {
             }
         }
 
+        print(RswInfo::SplitLine);
+
         loop {
             let first_event = rx.recv().unwrap();
             sleep(Duration::from_millis(config.interval.unwrap()));
