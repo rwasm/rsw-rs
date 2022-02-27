@@ -57,6 +57,12 @@ rsw build
 rsw clean
 ```
 
+## Awesome rsw
+
+- [vite-plugin-rsw](https://github.com/lencx/vite-plugin-rsw) - 🦀 wasm-pack plugin for Vite
+- [create-mpl](https://github.com/lencx/create-mpl) - ⚡️ Create a project in seconds!
+- [learn-wasm](https://github.com/lencx/learn-wasm) - 🎲 Learning WebAssembly
+
 ## 日志
 
 ```bash
@@ -111,11 +117,12 @@ RUST_LOG=rsw rsw <SUBCOMMAND>
 
 - rsw.info - `watch` 模式下相关信息
   - `[RSW::OK]`
-  - `[RSW::NAME]`
-  - `[RSW::FILE]`
   - `[RSW::ERR]`
-  - `[RSW::ARGS]`
+  - `[RSW::NAME]`
+  - `[RSW::PATH]`
+  - `[RSW::BUILD]`
 - rsw.err - `wasm-pack build` 失败信息
+- rsw.crates - `rsw.toml` 中的所有包信息
 
 ### 示例
 
