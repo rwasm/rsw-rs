@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.0
+
+- add `.rsw/rsw.crates`
+
 ## 0.6.0
 
 - add `.rsw` dir

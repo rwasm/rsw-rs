@@ -8,7 +8,7 @@ use std::rc::Rc;
 
 use crate::config::{CrateConfig, RswConfig};
 use crate::core::{Build, Clean, Create, Init, Link, Watch};
-use crate::utils::rsw_watch_file;
+use crate::utils::{init_rsw_crates, rsw_watch_file};
 
 #[derive(Parser)]
 #[clap(version, about, long_about = None)]
@@ -54,8 +54,10 @@ impl Cli {
                 Cli::rsw_watch(Some(Box::new(|a, b| {
                     let name = &a.name;
                     let path = &b.to_string_lossy().to_string();
-                    let info_content =
-                        format!("[RSW::OK]\n[RSW::NAME] {}\n[RSW::FILE] {}", name, path);
+                    let info_content = format!(
+                        "[RSW::OK]\n[RSW::NAME] :~> {}\n[RSW::PATH] :~> {}",
+                        name, path
+                    );
                     rsw_watch_file(info_content.as_bytes(), "".as_bytes(), "info".into()).unwrap();
                 })));
             }
@@ -98,6 +100,19 @@ impl Cli {
     pub fn parse_toml() -> RswConfig {
         let config = RswConfig::new().unwrap();
         trace!("{:#?}", config);
+
+        let mut crates = Vec::new();
+        for i in &config.crates {
+            let name = &i.name;
+            let out = i.out_dir.as_ref().unwrap();
+            crates.push(format!(
+                "{} :~> {}",
+                name,
+                PathBuf::from(name).join(out).to_string_lossy().to_string()
+            ));
+        }
+        init_rsw_crates(crates.join("\n").as_bytes()).unwrap();
+
         config
     }
     pub fn wp_build(config: Rc<RswConfig>, rsw_type: &str) {

@@ -4,7 +4,7 @@ use std::io::{Read, Write};
 use std::{
     env,
     fs::{self, File},
-    path::Path,
+    path::{Path, PathBuf},
 };
 use toml::Value;
 
@@ -161,12 +161,27 @@ pub fn print<T: std::fmt::Display>(a: T) {
     println!("{}", a)
 }
 
-pub fn rsw_watch_file(info_content: &[u8], err_content: &[u8], file_type: String) -> Result<()> {
-    let rsw_root = std::env::current_dir().unwrap().join(config::RSW_DIR);
+pub fn dot_rsw_dir() -> PathBuf {
+    std::env::current_dir().unwrap().join(config::RSW_DIR)
+}
 
+pub fn init_rsw_crates(content: &[u8]) -> Result<()> {
+    let rsw_root = dot_rsw_dir();
     if !path_exists(rsw_root.as_path()) {
-        fs::create_dir(&rsw_root)?;
+        std::fs::create_dir(&rsw_root)?;
     }
+
+    let rsw_crates = rsw_root.join(config::RSW_CRATES);
+    if !path_exists(rsw_crates.as_path()) {
+        File::create(&rsw_crates)?;
+    }
+    fs::write(rsw_crates, content)?;
+
+    Ok(())
+}
+
+pub fn rsw_watch_file(info_content: &[u8], err_content: &[u8], file_type: String) -> Result<()> {
+    let rsw_root = dot_rsw_dir();
     let rsw_info = rsw_root.join(config::RSW_INFO);
     let rsw_err = rsw_root.join(config::RSW_ERR);
     if !path_exists(rsw_info.as_path()) {

@@ -75,7 +75,7 @@ impl Build {
 
                     let err = std::str::from_utf8(&output.stderr).unwrap();
                     let info_content = format!(
-                        "[RSW::ERR]\n[RSW::NAME] {}\n[RSW::ARGS] wasm-pack {}",
+                        "[RSW::ERR]\n[RSW::NAME] :~> {}\n[RSW::BUILD] :~> wasm-pack {}",
                         name,
                         &args.join(" ")
                     );

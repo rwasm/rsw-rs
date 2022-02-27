@@ -60,6 +60,12 @@ rsw build
 rsw clean
 ```
 
+## Awesome rsw
+
+- [vite-plugin-rsw](https://github.com/lencx/vite-plugin-rsw) - 🦀 wasm-pack plugin for Vite
+- [create-mpl](https://github.com/lencx/create-mpl) - ⚡️ Create a project in seconds!
+- [learn-wasm](https://github.com/lencx/learn-wasm) - 🎲 Learning WebAssembly
+
 ## Logger
 
 ```bash
