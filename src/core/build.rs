@@ -27,9 +27,14 @@ impl Build {
         let config = &self.config;
         let rsw_type = &self.rsw_type;
         let name = &config.name;
+        let root = config.root.as_ref().unwrap();
         let out_dir = config.out_dir.as_ref().unwrap();
+        let crate_root = PathBuf::from(root)
+            .join(name)
+            .canonicalize().unwrap();
+        let build_name = crate_root.to_string_lossy().to_string();
         let target = config.target.as_ref().unwrap();
-        let mut args = vec!["build", name, "--out-dir", out_dir, "--target", target];
+        let mut args = vec!["build", &build_name, "--out-dir", out_dir, "--target", target];
 
         // profile
         let mut profile = config.build.as_ref().unwrap().profile.as_ref().unwrap();
@@ -46,7 +51,7 @@ impl Build {
             args.push(scope.as_str());
         }
 
-        let metadata = get_crate_metadata(name.as_str());
+        let metadata = get_crate_metadata(name, crate_root);
         info!("🚧  wasm-pack {}", args.join(" "));
 
         let status = Command::new("wasm-pack")
@@ -88,12 +93,13 @@ impl Build {
             None => {}
         }
 
-        // TODO: link
         if config.link.unwrap() {
             let cli = &self.cli;
             Link::new(
                 cli.into(),
-                PathBuf::from(name).join(out_dir),
+                PathBuf::from(root)
+                    .join(name)
+                    .join(out_dir),
                 name.to_string(),
             )
             .init();

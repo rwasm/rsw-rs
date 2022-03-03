@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.1
+
+- fix: crate root
+
 ## 0.7.0
 
 - add `.rsw/rsw.crates`

@@ -32,7 +32,7 @@ impl Link {
 
     pub fn yarn_link(&self) {
         // register package
-        // 1. cd <name>
+        // 1. cd <root>/<name>
         // 2. yarn link
         Command::new(&self.cli)
             .current_dir(&self.cwd)

@@ -8,22 +8,6 @@
 
 ## rsw-rs
 
-### Feature
-
-- rsw init
-- rsw watch
-- rsw build
-- rsw new
-  - `wasm-pack`
-  - `rsw`
-  - `user`
-- debug info
-
-### TODO
-
-- local sub-dependency file changes trigger hot updates
-- integrate front-end scaffolding, such as `vite`, `webpack`, etc.
-
 ## Pre-installed
 
 - [rust](https://www.rust-lang.org/learn/get-started)
@@ -62,9 +46,9 @@ rsw clean
 
 ## Awesome rsw
 
+- [[rsw demo] learn-wasm](https://github.com/lencx/learn-wasm) - 🎲 Learning WebAssembly
 - [vite-plugin-rsw](https://github.com/lencx/vite-plugin-rsw) - 🦀 wasm-pack plugin for Vite
 - [create-mpl](https://github.com/lencx/create-mpl) - ⚡️ Create a project in seconds!
-- [learn-wasm](https://github.com/lencx/learn-wasm) - 🎲 Learning WebAssembly
 
 ## Logger
 

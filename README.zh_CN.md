@@ -8,19 +8,6 @@
 
 ## rsw-rs
 
-### 功能
-
-- `rsw init` - 生成配置文件 `rsw.toml`
-- `rsw build` - 基于 `rsw.toml` 配置同时构建多个 `rust crate`
-- `rsw watch` - 基于 `rsw.toml` 配置同时监听多个 `rust crate` 中的文件变更，自动触发构建
-- `rsw new` - 基于 `rsw.toml` `[new]` 字段配置，默认使用 `wasm-pack` 创建项目
-- `RUST_LOG=rsw rsw <SUBCOMMAND>` - 输出关键日志信息，便于错误排查
-
-## TODO
-
-- 本地依赖变更触发热更新
-- 集成前端脚手架，如 `vite`，`webpack` 等
-
 ## 预安装
 
 - [rust](https://www.rust-lang.org/learn/get-started)
@@ -59,9 +46,9 @@ rsw clean
 
 ## Awesome rsw
 
+- [[rsw demo] learn-wasm](https://github.com/lencx/learn-wasm) - 🎲 Learning WebAssembly
 - [vite-plugin-rsw](https://github.com/lencx/vite-plugin-rsw) - 🦀 wasm-pack plugin for Vite
 - [create-mpl](https://github.com/lencx/create-mpl) - ⚡️ Create a project in seconds!
-- [learn-wasm](https://github.com/lencx/learn-wasm) - 🎲 Learning WebAssembly
 
 ## 日志
 

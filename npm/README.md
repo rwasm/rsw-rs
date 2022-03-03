@@ -6,6 +6,19 @@
 - [nodejs](https://nodejs.org)
 - [wasm-pack](https://github.com/rustwasm/wasm-pack)
 
+## Quick start
+
+```bash
+# https://github.com/lencx/create-mpl
+# npm 6.x
+npm init mpl@latest my-app --type wasm
+
+# npm 7+, extra double-dash is needed:
+npm init mpl@latest my-app -- --type wasm
+```
+
+---
+
 ## Usgae
 
 ```bash

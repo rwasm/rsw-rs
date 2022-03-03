@@ -7,8 +7,8 @@ use std::path::PathBuf;
 use std::rc::Rc;
 
 use crate::config::{CrateConfig, RswConfig};
-use crate::core::{Build, Clean, Create, Init, Link, Watch};
-use crate::utils::{init_rsw_crates, rsw_watch_file};
+use crate::core::{Build, Clean, Create, Init, Link, Watch, RswErr};
+use crate::utils::{init_rsw_crates, rsw_watch_file, print};
 
 #[derive(Parser)]
 #[clap(version, about, long_about = None)]
@@ -104,11 +104,18 @@ impl Cli {
         let mut crates = Vec::new();
         for i in &config.crates {
             let name = &i.name;
+            let root = i.root.as_ref().unwrap();
             let out = i.out_dir.as_ref().unwrap();
+            let crate_out = PathBuf::from(root)
+                .join(name).join(out);
+
             crates.push(format!(
                 "{} :~> {}",
                 name,
-                PathBuf::from(name).join(out).to_string_lossy().to_string()
+                crate_out.canonicalize().unwrap_or_else(|e| {
+                    print(RswErr::Crate(crate_out.to_string_lossy().to_string(), e));
+                    std::process::exit(1);
+                }).to_string_lossy().to_string()
             ));
         }
         init_rsw_crates(crates.join("\n").as_bytes()).unwrap();
@@ -116,7 +123,6 @@ impl Cli {
         config
     }
     pub fn wp_build(config: Rc<RswConfig>, rsw_type: &str) {
-        // let crates_map = Rc::new(RefCell::new(HashMap::new()));
         let crates_map = Rc::new(RefCell::new(HashMap::new()));
 
         let cli = &config.cli.to_owned().unwrap();
