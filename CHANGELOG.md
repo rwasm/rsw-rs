@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.2
+
+- fix: check env
+
 ## 0.7.1
 
 - fix: crate root

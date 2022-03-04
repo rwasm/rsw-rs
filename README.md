@@ -1,12 +1,11 @@
 <p align="center">
   <img src="./rsw.png" width="120">
+  <h2 align="center">rsw-rs</h2>
 </p>
-
-「🌐 Language」[简体中文](./README.zh_CN.md)
 
 **`rsw = rs(rust) → w(wasm)`** - A command-line tool for automatically rebuilding local changes, based on the `wasm-pack` implementation.
 
-## rsw-rs
+**Englist | [简体中文](./README.zh_CN.md)**
 
 ## Pre-installed
 

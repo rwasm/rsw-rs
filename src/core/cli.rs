@@ -7,8 +7,8 @@ use std::path::PathBuf;
 use std::rc::Rc;
 
 use crate::config::{CrateConfig, RswConfig};
-use crate::core::{Build, Clean, Create, Init, Link, Watch, RswErr};
-use crate::utils::{init_rsw_crates, rsw_watch_file, print};
+use crate::core::{Build, Clean, Create, Init, Link, RswErr, Watch};
+use crate::utils::{init_rsw_crates, print, rsw_watch_file};
 
 #[derive(Parser)]
 #[clap(version, about, long_about = None)]
@@ -106,16 +106,19 @@ impl Cli {
             let name = &i.name;
             let root = i.root.as_ref().unwrap();
             let out = i.out_dir.as_ref().unwrap();
-            let crate_out = PathBuf::from(root)
-                .join(name).join(out);
+            let crate_out = PathBuf::from(root).join(name).join(out);
 
             crates.push(format!(
                 "{} :~> {}",
                 name,
-                crate_out.canonicalize().unwrap_or_else(|e| {
-                    print(RswErr::Crate(crate_out.to_string_lossy().to_string(), e));
-                    std::process::exit(1);
-                }).to_string_lossy().to_string()
+                crate_out
+                    .canonicalize()
+                    .unwrap_or_else(|e| {
+                        print(RswErr::Crate(crate_out.to_string_lossy().to_string(), e));
+                        std::process::exit(1);
+                    })
+                    .to_string_lossy()
+                    .to_string()
             ));
         }
         init_rsw_crates(crates.join("\n").as_bytes()).unwrap();

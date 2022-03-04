@@ -29,12 +29,17 @@ impl Build {
         let name = &config.name;
         let root = config.root.as_ref().unwrap();
         let out_dir = config.out_dir.as_ref().unwrap();
-        let crate_root = PathBuf::from(root)
-            .join(name)
-            .canonicalize().unwrap();
+        let crate_root = PathBuf::from(root).join(name).canonicalize().unwrap();
         let build_name = crate_root.to_string_lossy().to_string();
         let target = config.target.as_ref().unwrap();
-        let mut args = vec!["build", &build_name, "--out-dir", out_dir, "--target", target];
+        let mut args = vec![
+            "build",
+            &build_name,
+            "--out-dir",
+            out_dir,
+            "--target",
+            target,
+        ];
 
         // profile
         let mut profile = config.build.as_ref().unwrap().profile.as_ref().unwrap();
@@ -97,9 +102,7 @@ impl Build {
             let cli = &self.cli;
             Link::new(
                 cli.into(),
-                PathBuf::from(root)
-                    .join(name)
-                    .join(out_dir),
+                PathBuf::from(root).join(name).join(out_dir),
                 name.to_string(),
             )
             .init();

@@ -1,12 +1,11 @@
 <p align="center">
   <img src="./rsw.png" width="120">
+  <h2 align="center">rsw-rs</h2>
 </p>
-
-「🌐 语言」[English](./README.md)
 
 **`rsw = rs(rust) → w(wasm)`** - 基于 `wasm-pack` 实现的一个命令行工具，当本地文件变更时自动构建。
 
-## rsw-rs
+**[English](./README.md) | 简体中文**
 
 ## 预安装
 

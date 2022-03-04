@@ -1,12 +1,12 @@
 [package]
 name = "rsw"
-version = "0.7.1"
+version = "0.7.2"
 description = "wasm-pack based build tool"
 edition = "2021"
 authors = ["lencx <cxin1314@gmail.com>"]
 homepage = "https://github.com/lencx/rsw-rs"
 repository = "https://github.com/lencx/rsw-rs"
-keywords = ["rsw", "wasm-pack"]
+keywords = ["rsw", "wasm-pack", "webassembly", "wasm", "npm"]
 license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -22,3 +22,4 @@ regex = "1.5.4"
 serde = "1.0.133"
 serde_derive = "1.0.133"
 toml = "0.5.8"
+which = "4.2.4"
