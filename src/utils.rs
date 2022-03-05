@@ -15,11 +15,11 @@ use crate::core::RswErr;
 pub fn check_env_cmd(program: &str) -> bool {
     let result = which(program);
     match result {
-        Ok(_) => true,
         Err(e) => {
             eprint!("{}\n", e);
             false
         }
+        _ => true,
     }
 }
 
@@ -28,7 +28,7 @@ pub fn get_crate_metadata(name: &str, root: PathBuf) -> Value {
     let crate_root = root.join("Cargo.toml");
     let content = fs::read_to_string(crate_root).unwrap_or_else(|e| {
         // TODO: create crate
-        print(RswErr::Crate(name.to_string(), e));
+        print(RswErr::Crate(name.into(), e));
         std::process::exit(1);
     });
     let value = content.parse::<Value>().unwrap();
@@ -78,7 +78,6 @@ pub fn create_file(path: &Path) -> Result<File> {
     // Construct path
     if let Some(p) = path.parent() {
         trace!("Parent directory is: {:?}", p);
-
         fs::create_dir_all(p)?;
     }
 
@@ -93,7 +92,7 @@ pub fn write_file<P: AsRef<Path>>(build_dir: &Path, filename: P, content: &[u8])
 }
 
 // recursive copy folder
-pub fn copy_dirs(source: impl AsRef<Path>, target: impl AsRef<Path>) -> std::io::Result<()> {
+pub fn copy_dirs<P: AsRef<Path>>(source: P, target: P) -> std::io::Result<()> {
     fs::create_dir_all(&target)?;
     for entry in fs::read_dir(source)? {
         let entry = entry?;

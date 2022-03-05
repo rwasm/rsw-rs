@@ -3,6 +3,8 @@
 use std::path::PathBuf;
 use std::process::Command;
 
+use path_clean::PathClean;
+
 use crate::config::CrateConfig;
 use crate::core::Link;
 use crate::core::RswInfo;
@@ -29,7 +31,7 @@ impl Build {
         let name = &config.name;
         let root = config.root.as_ref().unwrap();
         let out_dir = config.out_dir.as_ref().unwrap();
-        let crate_root = PathBuf::from(root).join(name).canonicalize().unwrap();
+        let crate_root = PathBuf::from(root).join(name).clean();
         let build_name = crate_root.to_string_lossy().to_string();
         let target = config.target.as_ref().unwrap();
         let mut args = vec![
@@ -95,7 +97,7 @@ impl Build {
                     is_ok = false;
                 }
             }
-            None => {}
+            _ => {}
         }
 
         if config.link.unwrap() {

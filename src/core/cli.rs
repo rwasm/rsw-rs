@@ -1,13 +1,14 @@
 //! rsw command parse
 
 use clap::{AppSettings, Parser, Subcommand};
+use path_clean::PathClean;
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::rc::Rc;
 
 use crate::config::{CrateConfig, RswConfig};
-use crate::core::{Build, Clean, Create, Init, Link, RswErr, Watch};
+use crate::core::{Build, Clean, Create, Init, Link, RswInfo, Watch};
 use crate::utils::{init_rsw_crates, print, rsw_watch_file};
 
 #[derive(Parser)]
@@ -78,8 +79,6 @@ impl Cli {
         let config = Rc::new(Cli::parse_toml());
         Cli::wp_build(config.clone(), "watch");
 
-        println!("");
-
         Watch::new(config, callback.unwrap()).init();
     }
     pub fn rsw_init() {
@@ -111,14 +110,7 @@ impl Cli {
             crates.push(format!(
                 "{} :~> {}",
                 name,
-                crate_out
-                    .canonicalize()
-                    .unwrap_or_else(|e| {
-                        print(RswErr::Crate(crate_out.to_string_lossy().to_string(), e));
-                        std::process::exit(1);
-                    })
-                    .to_string_lossy()
-                    .to_string()
+                crate_out.clean().to_string_lossy().to_string()
             ));
         }
         init_rsw_crates(crates.join("\n").as_bytes()).unwrap();
@@ -130,23 +122,34 @@ impl Cli {
 
         let cli = &config.cli.to_owned().unwrap();
         let mut has_crates = false;
+        let mut is_exit = true;
 
         for i in &config.crates {
-            if cli == "npm" && i.link.unwrap() {
-                has_crates = true;
-                let rsw_crate = i.clone();
-                let crate_path = PathBuf::from(rsw_crate.root.as_ref().unwrap())
-                    .join(&i.name)
-                    .join(rsw_crate.out_dir.unwrap());
-                crates_map.borrow_mut().insert(
-                    rsw_crate.name.to_string(),
-                    crate_path.to_string_lossy().to_string(),
-                );
-            }
+            let run_build = rsw_type == "build" && i.build.as_ref().unwrap().run.unwrap();
+            let run_watch = rsw_type == "watch" && i.watch.as_ref().unwrap().run.unwrap();
 
-            if i.build.as_ref().unwrap().run.unwrap() {
+            if run_build || run_watch {
+                is_exit = false;
+                if cli == "npm" && i.link.unwrap() {
+                    has_crates = true;
+                    let rsw_crate = i.clone();
+                    let crate_path = PathBuf::from(rsw_crate.root.as_ref().unwrap())
+                        .join(&i.name)
+                        .join(rsw_crate.out_dir.unwrap());
+                    crates_map.borrow_mut().insert(
+                        rsw_crate.name.to_string(),
+                        crate_path.to_string_lossy().to_string(),
+                    );
+                }
+
                 Build::new(i.clone(), rsw_type, cli.into()).init();
             }
+        }
+
+        // exit: No crates found
+        if is_exit {
+            print(RswInfo::LoadCrate(rsw_type.into()));
+            std::process::exit(1);
         }
 
         // npm link foo bar ...

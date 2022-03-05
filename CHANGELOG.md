@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.7.3
+
+- fix: path clean
+- fix: `rsw.toml` - the `run` field is invalid
+
 ## 0.7.2
 
 - fix: check env

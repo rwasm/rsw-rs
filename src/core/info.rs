@@ -16,6 +16,7 @@ pub enum RswInfo {
     CrateNewExist(String),
     ConfigNewDir(String, std::path::PathBuf),
     Clean(String, String),
+    LoadCrate(String),
 }
 
 impl Display for RswInfo {
@@ -115,6 +116,23 @@ impl Display for RswInfo {
                     "[⚙️ rsw.toml]".red().on_black(),
                     template.yellow(),
                     path.display(),
+                )
+            }
+            RswInfo::LoadCrate(mode) => {
+                let rsw_tip = match *mode == "watch" {
+                    true => "[👀 rsw::watch]",
+                    false => "[✨ rsw::build]",
+                };
+                write!(
+                    f,
+                    "{} No crates found, configure in [[crates]] in `{}` and set\n\n{}",
+                    rsw_tip.red().on_black(),
+                    "rsw.toml".yellow(),
+                    format!(
+                        "[[crates]]\nname = \"npm_package_name\"\n[crates.{}]\nrun = true",
+                        mode
+                    )
+                    .green(),
                 )
             }
         }

@@ -171,12 +171,13 @@ link = false
 # #! rsw watch
 # [crates.watch]
 # #! default is `true`
-# run = false
+# run = true
 # #! profile: `dev` | `profiling`, default is `dev`
 # profile = "dev"
 # #! rsw build
 # [crates.build]
-# run = false
+# #! default is `true`
+# run = true
 # #! profile: `release` | `profiling`, default is `release`
 # profile = "release"
 ```

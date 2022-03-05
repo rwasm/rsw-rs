@@ -1,10 +1,10 @@
 //! rsw watch
 
 use notify::{DebouncedEvent::*, RecursiveMode::*, Watcher};
+use path_clean::PathClean;
 use regex::Regex;
 use std::{
-    collections::HashMap, fs, path::PathBuf, rc::Rc, sync::mpsc::channel, thread::sleep,
-    time::Duration,
+    collections::HashMap, path::PathBuf, rc::Rc, sync::mpsc::channel, thread::sleep, time::Duration,
 };
 
 use crate::config::{CrateConfig, RswConfig};
@@ -37,15 +37,16 @@ impl Watch {
         };
 
         for i in &config.crates {
-            if i.watch.as_ref().unwrap().run.unwrap() {
-                // TODO: local deps watch
-                print(RswInfo::RunWatch(i.name.clone()));
-                let crate_root = PathBuf::from(i.root.as_ref().unwrap()).join(&i.name);
-                let _ = watcher.watch(crate_root.join("src"), Recursive);
-                let _ = watcher.watch(crate_root.join("Cargo.toml"), NonRecursive);
+            // TODO: local deps watch
+            let crate_root = PathBuf::from(i.root.as_ref().unwrap()).join(&i.name);
+            let _ = watcher.watch(crate_root.join("src"), Recursive);
+            let _ = watcher.watch(crate_root.join("Cargo.toml"), NonRecursive);
 
-                crate_map.insert(&i.name, i);
-                path_map.insert(&i.name, fs::canonicalize(&crate_root).unwrap().to_owned());
+            crate_map.insert(&i.name, i);
+            path_map.insert(&i.name, crate_root.clean());
+
+            if i.watch.as_ref().unwrap().run.unwrap() {
+                print(RswInfo::RunWatch(i.name.clone()));
             }
         }
 
