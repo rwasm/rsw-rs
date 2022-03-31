@@ -14,14 +14,16 @@ pub struct Build {
     config: CrateConfig,
     rsw_type: String,
     cli: String,
+    is_link: bool,
 }
 
 impl Build {
-    pub fn new(config: CrateConfig, rsw_type: &str, cli: String) -> Build {
+    pub fn new(config: CrateConfig, rsw_type: &str, cli: String, is_link: bool) -> Build {
         Build {
             config,
             rsw_type: rsw_type.into(),
             cli,
+            is_link,
         }
     }
 
@@ -100,7 +102,7 @@ impl Build {
             _ => {}
         }
 
-        if config.link.unwrap() {
+        if config.link.unwrap() && self.is_link {
             let cli = &self.cli;
             Link::new(
                 cli.into(),

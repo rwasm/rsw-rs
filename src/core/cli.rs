@@ -72,12 +72,12 @@ impl Cli {
         }
     }
     pub fn rsw_build() {
-        Cli::wp_build(Rc::new(Cli::parse_toml()), "build");
+        Cli::wp_build(Rc::new(Cli::parse_toml()), "build", false);
     }
     pub fn rsw_watch(callback: Option<Box<dyn Fn(&CrateConfig, std::path::PathBuf)>>) {
         // initial build
         let config = Rc::new(Cli::parse_toml());
-        Cli::wp_build(config.clone(), "watch");
+        Cli::wp_build(config.clone(), "watch", true);
 
         Watch::new(config, callback.unwrap()).init();
     }
@@ -117,7 +117,7 @@ impl Cli {
 
         config
     }
-    pub fn wp_build(config: Rc<RswConfig>, rsw_type: &str) {
+    pub fn wp_build(config: Rc<RswConfig>, rsw_type: &str, is_link: bool) {
         let crates_map = Rc::new(RefCell::new(HashMap::new()));
 
         let cli = &config.cli.to_owned().unwrap();
@@ -142,7 +142,7 @@ impl Cli {
                     );
                 }
 
-                Build::new(i.clone(), rsw_type, cli.into()).init();
+                Build::new(i.clone(), rsw_type, cli.into(), is_link).init();
             }
         }
 

@@ -75,6 +75,7 @@ impl Watch {
                                     crate_config.clone(),
                                     "watch",
                                     config.cli.to_owned().unwrap(),
+                                    false,
                                 )
                                 .init();
 
