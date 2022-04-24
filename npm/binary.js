@@ -53,7 +53,7 @@ const getPlatformMetadata = () => {
 const getBinary = () => {
   const platformMetadata = getPlatformMetadata();
   // the url for this binary is constructed from values in `package.json`
-  const url = `${repository.url}/releases/download/v${version}/${name}-v${version}-${platformMetadata.RUST_TARGET}.tar.gz`;
+  const url = `${repository.url}/releases/download/v${version}/rsw-v${version}-${platformMetadata.RUST_TARGET}.tar.gz`;
   return new Binary(platformMetadata.BINARY_NAME, url);
 };
 
