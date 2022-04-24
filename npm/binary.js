@@ -1,33 +1,60 @@
 const { Binary } = require("binary-install");
 const os = require("os");
+const cTable = require("console.table");
 
-const windows = "x86_64-pc-windows-msvc";
+const error = msg => {
+  console.error(msg);
+  process.exit(1);
+};
 
-const getPlatform = () => {
+const { version, name, repository } = require("./package.json");
+
+const supportedPlatforms = [
+  {
+    TYPE: "Windows_NT",
+    ARCHITECTURE: "x64",
+    RUST_TARGET: "x86_64-pc-windows-msvc",
+    BINARY_NAME: "rsw.exe"
+  },
+  {
+    TYPE: "Linux",
+    ARCHITECTURE: "x64",
+    RUST_TARGET: "x86_64-unknown-linux-musl",
+    BINARY_NAME: "rsw"
+  },
+  {
+    TYPE: "Darwin",
+    ARCHITECTURE: "x64",
+    RUST_TARGET: "x86_64-apple-darwin",
+    BINARY_NAME: "rsw"
+  }
+];
+
+const getPlatformMetadata = () => {
   const type = os.type();
-  const arch = os.arch();
+  const architecture = os.arch();
 
-  if (type === "Windows_NT" && arch === "x64") {
-    return windows;
-  }
-  if (type === "Linux" && arch === "x64") {
-    return "x86_64-unknown-linux-musl";
-  }
-  if (type === "Darwin" && (arch === "x64" || arch === "arm64")) {
-    return "x86_64-apple-darwin";
+  for (let supportedPlatform of supportedPlatforms) {
+    if (
+      type === supportedPlatform.TYPE &&
+      architecture === supportedPlatform.ARCHITECTURE
+    ) {
+      return supportedPlatform;
+    }
   }
 
-  throw new Error(`Unsupported platform: ${type} ${arch}`);
+  error(
+    `Platform with type "${type}" and architecture "${architecture}" is not supported by ${name}.\nYour system must be one of the following:\n\n${cTable.getTable(
+      supportedPlatforms
+    )}`
+  );
 };
 
 const getBinary = () => {
-  const platform = getPlatform();
-  const version = require("./package.json").version;
-  const author = "lencx";
-  const repo = "rsw-rs";
-  const name = "rsw";
-  const url = `https://github.com/${author}/${repo}/releases/download/v${version}/${name}-v${version}-${platform}.tar.gz`;
-  return new Binary(platform === windows ? "rsw.exe" : "rsw", url);
+  const platformMetadata = getPlatformMetadata();
+  // the url for this binary is constructed from values in `package.json`
+  const url = `${repository.url}/releases/download/v${version}/${name}-v${version}-${platformMetadata.RUST_TARGET}.tar.gz`;
+  return new Binary(platformMetadata.BINARY_NAME, url);
 };
 
 const run = () => {
@@ -40,13 +67,7 @@ const install = () => {
   binary.install();
 };
 
-const uninstall = () => {
-  const binary = getBinary();
-  binary.uninstall();
-};
-
 module.exports = {
   install,
-  run,
-  uninstall,
+  run
 };
