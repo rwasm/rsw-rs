@@ -26,7 +26,7 @@ impl Link {
     pub fn npm_link(cli: String, crates: Vec<String>) {
         os_cli(
             cli,
-            [&["link".into()][..], &crates[..]].concat(),
+            [&["link".into()], &crates[..]].concat(),
             get_root(),
         );
         print(RswInfo::CrateLink("npm link".into(), crates.join(" ")));
@@ -72,7 +72,7 @@ impl Link {
         // <yarn|pnpm> unlink foo bar
         os_cli(
             cli.clone(),
-            [&["unlink".into()][..], &crates[..]].concat(),
+            [&["unlink".into()], &crates[..]].concat(),
             &root,
         );
 
@@ -80,7 +80,7 @@ impl Link {
             // npm unlink -g foo bar
             os_cli(
                 cli.clone(),
-                [&["unlink".into(), "-g".into()][..], &crates[..]].concat(),
+                [&["unlink".into(), "-g".into()], &crates[..]].concat(),
                 root,
             );
         }
