@@ -7,7 +7,7 @@ use std::process::Command;
 use crate::config::NewOptions;
 use crate::core::RswInfo;
 use crate::template::Template;
-use crate::utils::{self, path_exists, print, write_file};
+use crate::utils::{self, get_root, path_exists, print, write_file};
 
 pub struct Create {
     name: String,
@@ -85,7 +85,7 @@ impl Create {
     }
     fn check_scope(&self, scope: &String) {
         if scope != "@" {
-            let scope_dir = std::env::current_dir().unwrap().join(scope);
+            let scope_dir = get_root().join(scope);
             if !path_exists(scope_dir.as_path()) {
                 std::fs::create_dir(&scope_dir).unwrap();
             }
@@ -93,14 +93,14 @@ impl Create {
     }
     fn check_crate(&self) {
         let name = &self.name;
-        let path = std::env::current_dir().unwrap().join(name);
+        let path = get_root().join(name);
         if utils::path_exists(path.as_path()) {
             print(RswInfo::CrateNewExist(name.into()));
             std::process::exit(1);
         }
     }
     fn wp_cmd(&self, args: &Vec<&str>, scope: &String) {
-        let mut scope_dir = std::env::current_dir().unwrap();
+        let mut scope_dir = get_root();
         if scope != "@" {
             scope_dir = scope_dir.join(scope);
         }
@@ -111,7 +111,7 @@ impl Create {
             .expect("failed to execute process");
     }
     fn create_crate(&self) -> Result<()> {
-        let target = std::env::current_dir().unwrap().join(&self.name);
+        let target = get_root().join(&self.name);
         let root = std::path::Path::new(&target);
         let template = Template::new(&root);
 
@@ -127,7 +127,7 @@ impl Create {
         Ok(())
     }
     fn user_crate(&self, dir: &str) {
-        let root = std::env::current_dir().unwrap();
+        let root = get_root();
         let source = root.join(dir);
         if !path_exists(source.as_path()) {
             print(RswInfo::ConfigNewDir(dir.into(), source));

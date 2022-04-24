@@ -1,10 +1,9 @@
 //! rsw link
 
 use std::path::PathBuf;
-use std::process::Command;
 
 use crate::core::RswInfo;
-use crate::utils::print;
+use crate::utils::{get_root, os_cli, print};
 
 pub struct Link {
     cli: String,
@@ -13,14 +12,9 @@ pub struct Link {
 }
 
 impl Link {
-    pub fn new<S: Into<String>, P: Into<PathBuf>>(cli: S, cwd: P, name: S) -> Link {
-        Link {
-            cli: cli.into(),
-            cwd: cwd.into(),
-            name: name.into(),
-        }
+    pub fn new(cli: String, cwd: PathBuf, name: String) -> Link {
+        Link { cli, cwd, name }
     }
-
     pub fn init(self) {
         if self.cli == "yarn" {
             self.yarn_link();
@@ -29,52 +23,27 @@ impl Link {
             self.pnpm_link();
         }
     }
-
-    pub fn npm_link(cli: String, crates: &[&str]) {
-        if cfg!(target_os = "windows") {
-            Command::new("cmd")
-                .args(["/c", &cli, "link"])
-                .args(crates)
-                .status()
-                .unwrap();
-        } else {
-            Command::new(cli).arg("link").args(crates).status().unwrap();
-        }
-
+    pub fn npm_link(cli: String, crates: Vec<String>) {
+        os_cli(
+            cli,
+            [&["link".into()][..], &crates[..]].concat(),
+            get_root(),
+        );
         print(RswInfo::CrateLink("npm link".into(), crates.join(" ")));
     }
 
     pub fn yarn_link(&self) {
-        if cfg!(target_os = "windows") {
-            Command::new("cmd")
-                .args(["/c", &self.cli, "link"])
-                .current_dir(&self.cwd)
-                .status()
-                .unwrap();
+        // register package
+        // 1. cd <root>/<name>
+        // 2. yarn link
+        os_cli(self.cli.clone(), ["link".into()].to_vec(), &self.cwd);
 
-            // yarn link <name>
-            Command::new("cmd")
-                .args(["/c", &self.cli, "link"])
-                .arg(&self.name)
-                .status()
-                .unwrap();
-        } else {
-            // register package
-            // 1. cd <root>/<name>
-            // 2. yarn link
-            Command::new(&self.cli)
-                .current_dir(&self.cwd)
-                .arg("link")
-                .status()
-                .unwrap();
-
-            // yarn link <name>
-            Command::new(&self.cli)
-                .arg("link")
-                .arg(&self.name)
-                .status()
-                .unwrap();
-        }
+        // yarn link <name>
+        os_cli(
+            self.cli.clone(),
+            ["link".into(), self.name.clone()].to_vec(),
+            get_root(),
+        );
 
         print(RswInfo::CrateLink(
             "yarn link".into(),
@@ -83,22 +52,13 @@ impl Link {
     }
 
     pub fn pnpm_link(&self) {
-        if cfg!(target_os = "windows") {
-            Command::new("cmd")
-                .args(["/c", &self.cli, "link", "--dir"])
-                .current_dir(&self.cwd)
-                .arg(std::env::current_dir().unwrap())
-                .status()
-                .unwrap();
-        } else {
-            // pnpm link --dir <root_path>
-            Command::new(&self.cli)
-                .current_dir(&self.cwd)
-                .args(["link", "--dir"])
-                .arg(std::env::current_dir().unwrap())
-                .status()
-                .unwrap();
-        }
+        // pnpm link --dir <root_path>
+        let dir = get_root().to_string_lossy().to_string();
+        os_cli(
+            self.cli.clone(),
+            ["link".into(), "--dir".into(), dir].to_vec(),
+            &self.cwd,
+        );
 
         print(RswInfo::CrateLink(
             "pnpm link".into(),
@@ -106,49 +66,25 @@ impl Link {
         ));
     }
 
-    pub fn unlink(cli: &str, crates: &[String]) {
-        if cfg!(target_os = "windows") {
-            Command::new("cmd")
-                .args(["/c", cli, "unlink"])
-                .args(crates)
-                .status()
-                .unwrap();
-        } else {
-            // <npm|yarn|pnpm> unlink -g foo bar
-            Command::new(cli)
-                .arg("unlink")
-                .args(crates)
-                .status()
-                .unwrap();
-        }
+    pub fn unlink(cli: &String, crates: Vec<String>) {
+        let root = get_root();
+
+        // <yarn|pnpm> unlink foo bar
+        os_cli(
+            cli.clone(),
+            [&["unlink".into()][..], &crates[..]].concat(),
+            &root,
+        );
 
         if cli == "npm" {
-            if cfg!(target_os = "windows") {
-                Command::new("cmd")
-                    .args(["/c", cli, "unlink", "-g"])
-                    .args(crates)
-                    .status()
-                    .unwrap();
-            } else {
-                Command::new("npm")
-                    .args(["unlink", "-g"])
-                    .args(crates)
-                    .status()
-                    .unwrap();
-            }
+            // npm unlink -g foo bar
+            os_cli(
+                cli.clone(),
+                [&["unlink".into(), "-g".into()][..], &crates[..]].concat(),
+                root,
+            );
         }
 
         print(RswInfo::Clean(format!("{} unlink", cli), crates.join(" ")));
-    }
-}
-
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn test_link() {
-        let link = Link::new("pnpm", ".", "test");
-        link.init();
     }
 }

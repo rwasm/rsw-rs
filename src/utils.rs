@@ -1,10 +1,11 @@
 use anyhow::Result;
 use regex::Regex;
-use std::io::{Read, Write};
 use std::{
     env,
     fs::{self, File},
+    io::{Read, Write},
     path::{Path, PathBuf},
+    process::Command,
 };
 use toml::Value;
 use which::which;
@@ -159,8 +160,12 @@ pub fn print<T: std::fmt::Display>(a: T) {
     println!("{}", a)
 }
 
+pub fn get_root() -> PathBuf {
+    std::env::current_dir().unwrap()
+}
+
 pub fn dot_rsw_dir() -> PathBuf {
-    std::env::current_dir().unwrap().join(config::RSW_DIR)
+    get_root().join(config::RSW_DIR)
 }
 
 pub fn init_rsw_crates(content: &[u8]) -> Result<()> {
@@ -197,6 +202,29 @@ pub fn rsw_watch_file(info_content: &[u8], err_content: &[u8], file_type: String
     }
 
     Ok(())
+}
+
+pub fn os_cli<P: AsRef<Path>>(cli: String, args: Vec<String>, path: P) {
+    if cfg!(target_os = "windows") {
+        Command::new("cmd")
+            .arg("/C")
+            .arg(cli)
+            .args(args)
+            .current_dir(path)
+            .status()
+            .unwrap();
+    } else {
+        Command::new(cli)
+            .args(args)
+            .current_dir(path)
+            .status()
+            .unwrap();
+    }
+}
+
+// https://www.reddit.com/r/learnrust/comments/h82em8/best_way_to_create_a_vecstring_from_str/
+pub fn vec_of_str(v: &[&str]) -> Vec<String> {
+    v.iter().map(|&x| x.into()).collect()
 }
 
 #[cfg(test)]

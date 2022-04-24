@@ -157,7 +157,7 @@ impl Cli {
         if cli == "npm" && has_crates {
             Link::npm_link(
                 cli.into(),
-                &Vec::from_iter(crates.values().map(|i| i.as_str())),
+                Vec::from_iter(crates.values().map(|i| i.into())),
             );
         }
     }
