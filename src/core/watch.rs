@@ -53,7 +53,7 @@ impl Watch {
 
         print(RswInfo::SplitLine);
 
-        let (gitignore, _) = Gitignore::new("./.gitignore");
+        let (gitignore, _) = Gitignore::new("./.watchignore");
 
         loop {
             let first_event = rx.recv().unwrap();
