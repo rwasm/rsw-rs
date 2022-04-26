@@ -53,7 +53,7 @@ impl Watch {
 
         print(RswInfo::SplitLine);
 
-        let (gitignore, _) = Gitignore::new("./gitignore");
+        let (gitignore, _) = Gitignore::new("./.gitignore");
 
         loop {
             let first_event = rx.recv().unwrap();
@@ -68,9 +68,10 @@ impl Watch {
                     Write(path) | Remove(path) | Rename(_, path) => {
                         let path = Rc::new(path);
 
-                        if gitignore.matched(&*path, false).is_none() {
+                        if gitignore.matched(&*path, false).is_ignore() {
                             continue;
                         }
+
                         for (key, val) in &path_map {
                             if Regex::new(val.to_str().unwrap())
                                 .unwrap()
