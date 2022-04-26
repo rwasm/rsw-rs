@@ -1,5 +1,6 @@
 //! rsw watch
 
+use ignore::gitignore::Gitignore;
 use notify::{DebouncedEvent::*, RecursiveMode::*, Watcher};
 use path_clean::PathClean;
 use regex::Regex;
@@ -52,6 +53,8 @@ impl Watch {
 
         print(RswInfo::SplitLine);
 
+        let (gitignore, _) = Gitignore::new("./gitignore");
+
         loop {
             let first_event = rx.recv().unwrap();
             sleep(Duration::from_millis(config.interval.unwrap()));
@@ -64,6 +67,10 @@ impl Watch {
                 match event {
                     Write(path) | Remove(path) | Rename(_, path) => {
                         let path = Rc::new(path);
+
+                        if gitignore.matched(&*path, false).is_none() {
+                            continue;
+                        }
                         for (key, val) in &path_map {
                             if Regex::new(val.to_str().unwrap())
                                 .unwrap()
