@@ -24,11 +24,7 @@ impl Link {
         }
     }
     pub fn npm_link(cli: String, crates: Vec<String>) {
-        os_cli(
-            cli,
-            [&["link".into()], &crates[..]].concat(),
-            get_root(),
-        );
+        os_cli(cli, [&["link".into()], &crates[..]].concat(), get_root());
         print(RswInfo::CrateLink("npm link".into(), crates.join(" ")));
     }
 

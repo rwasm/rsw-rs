@@ -9,6 +9,7 @@ node_modules/
 /@rsw
 /rsw-*
 /.rsw
+/.watchignore
 
 # IDE
 .vscode/

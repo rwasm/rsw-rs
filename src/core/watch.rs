@@ -11,7 +11,7 @@ use std::{
 use crate::config::{CrateConfig, RswConfig};
 use crate::core::{Build, RswErr, RswInfo};
 
-use crate::utils::print;
+use crate::utils::{get_root, print};
 
 pub struct Watch {
     config: Rc<RswConfig>,
@@ -28,6 +28,7 @@ impl Watch {
         let mut crate_map = HashMap::new();
         let mut path_map = HashMap::new();
         let (tx, rx) = channel();
+        let root = format!("{}/", get_root().to_string_lossy().to_string());
 
         let mut watcher = match notify::watcher(tx, Duration::from_secs(1)) {
             Ok(w) => w,
@@ -68,7 +69,11 @@ impl Watch {
                     Write(path) | Remove(path) | Rename(_, path) => {
                         let path = Rc::new(path);
 
-                        if gitignore.matched(&*path, false).is_ignore() {
+                        let path2 = path.to_string_lossy().to_string();
+                        let project_path_split = path2.split(&root);
+                        let project_path = project_path_split.collect::<Vec<&str>>().join("");
+
+                        if gitignore.matched(project_path, false).is_ignore() {
                             continue;
                         }
 

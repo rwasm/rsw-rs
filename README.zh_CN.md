@@ -61,6 +61,19 @@ RUST_LOG=rsw=info rsw <SUBCOMMAND>
 RUST_LOG=rsw rsw <SUBCOMMAND>
 ```
 
+### .watchignore
+
+定义要忽略的文件/路径，类似于 `.gitignore`。
+
+例如:
+
+```bash
+# .watchignore
+*.js
+a/b/**/*.txt
+!a/b/**/main.txt
+```
+
 ## rsw.toml
 
 > 配置文件
