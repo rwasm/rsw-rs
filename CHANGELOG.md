@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.5
+
+- feat: add .watchignore
+
 ## 0.7.4
 
 - fix: yarn link
