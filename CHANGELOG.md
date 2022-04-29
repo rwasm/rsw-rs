@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.6
+
+- feat: watch abort
+
 ## 0.7.5
 
 - feat: add .watchignore
