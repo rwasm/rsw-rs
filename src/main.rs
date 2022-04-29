@@ -1,5 +1,6 @@
 use rsw;
 
-fn main() {
+#[tokio::main]
+async fn main() {
     rsw::rsw_cli();
 }

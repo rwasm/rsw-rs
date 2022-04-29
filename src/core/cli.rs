@@ -6,6 +6,7 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::rc::Rc;
+use std::sync::Arc;
 
 use crate::config::{CrateConfig, RswConfig};
 use crate::core::{Build, Clean, Create, Init, Link, RswInfo, Watch};
@@ -52,7 +53,7 @@ impl Cli {
                 Cli::rsw_build();
             }
             Commands::Watch => {
-                Cli::rsw_watch(Some(Box::new(|a, b| {
+                Cli::rsw_watch(Some(Arc::new(|a, b| {
                     let name = &a.name;
                     let path = &b.to_string_lossy().to_string();
                     let info_content = format!(
@@ -72,11 +73,13 @@ impl Cli {
         }
     }
     pub fn rsw_build() {
-        Cli::wp_build(Rc::new(Cli::parse_toml()), "build", false);
+        Cli::wp_build(Arc::new(Cli::parse_toml()), "build", false);
     }
-    pub fn rsw_watch(callback: Option<Box<dyn Fn(&CrateConfig, std::path::PathBuf)>>) {
+    pub fn rsw_watch(
+        callback: Option<Arc<dyn Fn(&CrateConfig, std::path::PathBuf) + Send + Sync + 'static>>,
+    ) {
         // initial build
-        let config = Rc::new(Cli::parse_toml());
+        let config = Arc::new(Cli::parse_toml());
         Cli::wp_build(config.clone(), "watch", true);
 
         Watch::new(config, callback.unwrap()).init();
@@ -117,7 +120,7 @@ impl Cli {
 
         config
     }
-    pub fn wp_build(config: Rc<RswConfig>, rsw_type: &str, is_link: bool) {
+    pub fn wp_build(config: Arc<RswConfig>, rsw_type: &str, is_link: bool) {
         let crates_map = Rc::new(RefCell::new(HashMap::new()));
 
         let cli = &config.cli.to_owned().unwrap();
