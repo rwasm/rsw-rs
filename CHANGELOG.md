@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.7
+
+- fix: npm binary install
+
 ## 0.7.6
 
 - feat: watch abort

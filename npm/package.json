@@ -1,6 +1,6 @@
 {
   "name": "@rsw/cli",
-  "version": "0.7.6",
+  "version": "0.7.7",
   "description": "🦞 wasm-pack based build tool",
   "main": "binary.js",
   "author": "lencx <cxin1314@gmail.com>",
@@ -27,10 +27,9 @@
   },
   "homepage": "https://github.com/rwasm/rsw-rs#readme",
   "dependencies": {
-    "binary-install": "^1.0.0",
-    "console.table": "^0.10.0"
-  },
-  "resolutions": {
-    "axios": "0.26.0"
+    "axios": "^0.27.2",
+    "console.table": "^0.10.0",
+    "rimraf": "^3.0.2",
+    "tar": "^6.1.11"
   }
 }
