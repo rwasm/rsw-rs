@@ -42,13 +42,15 @@ class Binary {
     }
     this.url = url;
     this.name = name;
-    this.installDirectory = join(process.cwd(), "node_modules", ".bin");
+
+    this.installDirectory = join(__dirname, "../../", ".bin");
 
     if (!existsSync(this.installDirectory)) {
       mkdirSync(this.installDirectory, { recursive: true });
     }
 
     this.binaryPath = join(this.installDirectory, this.name);
+
   }
 
   install(fetchOptions) {

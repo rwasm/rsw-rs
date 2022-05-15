@@ -1,6 +1,6 @@
 [package]
 name = "rsw"
-version = "0.7.7"
+version = "0.7.8"
 description = "wasm-pack based build tool"
 edition = "2021"
 authors = ["lencx <cxin1314@gmail.com>"]
