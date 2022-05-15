@@ -14,3 +14,4 @@ node_modules/
 # IDE
 .vscode/
 .idea/
+/npm/bin/

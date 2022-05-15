@@ -1,12 +1,15 @@
 {
   "name": "@rsw/cli",
-  "version": "0.7.8",
+  "version": "0.7.9",
   "description": "🦞 wasm-pack based build tool",
   "main": "binary.js",
   "author": "lencx <cxin1314@gmail.com>",
   "license": "MIT",
   "scripts": {
     "postinstall": "node ./install.js"
+  },
+  "bin": {
+    "rsw": "./bin/rsw"
   },
   "repository": {
     "type": "git",
