@@ -87,9 +87,9 @@ jobs:
         shell: bash
         run: |
           cp ./target/${{ matrix.target }}/release/${{ env.RELEASE_BIN }}.exe ./${{ env.RELEASE_DIR }}/${{ env.RELEASE_BIN }}-${{ steps.get_version.outputs.VERSION }}-${{ matrix.target }}/${{ env.RELEASE_BIN }}.exe
-          cp ./target/${{ matrix.target }}/release/${{ env.RELEASE_BIN }}.exe rsw-init.exe
+          cp ./target/${{ matrix.target }}/release/${{ env.RELEASE_BIN }}.exe rsw.exe
           mv ${{ env.RELEASE_ADDS }} ./${{ env.RELEASE_DIR }}/${{ env.RELEASE_BIN }}-${{ steps.get_version.outputs.VERSION }}-${{ matrix.target }}
-          mv rsw-init.exe ${{ env.RELEASE_DIR }}
+          mv rsw.exe ${{ env.RELEASE_DIR }}
       - name: Create tarball
         run: 7z a -ttar -so -an ./${{ env.RELEASE_DIR }}/${{ env.RELEASE_BIN }}-${{ steps.get_version.outputs.VERSION }}-${{ matrix.target }} | 7z a -si ./${{ env.RELEASE_DIR }}/${{ env.RELEASE_BIN }}-${{ steps.get_version.outputs.VERSION }}-${{ matrix.target }}.tar.gz
 
@@ -175,9 +175,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./rsw-init.exe
+          asset_path: ./rsw.exe
           asset_content_type: application/vnd.microsoft.portable-executable
-          asset_name: rsw-init.exe
+          asset_name: rsw.exe
 
       - name: Release MacOS tarball
         uses: actions/upload-release-asset@v1
