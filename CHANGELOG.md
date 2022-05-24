@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.10
+
+- fix: build link
+
 ## 0.7.7
 
 - fix: npm binary install

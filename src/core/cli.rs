@@ -73,7 +73,7 @@ impl Cli {
         }
     }
     pub fn rsw_build() {
-        Cli::wp_build(Arc::new(Cli::parse_toml()), "build", false);
+        Cli::wp_build(Arc::new(Cli::parse_toml()), "build", true);
     }
     pub fn rsw_watch(
         callback: Option<Arc<dyn Fn(&CrateConfig, std::path::PathBuf) + Send + Sync + 'static>>,

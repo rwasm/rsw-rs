@@ -48,6 +48,7 @@ rsw clean
 - [[rsw demo] learn-wasm](https://github.com/lencx/learn-wasm) - 🎲 Learning WebAssembly
 - [vite-plugin-rsw](https://github.com/lencx/vite-plugin-rsw) - 🦀 wasm-pack plugin for Vite
 - [create-mpl](https://github.com/lencx/create-mpl) - ⚡️ Create a project in seconds!
+- [Oh My Box](https://github.com/lencx/OhMyBox) - 🔮 Development toolbox, and more...
 
 ## Logger
 
