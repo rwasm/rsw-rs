@@ -6,7 +6,7 @@ const { spawnSync } = require('child_process');
 const argv = process.argv.slice(2);
 
 if (os.type() === 'Windows_NT') {
-  spawnSync('cmd', ['/C', path.join(__dirname, './bin/rsw.exe'), ...argv], {
+  spawnSync(path.join(__dirname, './bin/rsw.exe'), argv, {
     shell: true,
     cwd: process.cwd(),
     encoding: 'utf-8',
