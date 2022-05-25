@@ -1,6 +1,6 @@
 {
   "name": "@rsw/cli",
-  "version": "0.7.12",
+  "version": "0.7.13",
   "rsw_version": "0.7.10",
   "description": "🦞 wasm-pack based build tool",
   "main": "binary.js",
@@ -10,7 +10,7 @@
     "postinstall": "node ./install.js"
   },
   "bin": {
-    "rsw": "./bin/rsw"
+    "rsw": "./rsw.js"
   },
   "repository": {
     "type": "git",
