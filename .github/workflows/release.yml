@@ -114,7 +114,7 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.get_version.outputs.VERSION }}
           release_name: ${{ steps.get_version.outputs.VERSION }}
@@ -142,7 +142,7 @@ jobs:
       - name: Release Linux amd64 tarball
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./rsw-${{ steps.get_version.outputs.VERSION }}-${{ env.LINUX_AMD64_TARGET }}.tar.gz
@@ -152,7 +152,7 @@ jobs:
       - name: Release Linux arm64 tarball
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./rsw-${{ steps.get_version.outputs.VERSION }}-${{ env.LINUX_ARM64_TARGET }}.tar.gz
@@ -162,7 +162,7 @@ jobs:
       - name: Release Windows tarball
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./rsw-${{ steps.get_version.outputs.VERSION }}-${{ env.WINDOWS_TARGET }}.tar.gz
@@ -172,7 +172,7 @@ jobs:
       - name: Release Windows init exe
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./rsw.exe
@@ -182,7 +182,7 @@ jobs:
       - name: Release MacOS tarball
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./rsw-${{ steps.get_version.outputs.VERSION }}-${{ env.MACOS_TARGET }}.tar.gz
