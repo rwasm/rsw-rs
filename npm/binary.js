@@ -1,4 +1,4 @@
-const { Binary } = require('binary-install');
+const { Binary } = require('./binary-install');
 const os = require('os');
 
 const windows = 'x86_64-pc-windows-msvc';
