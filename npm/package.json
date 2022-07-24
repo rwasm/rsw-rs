@@ -1,6 +1,6 @@
 {
   "name": "@rsw/cli",
-  "version": "0.7.15",
+  "version": "0.7.16",
   "rsw_version": "0.7.10",
   "description": "🦞 wasm-pack based build tool",
   "author": "lencx <cxin1314@gmail.com>",
