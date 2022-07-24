@@ -16,11 +16,11 @@
 ## 用法
 
 ```bash
-# 在 Rust 环境下安装
+# 在 Rust 环境下安装到全局
 cargo install rsw
 
 # 或者在 Node.js 环境下安装
-npm install -g @rsw/cli
+npm install -D @rsw/cli
 ```
 
 ```bash

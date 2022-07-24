@@ -1,10 +1,10 @@
-const { existsSync, mkdirSync, unlinkSync } = require("fs");
-const { join } = require("path");
-const { spawnSync } = require("child_process");
+const { existsSync, mkdirSync } = require('fs');
+const { join } = require('path');
+const { spawnSync } = require('child_process');
 
-const axios = require("axios");
-const tar = require("tar");
-const rimraf = require("rimraf");
+const axios = require('axios');
+const tar = require('tar');
+const rimraf = require('rimraf');
 
 const error = msg => {
   console.error(msg);
@@ -14,8 +14,8 @@ const error = msg => {
 class Binary {
   constructor(name, url) {
     let errors = [];
-    if (typeof url !== "string") {
-      errors.push("url must be a string");
+    if (typeof url !== 'string') {
+      errors.push('url must be a string');
     } else {
       try {
         new URL(url);
@@ -23,16 +23,16 @@ class Binary {
         errors.push(e);
       }
     }
-    if (name && typeof name !== "string") {
-      errors.push("name must be a string");
+    if (name && typeof name !== 'string') {
+      errors.push('name must be a string');
     }
 
     if (!name) {
-      errors.push("You must specify the name of your binary");
+      errors.push('You must specify the name of your binary');
     }
     if (errors.length > 0) {
       let errorMsg =
-        "One or more of the parameters you passed to the Binary constructor are invalid:\n";
+        'One or more of the parameters you passed to the Binary constructor are invalid:\n';
       errors.forEach(error => {
         errorMsg += error;
       });
@@ -43,7 +43,7 @@ class Binary {
     this.url = url;
     this.name = name;
 
-    this.installDirectory = join(__dirname, "node_modules/.bin");
+    this.installDirectory = join(process.cwd(), 'node_modules/.bin');
 
     if (!existsSync(this.installDirectory)) {
       mkdirSync(this.installDirectory, { recursive: true });
@@ -60,14 +60,14 @@ class Binary {
 
     console.log(`Downloading release from ${this.url}`);
 
-    return axios({ ...fetchOptions, url: this.url, responseType: "stream" })
+    return axios({ ...fetchOptions, url: this.url, responseType: 'stream' })
       .then(res => {
         return new Promise((resolve, reject) => {
           const sink = res.data.pipe(
             tar.x({ strip: 1, C: this.installDirectory })
           );
-          sink.on("finish", () => resolve());
-          sink.on("error", err => reject(err));
+          sink.on('finish', () => resolve());
+          sink.on('error', err => reject(err));
         });
       })
       .then(() => {
@@ -92,7 +92,7 @@ class Binary {
 
     const [, , ...args] = process.argv;
 
-    const options = { cwd: process.cwd(), stdio: "inherit" };
+    const options = { cwd: process.cwd(), stdio: 'inherit' };
 
     const result = spawnSync(this.binaryPath, args, options);
 

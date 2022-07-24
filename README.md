@@ -16,11 +16,11 @@
 ## Usage
 
 ```bash
-# Rust
+# Rust - install globally
 cargo install rsw
 
 # Or Node.js
-npm install -g @rsw/cli
+npm install -D @rsw/cli
 ```
 
 ```bash
