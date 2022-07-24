@@ -1,4 +1,4 @@
-const { existsSync, mkdirSync } = require('fs');
+const { existsSync, mkdirSync, renameSync } = require('fs');
 const { join } = require('path');
 const { spawnSync } = require('child_process');
 
@@ -43,7 +43,7 @@ class Binary {
     this.url = url;
     this.name = name;
 
-    this.installDirectory = join(process.cwd(), 'node_modules/.bin');
+    this.installDirectory = join(__dirname, 'node_modules/.bin');
 
     if (!existsSync(this.installDirectory)) {
       mkdirSync(this.installDirectory, { recursive: true });
@@ -76,6 +76,13 @@ class Binary {
         }
         if (existsSync(join(this.installDirectory, 'README.md'))) {
           rimraf.sync(join(this.installDirectory, 'README.md'));
+        }
+
+        const _old = join(__dirname, '../../@rsw/cli/node_modules/.bin');
+        const _new = join(__dirname, '../../node_modules/.bin')
+        if (existsSync(_old)) {
+          // console.log('[rsw]', `${_old} ~> ${_new}`);
+          renameSync(_old, _new);
         }
 
         console.log(`${this.name} has been installed!`);
