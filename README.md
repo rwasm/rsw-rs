@@ -18,9 +18,6 @@
 ```bash
 # Rust - install globally
 cargo install rsw
-
-# Or Node.js
-npm install -D @rsw/cli
 ```
 
 ```bash
