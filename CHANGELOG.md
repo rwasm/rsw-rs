@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.11
+
+- fix: watch mode in windows doesn't refresh
+
 ## 0.7.10
 
 - fix: build link

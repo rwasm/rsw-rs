@@ -1,7 +1,7 @@
 {
   "name": "@rsw/cli",
-  "version": "0.7.22",
-  "rsw_version": "0.7.10",
+  "version": "0.7.23",
+  "rsw_version": "0.7.11",
   "description": "🦞 wasm-pack based build tool",
   "author": "lencx <cxin1314@gmail.com>",
   "license": "MIT",
@@ -29,7 +29,7 @@
   "homepage": "https://github.com/rwasm/rsw-rs#readme",
   "dependencies": {
     "axios": "^0.27.2",
-    "binary-install": "^1.0.1",
+    "binary-install": "^1.0.6",
     "rimraf": "^3.0.2",
     "tar": "^6.1.11"
   }

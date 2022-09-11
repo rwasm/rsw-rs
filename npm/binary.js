@@ -1,32 +1,55 @@
-const { Binary } = require('./binary-install');
+const { Binary } = require('binary-install');
 const os = require('os');
 
-const windows = 'x86_64-pc-windows-msvc';
-
+const name = 'rsw';
 const { rsw_version: version, repository } = require('./package.json');
 
-const getPlatform = () => {
+const supportedPlatforms = [
+  {
+    TYPE: 'Windows_NT',
+    ARCHITECTURE: 'x64',
+    RUST_TARGET: 'x86_64-pc-windows-msvc',
+    BINARY_NAME: `${name}.exe`
+  },
+  {
+    TYPE: 'Linux',
+    ARCHITECTURE: 'x64',
+    RUST_TARGET: 'x86_64-unknown-linux-musl',
+    BINARY_NAME: name
+  },
+  {
+    TYPE: 'Darwin',
+    ARCHITECTURE: 'x64',
+    RUST_TARGET: 'x86_64-apple-darwin',
+    BINARY_NAME: name
+  }
+];
+
+const getPlatformMetadata = () => {
   const type = os.type();
-  const arch = os.arch();
+  const architecture = os.arch();
 
-  if (type === 'Windows_NT' && arch === 'x64') {
-    return windows;
-  }
-  if (type === 'Linux' && arch === 'x64') {
-    return 'x86_64-unknown-linux-musl';
-  }
-  if (type === 'Darwin' && (arch === 'x64' || arch === 'arm64')) {
-    return 'x86_64-apple-darwin';
+  for (let supportedPlatform of supportedPlatforms) {
+    if (
+      type === supportedPlatform.TYPE &&
+      architecture === supportedPlatform.ARCHITECTURE
+    ) {
+      return supportedPlatform;
+    }
   }
 
-  throw new Error(`Unsupported platform: ${type} ${arch}`);
+  error(
+    `Platform with type '${type}' and architecture '${architecture}' is not supported by ${name}.\nYour system must be one of the following:\n\n${cTable.getTable(
+      supportedPlatforms
+    )}`
+  );
 };
 
 const getBinary = () => {
-  const platform = getPlatform();
+  const platformMetadata = getPlatformMetadata();
   // the url for this binary is constructed from values in `package.json`
-  const url = `${repository.url}/releases/download/v${version}/rsw-v${version}-${platform}.tar.gz`;
-  return new Binary(platform === windows ? 'rsw.exe' : 'rsw', url);
+  const url = `${repository.url}/releases/download/v${version}/rsw-v${version}-${platformMetadata.RUST_TARGET}.tar.gz`;
+  return new Binary(platformMetadata.BINARY_NAME, url);
 };
 
 const run = () => {
