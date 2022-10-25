@@ -123,7 +123,7 @@ impl Cli {
     pub fn wp_build(config: Arc<RswConfig>, rsw_type: &str, is_link: bool) {
         let crates_map = Rc::new(RefCell::new(HashMap::new()));
 
-        let cli = &config.cli.to_owned().unwrap();
+        let cli = &config.cli.to_owned().unwrap_or_else(|| "npm".to_string());
         let mut has_crates = false;
         let mut is_exit = true;
 
