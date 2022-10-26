@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.12
+
+- fix: `config.cli` optional with default to `npm`
+
 ## 0.7.11
 
 - fix: watch mode in windows doesn't refresh
