@@ -44,6 +44,10 @@ pub struct CrateConfig {
     /// <https://rustwasm.github.io/wasm-pack/book/commands/build.html#target>
     #[serde(default = "default_target")]
     pub target: Option<String>,
+    /// scope: npm organization
+    ///
+    /// <https://rustwasm.github.io/wasm-pack/book/commands/build.html#scope>
+    pub scope: Option<String>,
     // TODO
     // pub mode: Option<String>,
 }

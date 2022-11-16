@@ -10,5 +10,5 @@ extern "C" {
 // hello message.
 #[wasm_bindgen]
 pub fn greet(name: &str) {
-    alert(&format!("Hello, {}!", name));
+    alert(&format!("[rsw] Hello, {}!", name));
 }

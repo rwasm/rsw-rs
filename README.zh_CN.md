@@ -97,6 +97,7 @@ a/b/**/*.txt
   - **`root`** - 此 `rust crate` 在项目根路径下的相对路径，默认 `.`
   - **`link`** - `true` | `false`，默认为 `false`，此 `rust crate` 构建后是否执行 `link` 命令，与 `cli` 配合使用
   - **`target`** - `bundler` | `nodejs` | `web` | `no-modules`, 默认 `web`
+  - **`scope`** - npm 组织
   - **`out-dir`** - npm 包输出路径，默认 `pkg`
   - **`[crates.watch]`** - 开发模式下的配置
     - **`run`** - 是否执行，默认为 `true`
@@ -157,39 +158,47 @@ dir = "my-template"
 #! ################# NPM Package #################
 
 #! When there is only `name`, other fields will use the default configuration
-#! -------- package: rsw-hello --------
+
+#! 📦 -------- package: rsw-hello --------
 [[crates]]
-#! npm package name
+#! npm package name (path: $ROOT/rsw-hello)
 name = "rsw-hello"
 #! run `npm link`: `true` | `false`, default is `false`
 link = false
 
-#! =======================================================
-
-#! -------- package: @rsw/hello --------
-# [[crates]]
-# #! npm package name
-# name = "@rsw/hello"
-# #! default is `.`
-# root = "."
-# #! default is `pkg`
-# out-dir = "pkg"
-# #! target: bundler | nodejs | web | no-modules, default is `web`
-# target = "web"
+#! 📦 -------- package: @rsw/utils --------
+[[crates]]
+#! npm package name (path: $ROOT/utils)
+name = "utils"
+# #! scope: npm org
+scope = "rsw"
 #! run `npm link`: `true` | `false`, default is `false`
-# link = false
-# #! rsw watch
-# [crates.watch]
-# #! default is `true`
-# run = true
-# #! profile: `dev` | `profiling`, default is `dev`
-# profile = "dev"
-# #! rsw build
-# [crates.build]
-# #! default is `true`
-# run = true
-# #! profile: `release` | `profiling`, default is `release`
-# profile = "release"
+link = false
+
+#! 📦 -------- package: @rsw/hello --------
+[[crates]]
+#! npm package name (path: $ROOT/@rsw/hello)
+name = "@rsw/hello"
+#! default is `.`
+root = "."
+#! default is `pkg`
+out-dir = "pkg"
+#! target: bundler | nodejs | web | no-modules, default is `web`
+target = "web"
+#! run `npm link`: `true` | `false`, default is `false`
+link = false
+#! rsw watch
+[crates.watch]
+#! default is `true`
+run = true
+#! profile: `dev` | `profiling`, default is `dev`
+profile = "dev"
+#! rsw build
+[crates.build]
+#! default is `true`
+run = true
+#! profile: `release` | `profiling`, default is `release`
+profile = "release"
 ```
 
 ## License

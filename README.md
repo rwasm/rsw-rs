@@ -98,6 +98,7 @@ Create `rsw.toml` in the project root path, configure the `rust crate` parameter
   - **`root`** - Relative to the project root path, default is `.`
   - **`link`** - `true` | `false`，default is `false`, Whether to execute the `link` command after this `rust crate` is built
   - **`target`** - `bundler` | `nodejs` | `web` | `no-modules`, default is `web`
+  - **`scope`** - npm organization
   - **`out-dir`** - npm package output path, default `pkg`
   - **`[crates.watch]`** - Development mode
     - **`run`** - Whether this `crate` needs to be watching, default is `true`
@@ -158,39 +159,47 @@ dir = "my-template"
 #! ################# NPM Package #################
 
 #! When there is only `name`, other fields will use the default configuration
-#! -------- package: rsw-hello --------
+
+#! 📦 -------- package: rsw-hello --------
 [[crates]]
-#! npm package name
+#! npm package name (path: $ROOT/rsw-hello)
 name = "rsw-hello"
 #! run `npm link`: `true` | `false`, default is `false`
 link = false
 
-#! =======================================================
-
-#! -------- package: @rsw/hello --------
-# [[crates]]
-# #! npm package name
-# name = "@rsw/hello"
-# #! default is `.`
-# root = "."
-# #! default is `pkg`
-# out-dir = "pkg"
-# #! target: bundler | nodejs | web | no-modules, default is `web`
-# target = "web"
+#! 📦 -------- package: @rsw/utils --------
+[[crates]]
+#! npm package name (path: $ROOT/utils)
+name = "utils"
+# #! scope: npm org
+scope = "rsw"
 #! run `npm link`: `true` | `false`, default is `false`
-# link = false
-# #! rsw watch
-# [crates.watch]
-# #! default is `true`
-# run = true
-# #! profile: `dev` | `profiling`, default is `dev`
-# profile = "dev"
-# #! rsw build
-# [crates.build]
-# #! default is `true`
-# run = true
-# #! profile: `release` | `profiling`, default is `release`
-# profile = "release"
+link = false
+
+#! 📦 -------- package: @rsw/hello --------
+[[crates]]
+#! npm package name (path: $ROOT/@rsw/hello)
+name = "@rsw/hello"
+#! default is `.`
+root = "."
+#! default is `pkg`
+out-dir = "pkg"
+#! target: bundler | nodejs | web | no-modules, default is `web`
+target = "web"
+#! run `npm link`: `true` | `false`, default is `false`
+link = false
+#! rsw watch
+[crates.watch]
+#! default is `true`
+run = true
+#! profile: `dev` | `profiling`, default is `dev`
+profile = "dev"
+#! rsw build
+[crates.build]
+#! default is `true`
+run = true
+#! profile: `release` | `profiling`, default is `release`
+profile = "release"
 ```
 
 ## License

@@ -36,6 +36,7 @@ impl Build {
         let crate_root = PathBuf::from(root).join(name).clean();
         let build_name = crate_root.to_string_lossy().to_string();
         let target = config.target.as_ref().unwrap();
+        let scope = config.scope.as_ref();
         let mut args = vec![
             "build",
             &build_name,
@@ -54,11 +55,17 @@ impl Build {
         args.push(&arg_profile);
 
         // scope
-        let (_, scope) = get_pkg(&self.config.name);
-        if scope != "" {
+        let (_, scope2) = get_pkg(&self.config.name);
+        if !scope2.is_empty() {
             args.push("--scope");
-            args.push(scope.as_str());
+            args.push(scope2.as_str());
+        } else {
+            if !scope.is_none() && !scope.unwrap().is_empty() {
+                args.push("--scope");
+                args.push(scope.unwrap());
+            }
         }
+
 
         let metadata = get_crate_metadata(name, crate_root);
         info!("🚧  wasm-pack {}", args.join(" "));

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.8.0
+
+- feat: `rsw.toml` adds `scope` field
+
 ## 0.7.12
 
 - fix: `config.cli` optional with default to `npm`

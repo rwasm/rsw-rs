@@ -30,18 +30,26 @@ dir = "my-template"
 #! ################# NPM Package #################
 
 #! When there is only `name`, other fields will use the default configuration
-#! -------- package: rsw-hello --------
-[[crates]]
-#! npm package name
-name = "rsw-hello"
-#! run `npm link`: `true` | `false`, default is `false`
-link = false
 
-#! =======================================================
-
-#! -------- package: @rsw/hello --------
+#! 📦 -------- package: rsw-hello --------
 # [[crates]]
-# #! npm package name
+# #! npm package name (path: $ROOT/rsw-hello)
+# name = "rsw-hello"
+# #! run `npm link`: `true` | `false`, default is `false`
+# link = false
+
+#! 📦 -------- package: @rsw/utils --------
+# [[crates]]
+# #! npm package name (path: $ROOT/utils)
+# name = "utils"
+# # #! scope: npm org
+# scope = "rsw"
+# #! run `npm link`: `true` | `false`, default is `false`
+# link = false
+
+#! 📦 -------- package: @rsw/hello --------
+# [[crates]]
+# #! npm package name (path: $ROOT/@rsw/hello)
 # name = "@rsw/hello"
 # #! default is `.`
 # root = "."
@@ -49,7 +57,7 @@ link = false
 # out-dir = "pkg"
 # #! target: bundler | nodejs | web | no-modules, default is `web`
 # target = "web"
-#! run `npm link`: `true` | `false`, default is `false`
+# #! run `npm link`: `true` | `false`, default is `false`
 # link = false
 # #! rsw watch
 # [crates.watch]
