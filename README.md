@@ -5,6 +5,9 @@
 
 **`rsw = rs(rust) → w(wasm)`** - A command-line tool for automatically rebuilding local changes, based on the `wasm-pack` implementation.
 
+[![Crate Info](https://img.shields.io/crates/v/rsw.svg)](https://crates.io/crates/rsw)
+[![API Docs](https://img.shields.io/badge/docs.rs-rsw-654FF0)](https://docs.rs/rsw)
+
 **Englist | [简体中文](./README.zh_CN.md)**
 
 ## Pre-installed
