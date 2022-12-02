@@ -20,7 +20,7 @@ pub fn check_env_cmd(program: &str) -> bool {
             if is_program_in_path(program) {
                 true
             } else {
-                eprint!("{}\n", e);
+                eprintln!("{}", e);
                 false
             }
         }
@@ -30,7 +30,7 @@ pub fn check_env_cmd(program: &str) -> bool {
 
 pub fn is_program_in_path(program: &str) -> bool {
     if let Ok(path) = env::var("PATH") {
-        for p in path.split(":") {
+        for p in path.split(':') {
             let p_str = format!("{}/{}", p, program);
             if fs::metadata(p_str).is_ok() {
                 return true;
@@ -48,8 +48,7 @@ pub fn get_crate_metadata(name: &str, root: PathBuf) -> Value {
         print(RswErr::Crate(name.into(), e));
         std::process::exit(1);
     });
-    let value = content.parse::<Value>().unwrap();
-    value
+    content.parse::<Value>().unwrap()
 }
 
 pub fn path_exists(path: &Path) -> bool {
@@ -62,7 +61,7 @@ pub fn get_pkg(name: &str) -> (String, String) {
     let re = Regex::new(r"(?x)(@([\w\d_-]+)/)?((?P<pkg_name>[\w\d_-]+))").unwrap();
     let caps = re.captures(name).unwrap();
     let mut scope = "".into();
-    if caps.get(2) != None {
+    if caps.get(2).is_some() {
         scope = caps.get(2).unwrap().as_str().into();
     }
 
@@ -148,7 +147,7 @@ pub fn init_logger() {
         };
 
         let log_target = match record.level() {
-            Level::Info | Level::Error => format!(""),
+            Level::Info | Level::Error => String::new(),
             _ => format!(" {}", record.target().yellow()),
         };
 
@@ -249,18 +248,18 @@ mod pkg_name_tests {
 
     #[test]
     fn pkg_word() {
-        assert_eq!(get_pkg("@rsw/test".into()), ("test".into(), "rsw".into()));
+        assert_eq!(get_pkg("@rsw/test"), ("test".into(), "rsw".into()));
     }
 
     #[test]
     fn pkg_word_num() {
-        assert_eq!(get_pkg("wasm123".into()), ("wasm123".into(), "".into()));
+        assert_eq!(get_pkg("wasm123"), ("wasm123".into(), "".into()));
     }
 
     #[test]
     fn pkg_word_num_line() {
         assert_eq!(
-            get_pkg("@rsw-org/my_wasm".into()),
+            get_pkg("@rsw-org/my_wasm"),
             ("my_wasm".into(), "rsw-org".into())
         );
     }

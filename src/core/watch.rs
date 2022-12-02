@@ -90,7 +90,7 @@ impl Watch {
                             Err(_) => continue,
                         };
 
-                        if gitignore.matched(&project_path, false).is_ignore() {
+                        if gitignore.matched(project_path, false).is_ignore() {
                             continue;
                         }
 

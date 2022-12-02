@@ -11,7 +11,7 @@ pub struct Clean;
 
 // clean: link & build
 impl Clean {
-    pub fn new(config: RswConfig) {
+    pub fn init(config: RswConfig) {
         let mut crates: Vec<String> = Vec::new();
         let mut path_map: HashMap<String, PathBuf> = HashMap::new();
 
@@ -30,7 +30,7 @@ impl Clean {
             crates.push(rsw_crate.name);
         }
 
-        Link::unlink(&config.cli.unwrap().to_owned(), crates);
+        Link::unlink(&config.cli.unwrap(), crates);
 
         for (_crate, _path) in path_map {
             std::fs::remove_dir_all(_path).unwrap();

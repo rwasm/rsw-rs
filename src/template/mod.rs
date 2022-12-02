@@ -12,7 +12,7 @@ pub static CARGO_TOML: &[u8] = include_bytes!("rsw_cargo.toml");
 pub static LIB_RS: &[u8] = include_bytes!("rsw_lib.rs");
 pub static README: &[u8] = include_bytes!("rsw_readme.md");
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug)]
 pub struct Template {
     pub cargo: Vec<u8>,
     pub readme: Vec<u8>,

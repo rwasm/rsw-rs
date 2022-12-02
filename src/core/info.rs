@@ -2,7 +2,7 @@ use colored::Colorize;
 use core::fmt::Display;
 use std::fmt::Debug;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug)]
 pub enum RswInfo {
     SplitLine,
     RswTomlOk,

@@ -51,19 +51,19 @@ impl Create {
         self.check_crate();
 
         // --template: https://rustwasm.github.io/docs/wasm-pack/commands/new.html#template
-        if !arg_tpl.is_none() {
+        if arg_tpl.is_some() {
             args.push("--template");
-            args.push(arg_tpl.unwrap());
+            args.push(arg_tpl.unwrap_or("https://github.com/rustwasm/wasm-pack-template"));
         }
 
         // --mode: https://rustwasm.github.io/docs/wasm-pack/commands/new.html#mode
-        if !arg_mode.is_none() {
+        if arg_mode.is_some() {
             args.push("--mode");
-            args.push(arg_mode.unwrap());
+            args.push(arg_mode.unwrap_or("normal"));
         }
 
         // wasm-pack
-        if arg_use == "wasm-pack" || !arg_tpl.is_none() {
+        if arg_use == "wasm-pack" || arg_tpl.is_some() {
             self.wp_cmd(&args, &scope2);
         }
 
@@ -113,7 +113,7 @@ impl Create {
     fn create_crate(&self) -> Result<()> {
         let target = get_root().join(&self.name);
         let root = std::path::Path::new(&target);
-        let template = Template::new(&root);
+        let template = Template::new(root);
 
         let (name, _) = utils::get_pkg(&self.name);
         let re = Regex::new(r"(?P<name>rsw-template)").unwrap();
@@ -121,7 +121,7 @@ impl Create {
         let readme = re.replace(std::str::from_utf8(&template.readme).unwrap(), &self.name);
 
         write_file(root, "README.md", readme.as_bytes())?;
-        write_file(root, "Cargo.toml", &cargo.as_bytes())?;
+        write_file(root, "Cargo.toml", cargo.as_bytes())?;
         write_file(root, "src/lib.rs", &template.lib)?;
 
         Ok(())

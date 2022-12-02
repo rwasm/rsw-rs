@@ -59,13 +59,10 @@ impl Build {
         if !scope2.is_empty() {
             args.push("--scope");
             args.push(scope2.as_str());
-        } else {
-            if !scope.is_none() && !scope.unwrap().is_empty() {
-                args.push("--scope");
-                args.push(scope.unwrap());
-            }
+        } else if scope.is_some() && !scope.unwrap().is_empty() {
+            args.push("--scope");
+            args.push(scope.unwrap());
         }
-
 
         let metadata = get_crate_metadata(name, crate_root);
         info!("🚧  wasm-pack {}", args.join(" "));
@@ -75,38 +72,35 @@ impl Build {
             .status()
             .expect("failed to execute process");
 
-        println!("");
+        println!(" ");
 
         let mut is_ok = true;
 
-        match status.code() {
-            Some(code) => {
-                if code == 0 {
-                    print(RswInfo::CrateOk(
-                        name.into(),
-                        rsw_type.into(),
-                        metadata["package"]["version"].to_string(),
-                    ));
-                } else {
-                    let output = Command::new("wasm-pack")
-                        .args(&args)
-                        .stderr(std::process::Stdio::piped())
-                        .output()
-                        .unwrap();
+        if let Some(code) = status.code() {
+            if code == 0 {
+                print(RswInfo::CrateOk(
+                    name.into(),
+                    rsw_type.into(),
+                    metadata["package"]["version"].to_string(),
+                ));
+            } else {
+                let output = Command::new("wasm-pack")
+                    .args(&args)
+                    .stderr(std::process::Stdio::piped())
+                    .output()
+                    .unwrap();
 
-                    let err = std::str::from_utf8(&output.stderr).unwrap();
-                    let info_content = format!(
-                        "[RSW::ERR]\n[RSW::NAME] :~> {}\n[RSW::BUILD] :~> wasm-pack {}",
-                        name,
-                        &args.join(" ")
-                    );
-                    rsw_watch_file(info_content.as_bytes(), err.as_bytes(), "err".into()).unwrap();
-                    print(RswInfo::CrateFail(name.into(), rsw_type.into()));
+                let err = std::str::from_utf8(&output.stderr).unwrap();
+                let info_content = format!(
+                    "[RSW::ERR]\n[RSW::NAME] :~> {}\n[RSW::BUILD] :~> wasm-pack {}",
+                    name,
+                    &args.join(" ")
+                );
+                rsw_watch_file(info_content.as_bytes(), err.as_bytes(), "err".into()).unwrap();
+                print(RswInfo::CrateFail(name.into(), rsw_type.into()));
 
-                    is_ok = false;
-                }
+                is_ok = false;
             }
-            _ => {}
         }
 
         if config.link.unwrap() && self.is_link {

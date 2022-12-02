@@ -6,11 +6,11 @@ use std::{env, fs, process};
 use crate::core::RswErr;
 use crate::utils::print;
 
-pub static RSW_FILE: &'static str = "rsw.toml";
-pub static RSW_DIR: &'static str = ".rsw";
-pub static RSW_CRATES: &'static str = "rsw.crates";
-pub static RSW_INFO: &'static str = "rsw.info";
-pub static RSW_ERR: &'static str = "rsw.err";
+pub static RSW_FILE: &str = "rsw.toml";
+pub static RSW_DIR: &str = ".rsw";
+pub static RSW_CRATES: &str = "rsw.crates";
+pub static RSW_INFO: &str = "rsw.info";
+pub static RSW_ERR: &str = "rsw.err";
 
 /// rust crate config
 #[derive(Debug, Clone, Serialize, Deserialize)]

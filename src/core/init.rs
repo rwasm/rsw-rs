@@ -13,7 +13,7 @@ use crate::{
 pub struct Init;
 
 impl Init {
-    pub fn new() -> std::io::Result<()> {
+    pub fn init() -> std::io::Result<()> {
         if !path_exists(Path::new(config::RSW_FILE)) {
             File::create(config::RSW_FILE)?.write_all(template::RSW_TOML)?;
             print(RswInfo::RswTomlOk);

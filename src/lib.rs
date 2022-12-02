@@ -117,5 +117,5 @@ pub fn rsw_cli() {
         std::process::exit(1);
     }
 
-    Cli::new();
+    Cli::init();
 }

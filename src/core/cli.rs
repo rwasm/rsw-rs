@@ -45,13 +45,14 @@ pub enum Commands {
 }
 
 impl Cli {
-    pub fn new() {
+    pub fn init() {
         match &Cli::parse().command {
             Commands::Init => Cli::rsw_init(),
             Commands::Clean => Cli::rsw_clean(),
             Commands::Build => {
                 Cli::rsw_build();
             }
+
             Commands::Watch => {
                 Cli::rsw_watch(Some(Arc::new(|a, b| {
                     let name = &a.name;
@@ -85,10 +86,10 @@ impl Cli {
         Watch::new(config, callback.unwrap()).init();
     }
     pub fn rsw_init() {
-        Init::new().unwrap();
+        Init::init().unwrap();
     }
     pub fn rsw_clean() {
-        Clean::new(Cli::parse_toml());
+        Clean::init(Cli::parse_toml());
     }
     pub fn rsw_new(name: &String, template: &Option<String>, mode: &Option<String>) {
         Create::new(
@@ -113,7 +114,7 @@ impl Cli {
             crates.push(format!(
                 "{} :~> {}",
                 name,
-                crate_out.clean().to_string_lossy().to_string()
+                crate_out.clean().to_string_lossy()
             ));
         }
         init_rsw_crates(crates.join("\n").as_bytes()).unwrap();
